@@ -2,6 +2,7 @@
 
 namespace Harmony\Bundle\AdminBundle\DependencyInjection;
 
+use Rollerworks\Bundle\RouteAutowiringBundle\RouteImporter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -24,6 +25,9 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $routeImporter = new RouteImporter($container);
+        $routeImporter->addObjectResource($this);
+        $routeImporter->import('@HarmonyAdminBundle/Resources/config/routing.yaml', 'admin');
     }
 
     /**

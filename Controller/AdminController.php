@@ -2,8 +2,11 @@
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
+use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
+use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
 use Harmony\Bundle\CoreBundle\DependencyInjection\HarmonyCoreExtension;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -11,14 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @package Harmony\Bundle\AdminBundle\Controller
  */
-class AdminController extends Controller
+class AdminController extends BaseAdminController
 {
 
     /**
      * @return Response
      * @throws \ErrorException
      */
-    public function index(): Response
+    protected function redirectToBackendHomepage(): Response
     {
         $dashboard = $this->container->getParameter(HarmonyCoreExtension::ALIAS . '.dashboard');
         if (!empty($dashboard['blocks'])) {
@@ -47,6 +50,48 @@ class AdminController extends Controller
         return $this->render('@HarmonyAdmin\Default\index.html.twig', [
             'dashboard' => $dashboard
         ]);
+    }
+
+    /**
+     * Utility method which initializes the configuration of the entity on which
+     * the user is performing the action.
+     *
+     * @param Request $request
+     */
+    protected function initialize(Request $request)
+    {
+        $this->dispatch(EasyAdminEvents::PRE_INITIALIZE);
+
+        $this->config = $this->get('easyadmin.config.manager')->getBackendConfig();
+
+        // this condition happens when accessing the backend homepage and before
+        // redirecting to the default page set as the homepage
+        if (null === $entityName = $request->query->get('entity')) {
+            return;
+        }
+
+        if (!array_key_exists($entityName, $this->config['entities'])) {
+            throw new UndefinedEntityException(['entity_name' => $entityName]);
+        }
+
+        $this->entity = $this->get('easyadmin.config.manager')->getEntityConfiguration($entityName);
+
+        $action = $request->query->get('action', 'list');
+        if (!$request->query->has('sortField')) {
+            $sortField = isset($this->entity[$action]['sort']['field']) ? $this->entity[$action]['sort']['field'] :
+                $this->entity['primary_key_field_name'];
+            $request->query->set('sortField', $sortField);
+        }
+        if (!$request->query->has('sortDirection')) {
+            $sortDirection = isset($this->entity[$action]['sort']['direction']) ?
+                $this->entity[$action]['sort']['direction'] : 'DESC';
+            $request->query->set('sortDirection', $sortDirection);
+        }
+
+        $this->em      = $this->getDoctrine()->getManagerForClass($this->entity['class']);
+        $this->request = $request;
+
+        $this->dispatch(EasyAdminEvents::POST_INITIALIZE);
     }
 
     /**

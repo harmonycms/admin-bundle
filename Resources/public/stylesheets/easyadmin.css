@@ -1,0 +1,30 @@
+.main-header > .navbar,
+.main-sidebar, .wrapper,
+.sidebar-menu > li > a,
+.sidebar-menu .treeview-menu > li > a {
+    background: #23282d;
+}
+.sidebar-menu > li:hover > a,
+.sidebar-menu .treeview-menu > li:hover > a,
+.sidebar-menu > li.active > a,
+.sidebar-menu .treeview-menu > li.active > a,
+.sidebar-collapse .sidebar-menu > li.active.submenu-active > a,
+.sidebar-collapse .sidebar-menu > li:hover .treeview-menu > li.active > a {
+    background-color: #191e23;
+    color: #00b9eb;
+    border: 0;
+}
+.main-header .logo:hover,
+.main-header .navbar .sidebar-toggle:hover {
+    color: #00b9eb;
+}
+.sidebar-mini.sidebar-collapse .sidebar-menu > li > a > span,
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:not(.treeview) > a > span {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    position: relative;
+}
+.sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu > li:hover > a > span {
+    margin-left: 0;
+}

@@ -1,2 +1,15 @@
 easy_admin:
   site_name: 'HarmonyCMS'
+  design:
+    assets:
+      css:
+      - 'bundles/harmonyadmin/stylesheets/easyadmin.css'
+    menu:
+      - label: 'Dashboard'
+        icon: 'dashboard'
+        children:
+        - { label: 'Home', route: 'easyadmin', icon: '' }
+        - { label: 'Updates', url: '#', icon: '' }
+      - label: 'Users'
+        icon: 'user'
+        url: '#'

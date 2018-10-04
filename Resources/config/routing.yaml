@@ -1,8 +1,4 @@
-harmony_admin_bundle:
-  path: /
-  controller: Harmony\Bundle\AdminBundle\Controller\AdminController::index
-
 easy_admin_bundle:
-  resource: "@EasyAdminBundle/Controller/AdminController.php"
+  resource: "@HarmonyAdminBundle/Controller/AdminController.php"
   type: annotation
   prefix: /admin

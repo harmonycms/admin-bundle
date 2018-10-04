@@ -1,0 +1,4 @@
+services:
+  Harmony\Bundle\AdminBundle\DataCollector\AdminCollector:
+    arguments: ['@service_container']
+    tags: ['harmony.data_collector']

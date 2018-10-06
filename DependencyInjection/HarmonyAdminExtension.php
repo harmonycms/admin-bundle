@@ -52,6 +52,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         if (isset($bundles['EasyAdminBundle'])) {
             $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
             $loader->load('easyadmin.yaml');
+            $loader->load('twig.yaml');
         }
 
         // process the configuration

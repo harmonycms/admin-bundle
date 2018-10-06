@@ -23,9 +23,14 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
      *
      * @param array            $configs
      * @param ContainerBuilder $container
+     *
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
+        $loader->load('services.yaml');
+
         $routeImporter = new RouteImporter($container);
         $routeImporter->addObjectResource($this);
         $routeImporter->import('@HarmonyAdminBundle/Resources/config/routing.yaml', 'admin');

@@ -47,7 +47,7 @@ class AdminController extends BaseAdminController
             }
         }
 
-        return $this->render('@HarmonyAdmin\Default\index.html.twig', [
+        return $this->render('@HarmonyAdmin\default\index.html.twig', [
             'dashboard' => $dashboard
         ]);
     }

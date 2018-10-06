@@ -1,9 +1,11 @@
-{% extends '@EasyAdmin/default/layout.html.twig' %}
+{% extends '@HarmonyAdmin/default/layout.html.twig' %}
+
 {% block content_title %}
   {% spaceless %}
-    {{ dashboard.title|trans }}
+    {{ dashboard.title|trans|raw }}
   {% endspaceless %}
 {% endblock %}
+
 {% block main %}
   {% if dashboard.blocks is defined and dashboard.blocks|length > 0 %}
     <div class="row">

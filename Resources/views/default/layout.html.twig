@@ -98,7 +98,7 @@
                 {% block header_custom_menu %}
                   {% set _logout_path = easyadmin_logout_path() %}
                   <ul class="nav navbar-nav">
-                    <li><a href="{{ path('homepage') }}" title="Visit site"><i class="fa fa-home"></i></a></li>
+                    <li><a href="#" title="Visit site"><i class="fa fa-home"></i></a></li>
                     <li class="dropdown user user-menu">
                       {% block user_menu %}
                         <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>

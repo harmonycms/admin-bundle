@@ -81,7 +81,7 @@
             {% block header_logo %}
               <a title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>A</b>LT</span>
+                <span class="logo-mini"><b>{{ easyadmin_config('site_name')|striptags|first }}</b></span>
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg">{{ easyadmin_config('site_name')|raw }}</span>
               </a>

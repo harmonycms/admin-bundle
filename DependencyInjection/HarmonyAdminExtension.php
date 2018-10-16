@@ -75,7 +75,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         $configs = $this->processConfigFiles($configs);
         // use the Configuration class to generate a config array
         $config = $this->processConfiguration(new Configuration(), $configs);
-        $container->setParameter('harmonyadmin.config', $config['dashboard']);
+        $container->setParameter('harmonyadmin.config', $config['admin']);
         foreach ($config as $key => $value) {
             $container->setParameter(HarmonyCoreExtension::ALIAS . '.' . $key, $value);
         }
@@ -94,9 +94,9 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
     {
         $existingEntityNames = [];
         foreach ($configs as $i => $config) {
-            if (array_key_exists('dashboard', $config) && array_key_exists('entities', $config['dashboard'])) {
+            if (array_key_exists('admin', $config) && array_key_exists('entities', $config['admin'])) {
                 $processedConfig = [];
-                foreach ($config['dashboard']['entities'] as $key => $value) {
+                foreach ($config['admin']['entities'] as $key => $value) {
                     $entityConfig                 = $this->normalizeEntityConfig($key, $value);
                     $entityName                   = $this->getUniqueEntityName($key, $entityConfig,
                         $existingEntityNames);
@@ -104,7 +104,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
                     $processedConfig[$entityName] = $entityConfig;
                     $existingEntityNames[]        = $entityName;
                 }
-                $config['dashboard']['entities'] = $processedConfig;
+                $config['admin']['entities'] = $processedConfig;
             }
             $configs[$i] = $config;
         }

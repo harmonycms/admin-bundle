@@ -73,7 +73,7 @@ class AdminController extends Controller
      */
     protected function redirectToBackendHomepage(): Response
     {
-        $dashboard = $this->container->getParameter(HarmonyCoreExtension::ALIAS . '.dashboard');
+        $dashboard = $this->container->getParameter(HarmonyCoreExtension::ALIAS . '.admin')['dashboard'];
         if (!empty($dashboard['blocks'])) {
             foreach ($dashboard['blocks'] as $key => $block) {
                 if (!empty($block['items'])) {

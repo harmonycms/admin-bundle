@@ -29,25 +29,12 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->ignoreExtraKeys(true)
             ->children()
-                ->arrayNode('dashboard')
+                ->arrayNode('admin')
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('site_name')
                             ->defaultValue('HarmonyAdmin')
                             ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
-                        ->end()
-
-                        ->scalarNode('title')
-                            ->defaultValue('Dashboard')
-                            ->info('The title displayed at the top of dashboard page.')
-                        ->end()
-
-                        ->arrayNode('blocks')
-                            ->normalizeKeys(false)
-                            ->useAttributeAsKey('name', false)
-                            ->defaultValue([])
-                            ->info('The list of blocks to display in the dashboard page.')
-                            ->prototype('variable')->end()
                         ->end()
 
                         ->arrayNode('list')
@@ -141,6 +128,7 @@ class Configuration implements ConfigurationInterface
                             ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
                         ->end()
                     ->end()
+                    ->append($this->addDashboard())
                     ->append($this->addFormats())
                     ->append($this->addDesignSection())
                     ->append($this->addEntitiesSection())
@@ -151,6 +139,33 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
+    /**
+     * @return ArrayNodeDefinition|NodeDefinition
+     */
+    protected function addDashboard()
+    {
+        $treeBuilder = new TreeBuilder();
+        $node        = $treeBuilder->root('dashboard');
+
+        $node
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->scalarNode('title')
+                    ->defaultValue('Dashboard')
+                    ->info('The title displayed at the top of dashboard page.')
+                ->end()
+                ->arrayNode('blocks')
+                    ->normalizeKeys(false)
+                    ->useAttributeAsKey('name', false)
+                    ->defaultValue([])
+                    ->info('The list of blocks to display in the dashboard page.')
+                    ->prototype('variable')->end()
+                ->end()
+            ->end()
+        ;
+
+        return $node;
+    }
     /**
      * @return ArrayNodeDefinition|NodeDefinition
      */

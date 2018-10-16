@@ -1,9 +1,11 @@
 harmony:
-  dashboard:
+  admin:
     site_name: 'HarmonyCMS'
+    # Entities
     entities:
       User:
         class: App\Entity\User
+    # Design
     design:
       menu:
       - label: 'Dashboard'
@@ -14,3 +16,18 @@ harmony:
       - label: 'Users'
         icon: 'user'
         entity: 'User'
+    # Dashboard
+    dashboard:
+      blocks:
+        Bloc1:
+          label: Users
+          size: 12
+          css_class: primary
+          items:
+            Item1:
+              label: "Registered users"
+              size: 3
+              css_class: aqua
+              class: App\Entity\User
+              icon:  users
+              link_label: "User list"

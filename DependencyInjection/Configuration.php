@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->scalarNode('site_name')
-                            ->defaultValue('EasyAdmin')
+                            ->defaultValue('HarmonyAdmin')
                             ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                         ->end()
 
@@ -236,8 +236,8 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->variableNode('form_theme')
-                    ->defaultValue(['@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
-                    ->treatNullLike(['@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
+                    ->defaultValue(['@HarmonyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
+                    ->treatNullLike(['@HarmonyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
                     ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical", any valid form theme path or an array of theme paths.')
                     ->validate()
                         ->ifString()->then(function ($v) {
@@ -248,9 +248,9 @@ class Configuration implements ConfigurationInterface
                         ->ifArray()->then(function ($values) {
                             foreach ($values as $k => $v) {
                                 if ('horizontal' === $v) {
-                                    $values[$k] = '@EasyAdmin/form/bootstrap_3_horizontal_layout.html.twig';
+                                    $values[$k] = '@HarmonyAdmin/form/bootstrap_3_horizontal_layout.html.twig';
                                 } elseif ('vertical' === $v) {
-                                    $values[$k] = '@EasyAdmin/form/bootstrap_3_layout.html.twig';
+                                    $values[$k] = '@HarmonyAdmin/form/bootstrap_3_layout.html.twig';
                                 }
                             }
                             return $values;

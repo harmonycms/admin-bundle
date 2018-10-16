@@ -324,7 +324,7 @@ class AdminController extends Controller
     {
         $this->dispatch(HarmonyAdminEvents::PRE_DELETE);
         if ('DELETE' !== $this->request->getMethod()) {
-            return $this->redirect($this->generateUrl('harmonyadmin',
+            return $this->redirect($this->generateUrl('admin',
                 ['action' => 'list', 'entity' => $this->entity['name']]));
         }
         $id   = $this->request->query->get('id');
@@ -364,7 +364,7 @@ class AdminController extends Controller
             $queryParameters = array_filter(array_replace($this->request->query->all(),
                 ['action' => 'list', 'query' => null]));
 
-            return $this->redirect($this->get('router')->generate('harmonyadmin', $queryParameters));
+            return $this->redirect($this->get('router')->generate('admin', $queryParameters));
         }
         $searchableFields     = $this->entity['search']['fields'];
         $defaultSortField     = isset($this->entity['search']['sort']['field']) ?
@@ -678,7 +678,7 @@ class AdminController extends Controller
         /** @var FormBuilder $formBuilder */
         $formBuilder = $this->get('form.factory')
             ->createNamedBuilder('delete_form')
-            ->setAction($this->generateUrl('harmonyadmin',
+            ->setAction($this->generateUrl('admin',
                 ['action' => 'delete', 'entity' => $entityName, 'id' => $entityId]))
             ->setMethod('DELETE');
         $formBuilder->add('submit', FormTypeHelper::getTypeClass('submit'),
@@ -740,7 +740,7 @@ class AdminController extends Controller
                 return $this->redirect(urldecode($refererUrl));
             }
 
-            return $this->redirectToRoute('harmonyadmin', [
+            return $this->redirectToRoute('admin', [
                 'action'       => 'list',
                 'entity'       => $this->entity['name'],
                 'menuIndex'    => $this->request->query->get('menuIndex'),
@@ -749,7 +749,7 @@ class AdminController extends Controller
         }
         // 2. from new|edit action, redirect to edit if possible
         if (\in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
-            return $this->redirectToRoute('harmonyadmin', [
+            return $this->redirectToRoute('admin', [
                 'action'       => 'edit',
                 'entity'       => $this->entity['name'],
                 'menuIndex'    => $this->request->query->get('menuIndex'),
@@ -761,7 +761,7 @@ class AdminController extends Controller
         }
         // 3. from new action, redirect to new if possible
         if ('new' === $refererAction && $this->isActionAllowed('new')) {
-            return $this->redirectToRoute('harmonyadmin', [
+            return $this->redirectToRoute('admin', [
                 'action'       => 'new',
                 'entity'       => $this->entity['name'],
                 'menuIndex'    => $this->request->query->get('menuIndex'),

@@ -1,15 +1,16 @@
-harmony_admin:
-  site_name: 'HarmonyCMS'
-  entities:
-    User:
-      class: App\Entity\User
-  design:
-    menu:
-    - label: 'Dashboard'
-      icon: 'dashboard'
-      children:
-      - { label: 'Home', route: 'admin', icon: '' }
-      - { label: 'Updates', url: '#', icon: '' }
-    - label: 'Users'
-      icon: 'user'
-      entity: 'User'
+harmony:
+  dashboard:
+    site_name: 'HarmonyCMS'
+    entities:
+      User:
+        class: App\Entity\User
+    design:
+      menu:
+      - label: 'Dashboard'
+        icon: 'dashboard'
+        children:
+        - { label: 'Home', route: 'admin', icon: '' }
+        - { label: 'Updates', url: '#', icon: '' }
+      - label: 'Users'
+        icon: 'user'
+        entity: 'User'

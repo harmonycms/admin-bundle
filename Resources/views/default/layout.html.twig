@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache" />
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <meta name="generator" content="EasyAdmin" />
+  <meta name="generator" content="HarmonyAdmin" />
 
   <title>{% block page_title %}{{ block('content_title')|striptags|raw|trim }}{% endblock %}</title>
 
@@ -34,16 +34,16 @@
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     {#<style>#}
-      {#{{ easyadmin_config('_internal.custom_css')|raw }}#}
+      {#{{ harmonyadmin_config('_internal.custom_css')|raw }}#}
     {#</style>#}
   {% endblock %}
 
-  {% for css_asset in easyadmin_config('design.assets.css') %}
+  {% for css_asset in harmonyadmin_config('design.assets.css') %}
     <link rel="stylesheet" href="{{ asset(css_asset) }}">
   {% endfor %}
 
   {% block head_favicon %}
-    {% set favicon = easyadmin_config('design.assets.favicon') %}
+    {% set favicon = harmonyadmin_config('design.assets.favicon') %}
     <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
   {% endblock %}
 
@@ -62,28 +62,28 @@
     </script>
   {% endblock %}
 
-    <script src="{{ asset('bundles/easyadmin/javascript/easyadmin-all.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/admin-all.min.js') }}"></script>
   {% endblock head_javascript %}
 
-  {% if easyadmin_config('design.rtl') %}
-    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap-rtl.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/adminlte-rtl.min.css') }}">
+  {% if harmonyadmin_config('design.rtl') %}
+    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/bootstrap-rtl.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/adminlte-rtl.min.css') }}">
   {% endif %}
 </head>
 
 {% block body %}
-  <body id="{% block body_id %}{% endblock %}" class="hold-transition skin-blue sidebar-mini {% block body_class %}{% endblock %} {{ app.request.cookies.has('_easyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
+  <body id="{% block body_id %}{% endblock %}" class="hold-transition skin-blue sidebar-mini {% block body_class %}{% endblock %} {{ app.request.cookies.has('_harmonyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
     <div class="wrapper">
       {% block wrapper %}
         <header class="main-header">
           {% block header %}
             <!-- Logo -->
             {% block header_logo %}
-              <a title="{{ easyadmin_config('site_name')|striptags }}" href="{{ path('easyadmin') }}" class="logo">
+              <a title="{{ harmonyadmin_config('site_name')|striptags }}" href="{{ path('admin') }}" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>{{ easyadmin_config('site_name')|striptags|first }}</b></span>
+                <span class="logo-mini"><b>{{ harmonyadmin_config('site_name')|striptags|first }}</b></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg">{{ easyadmin_config('site_name')|raw }}</span>
+                <span class="logo-lg">{{ harmonyadmin_config('site_name')|raw }}</span>
               </a>
             {% endblock header_logo %}
 
@@ -91,27 +91,27 @@
             <nav class="navbar navbar-static-top">
               <!-- Sidebar toggle button-->
               <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                <span class="sr-only">{{ 'toggle_navigation'|trans(domain = 'EasyAdminBundle') }}</span>
+                <span class="sr-only">{{ 'toggle_navigation'|trans(domain = 'HarmonyAdminBundle') }}</span>
               </a>
 
               <div class="navbar-custom-menu">
                 {% block header_custom_menu %}
-                  {% set _logout_path = easyadmin_logout_path() %}
+                  {% set _logout_path = harmonyadmin_logout_path() %}
                   <ul class="nav navbar-nav">
                     <li><a href="#" title="Visit site"><i class="fa fa-home"></i></a></li>
                     <li class="dropdown user user-menu">
                       {% block user_menu %}
-                        <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'EasyAdminBundle') }}</span>
+                        <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'HarmonyAdminBundle') }}</span>
                         {% if app.user|default(false) == false %}
                           <i class="hidden-xs fa fa-user-times"></i>
-                          {{ 'user.anonymous'|trans(domain = 'EasyAdminBundle') }}
+                          {{ 'user.anonymous'|trans(domain = 'HarmonyAdminBundle') }}
                         {% elseif not _logout_path %}
                           <i class="hidden-xs fa fa-user"></i>
-                          {{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}
+                          {{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}
                         {% else %}
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                             <i class="hidden-xs fa fa-user-o"></i>
-                            <span>{{ app.user.username|default('user.unnamed'|trans(domain = 'EasyAdminBundle')) }}</span>
+                            <span>{{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}</span>
                           </a>
                           <ul class="dropdown-menu" role="menu">
                             {% block user_menu_dropdown %}
@@ -120,12 +120,12 @@
                                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                  <a href="{{ _logout_path }}" class="btn btn-default btn-flat">{{ 'user.signout'|trans(domain = 'EasyAdminBundle') }}</a>
+                                  <a href="{{ _logout_path }}" class="btn btn-default btn-flat">{{ 'user.signout'|trans(domain = 'HarmonyAdminBundle') }}</a>
                                 </div>
                               </li>
                               {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                                 <li>
-                                  <a href="?_switch_user=_exit"><i class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'EasyAdminBundle') }}</a>
+                                  <a href="?_switch_user=_exit"><i class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'HarmonyAdminBundle') }}</a>
                                 </li>
                               {% endif %}
                             {% endblock user_menu_dropdown %}
@@ -146,8 +146,8 @@
               {% block main_menu_wrapper %}
                 {{ include([
                   _entity_config is defined ? _entity_config.templates.menu,
-                  easyadmin_config('design.templates.menu'),
-                  '@EasyAdmin/default/menu.html.twig'
+                  harmonyadmin_config('design.templates.menu'),
+                  '@HarmonyAdmin/default/menu.html.twig'
                 ]) }}
               {% endblock main_menu_wrapper %}
             </section>
@@ -157,7 +157,7 @@
         <div class="content-wrapper">
           {% block content %}
             {% block flash_messages %}
-              {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@EasyAdmin/default/flash_messages.html.twig') }}
+              {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@HarmonyAdmin/default/flash_messages.html.twig') }}
             {% endblock flash_messages %}
 
             <section class="content-header">
@@ -185,7 +185,7 @@
 
     {% block body_javascript %}{% endblock body_javascript %}
 
-    {% for js_asset in easyadmin_config('design.assets.js') %}
+    {% for js_asset in harmonyadmin_config('design.assets.js') %}
       <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
   </body>

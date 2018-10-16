@@ -18,6 +18,6 @@ class AdminCollector extends AbstractHarmonyCollector
      */
     public function getToolbar(): Response
     {
-        return $this->render('@HarmonyAdmin/Collector/toolbar.html.twig');
+        return $this->render('@HarmonyAdmin/data_collector/toolbar.html.twig');
     }
 }

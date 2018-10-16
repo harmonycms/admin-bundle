@@ -1,0 +1,81 @@
+services:
+  harmonyadmin.form.type:
+    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminFormType
+    tags:
+    - { name: form.type, alias: harmonyadmin }
+    arguments: ['@harmonyadmin.config.manager', {  }]
+
+  harmonyadmin.form.type.autocomplete:
+    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminAutocompleteType
+    tags:
+    - { name: form.type, alias: harmonyadmin_autocomplete }
+    arguments: ['@harmonyadmin.config.manager']
+
+  harmonyadmin.form.type.divider:
+    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminDividerType
+    tags:
+    - { name: form.type, alias: harmonyadmin_divider }
+
+  harmonyadmin.form.type.section:
+    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminSectionType
+    tags:
+    - { name: form.type, alias: harmonyadmin_section }
+
+  harmonyadmin.form.type.group:
+    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminGroupType
+    tags:
+    - { name: form.type, alias: harmonyadmin_group }
+
+  harmonyadmin.form.type.extension:
+    class: Harmony\Bundle\AdminBundle\Form\Extension\EasyAdminExtension
+    tags:
+    - { name: form.type_extension, alias: form, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType, extended-type: Symfony\Component\Form\Extension\Core\Type\FormType }
+    arguments: ['@?request_stack']
+
+  harmonyadmin.form.type_guesser_chain:
+    class: Symfony\Component\Form\FormTypeGuesserChain
+    public: false
+    arguments: [{  }]
+
+  harmonyadmin.form.type.configurator.autocomplete:
+    class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator
+    public: false
+    tags:
+    - { name: harmonyadmin.form.type.configurator, priority: 30 }
+
+  harmonyadmin.form.type.configurator.collection:
+    class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\CollectionTypeConfigurator
+    public: false
+    tags:
+    - { name: harmonyadmin.form.type.configurator, priority: 20 }
+
+  harmonyadmin.form.type.configurator.checkbox:
+    class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator
+    public: false
+    tags:
+    - { name: harmonyadmin.form.type.configurator, priority: 10 }
+
+  harmonyadmin.form.type.configurator.type:
+    class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\TypeConfigurator
+    public: false
+    tags:
+    - { name: harmonyadmin.form.type.configurator, priority: 0 }
+    arguments: ['@harmonyadmin.config.manager']
+
+  harmonyadmin.form.type.configurator.entity:
+    class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\EntityTypeConfigurator
+    public: false
+    tags:
+    - { name: harmonyadmin.form.type.configurator, priority: -20 }
+
+  harmonyadmin.form.type.configurator.ivory_ckeditor:
+    class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator
+    public: false
+    tags:
+    - { name: harmonyadmin.form.type.configurator, priority: -130 }
+
+  harmonyadmin.form.guesser.missing_doctrine_orm_type_guesser:
+    class: Harmony\Bundle\AdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser
+    tags:
+    - { name: form.type_guesser }
+    arguments: ['@doctrine']

@@ -1,3 +1,0 @@
-twig:
-  paths:
-    '%kernel.project_dir%/vendor/harmony/admin-bundle/Resources/views/bundles/EasyAdminBundle': EasyAdmin

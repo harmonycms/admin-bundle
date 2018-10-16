@@ -1,0 +1,17 @@
+<div class="sf-toolbar-info-piece">
+  {% if 'harmonyadmin' == app.request.attributes.get('_route') %}
+    <b>Site</b>
+    <span>
+      <a href="{{ path('homepage') }}">
+        View
+      </a>
+    </span>
+  {% else %}
+    <b>Dashboard</b>
+    <span>
+      <a href="{{ path('harmonyadmin') }}">
+        Manage
+      </a>
+    </span>
+  {% endif %}
+</div>

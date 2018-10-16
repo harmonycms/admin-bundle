@@ -590,7 +590,7 @@
 {% block harmonyadmin_autocomplete_widget %}
     {{ form_widget(form.autocomplete, {
         attr: attr|merge({
-            'data-harmonyadmin-autocomplete-url' : path('harmonyadmin', {
+            'data-harmonyadmin-autocomplete-url' : path('admin', {
                 action: 'autocomplete',
                 entity: autocomplete_entity_name,
             })|raw })

@@ -1,33 +1,33 @@
 services:
   harmonyadmin.form.type:
-    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminFormType
+    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminFormType
     tags:
     - { name: form.type, alias: harmonyadmin }
     arguments: ['@harmonyadmin.config.manager', {  }]
 
   harmonyadmin.form.type.autocomplete:
-    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminAutocompleteType
+    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminAutocompleteType
     tags:
     - { name: form.type, alias: harmonyadmin_autocomplete }
     arguments: ['@harmonyadmin.config.manager']
 
   harmonyadmin.form.type.divider:
-    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminDividerType
+    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminDividerType
     tags:
     - { name: form.type, alias: harmonyadmin_divider }
 
   harmonyadmin.form.type.section:
-    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminSectionType
+    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminSectionType
     tags:
     - { name: form.type, alias: harmonyadmin_section }
 
   harmonyadmin.form.type.group:
-    class: Harmony\Bundle\AdminBundle\Form\Type\EasyAdminGroupType
+    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminGroupType
     tags:
     - { name: form.type, alias: harmonyadmin_group }
 
   harmonyadmin.form.type.extension:
-    class: Harmony\Bundle\AdminBundle\Form\Extension\EasyAdminExtension
+    class: Harmony\Bundle\AdminBundle\Form\Extension\HarmonyAdminExtension
     tags:
     - { name: form.type_extension, alias: form, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType, extended-type: Symfony\Component\Form\Extension\Core\Type\FormType }
     arguments: ['@?request_stack']

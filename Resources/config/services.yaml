@@ -115,4 +115,6 @@ services:
     tags:
     - { name: harmonyadmin.config_pass, priority: 10 }
 
-  harmony_admin.property_accessor: '@property_accessor'
+  harmony_admin.property_accessor:
+    alias: 'property_accessor'
+    public: true

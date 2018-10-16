@@ -94,9 +94,9 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
     {
         $existingEntityNames = [];
         foreach ($configs as $i => $config) {
-            if (array_key_exists('entities', $config)) {
+            if (array_key_exists('dashboard', $config) && array_key_exists('entities', $config['dashboard'])) {
                 $processedConfig = [];
-                foreach ($config['entities'] as $key => $value) {
+                foreach ($config['dashboard']['entities'] as $key => $value) {
                     $entityConfig                 = $this->normalizeEntityConfig($key, $value);
                     $entityName                   = $this->getUniqueEntityName($key, $entityConfig,
                         $existingEntityNames);
@@ -104,7 +104,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
                     $processedConfig[$entityName] = $entityConfig;
                     $existingEntityNames[]        = $entityName;
                 }
-                $config['entities'] = $processedConfig;
+                $config['dashboard']['entities'] = $processedConfig;
             }
             $configs[$i] = $config;
         }

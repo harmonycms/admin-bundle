@@ -53,7 +53,7 @@ class AdminController extends Controller
      * @throws ForbiddenActionException
      * @throws \ErrorException
      */
-    public function indexAction(Request $request)
+    public function index(Request $request)
     {
         $this->initialize($request);
         if (null === $request->query->get('entity')) {
@@ -64,7 +64,7 @@ class AdminController extends Controller
             throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
         }
 
-        return $this->executeDynamicMethod($action . '<EntityName>Action');
+        return $this->executeDynamicMethod($action . '<EntityName>');
     }
 
     /**
@@ -167,7 +167,7 @@ class AdminController extends Controller
      *
      * @return JsonResponse
      */
-    protected function autocompleteAction(): JsonResponse
+    protected function autocomplete(): JsonResponse
     {
         $results = $this->get('harmonyadmin.autocomplete')
             ->find($this->request->query->get('entity'), $this->request->query->get('query'),
@@ -181,7 +181,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function listAction(): Response
+    protected function list(): Response
     {
         $this->dispatch(HarmonyAdminEvents::PRE_LIST);
         $fields    = $this->entity['list']['fields'];
@@ -206,7 +206,7 @@ class AdminController extends Controller
      * @throws \RuntimeException
      * @throws \ErrorException
      */
-    protected function editAction()
+    protected function edit()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_EDIT);
         $id        = $this->request->query->get('id');
@@ -251,7 +251,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function showAction()
+    protected function show()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_SHOW);
         $id         = $this->request->query->get('id');
@@ -280,7 +280,7 @@ class AdminController extends Controller
      * @return Response|RedirectResponse
      * @throws \ErrorException
      */
-    protected function newAction()
+    protected function new()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_NEW);
         $entity            = $this->executeDynamicMethod('createNew<EntityName>Entity');
@@ -320,7 +320,7 @@ class AdminController extends Controller
      * @throws EntityRemoveException
      * @throws \ErrorException
      */
-    protected function deleteAction()
+    protected function delete()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_DELETE);
         if ('DELETE' !== $this->request->getMethod()) {
@@ -355,7 +355,7 @@ class AdminController extends Controller
      *
      * @return Response
      */
-    protected function searchAction()
+    protected function search()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_SEARCH);
         $query = trim($this->request->query->get('query'));

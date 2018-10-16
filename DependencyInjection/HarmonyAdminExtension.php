@@ -35,7 +35,6 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
         $loader->load('services.yaml');
         $loader->load('form.yaml');
-        $loader->load('admin.yaml');
 
         if ($container->getParameter('kernel.debug')) {
             // in 'dev', use the built-in Symfony exception listener

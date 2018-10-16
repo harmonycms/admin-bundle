@@ -11,6 +11,7 @@ services:
   harmonyadmin.query_builder:
     class: Harmony\Bundle\AdminBundle\Search\QueryBuilder
     arguments: ['@doctrine']
+    public: true
 
   harmonyadmin.finder:
     class: Harmony\Bundle\AdminBundle\Search\Finder
@@ -23,6 +24,7 @@ services:
 
   harmonyadmin.paginator:
     class: Harmony\Bundle\AdminBundle\Search\Paginator
+    public: true
 
   harmonyadmin.router:
     class: Harmony\Bundle\AdminBundle\Router\HarmonyAdminRouter

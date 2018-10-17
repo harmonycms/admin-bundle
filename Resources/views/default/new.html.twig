@@ -10,28 +10,32 @@
 {% block body_class 'new new-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
-{% spaceless %}
+  {% spaceless %}
     {% set _default_title = 'new.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
     {{ _entity_config.new.title is defined ? _entity_config.new.title|trans(_trans_parameters) : _default_title }}
-{% endspaceless %}
+  {% endspaceless %}
 {% endblock %}
 
 {% block main %}
-    {% block entity_form %}
+  {% block entity_form %}
+    <div class="box box-info">
+      <div class="box-body">
         {{ form(form) }}
-    {% endblock entity_form %}
+      </div>
+    </div>
+  {% endblock entity_form %}
 {% endblock %}
 
 {% block body_javascript %}
-    {{ parent() }}
+  {{ parent() }}
 
-    <script type="text/javascript">
-        $(function() {
-            $('.new-form').areYouSure({ 'message': '{{ 'form.are_you_sure'|trans({}, 'HarmonyAdminBundle')|e('js') }}' });
+  <script type="text/javascript">
+    $(function () {
+      $('.new-form').areYouSure({'message': '{{ 'form.are_you_sure'|trans({}, 'HarmonyAdminBundle')|e('js') }}'});
 
-            $('.form-actions').harmonyAdminSticky();
-        });
-    </script>
+      $('.form-actions').harmonyAdminSticky();
+    });
+  </script>
 
-    {{ include('@HarmonyAdmin/default/includes/_select2_widget.html.twig') }}
+  {{ include('@HarmonyAdmin/default/includes/_select2_widget.html.twig') }}
 {% endblock %}

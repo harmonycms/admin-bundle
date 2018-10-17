@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache"/>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <meta name="generator" content="HarmonyAdmin" />
+  <meta name="generator" content="HarmonyAdmin"/>
 
   <title>{% block page_title %}{{ block('content_title')|striptags|raw|trim }}{% endblock %}</title>
 
@@ -32,9 +32,10 @@
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/bootstrap3-wysihtml5.min.css') }}">
     <!-- Google Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     {#<style>#}
-      {#{{ harmonyadmin_config('_internal.custom_css')|raw }}#}
+    {#{{ harmonyadmin_config('_internal.custom_css')|raw }}#}
     {#</style>#}
   {% endblock %}
 
@@ -44,20 +45,20 @@
 
   {% block head_favicon %}
     {% set favicon = harmonyadmin_config('design.assets.favicon') %}
-    <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}" />
+    <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}"/>
   {% endblock %}
 
   {% block head_javascript %}
   {% block adminlte_options %}
     <script type="text/javascript">
       var AdminLTEOptions = {
-        animationSpeed: 'normal',
+        animationSpeed      : 'normal',
         sidebarExpandOnHover: false,
-        enableBoxRefresh: false,
-        enableBSToppltip: false,
-        enableFastclick: false,
+        enableBoxRefresh    : false,
+        enableBSToppltip    : false,
+        enableFastclick     : false,
         enableControlSidebar: false,
-        enableBoxWidget: false
+        enableBoxWidget     : false
       };
     </script>
   {% endblock %}
@@ -72,7 +73,8 @@
 </head>
 
 {% block body %}
-  <body id="{% block body_id %}{% endblock %}" class="hold-transition skin-blue sidebar-mini {% block body_class %}{% endblock %} {{ app.request.cookies.has('_harmonyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
+  <body id="{% block body_id %}{% endblock %}"
+        class="hold-transition skin-blue sidebar-mini {% block body_class %}{% endblock %} {{ app.request.cookies.has('_harmonyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
     <div class="wrapper">
       {% block wrapper %}
         <header class="main-header">
@@ -120,12 +122,15 @@
                                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                  <a href="{{ _logout_path }}" class="btn btn-default btn-flat">{{ 'user.signout'|trans(domain = 'HarmonyAdminBundle') }}</a>
+                                  <a href="{{ _logout_path }}"
+                                     class="btn btn-default btn-flat">{{ 'user.signout'|trans(domain = 'HarmonyAdminBundle') }}</a>
                                 </div>
                               </li>
                               {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                                 <li>
-                                  <a href="?_switch_user=_exit"><i class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'HarmonyAdminBundle') }}</a>
+                                  <a href="?_switch_user=_exit"><i
+                                        class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'HarmonyAdminBundle') }}
+                                  </a>
                                 </li>
                               {% endif %}
                             {% endblock user_menu_dropdown %}
@@ -162,7 +167,7 @@
 
             <section class="content-header">
               {% block content_header %}
-                <h1 class="title">{% block content_title %}{% endblock %}</h1>
+                <h1>{% block content_title %}{% endblock %}</h1>
               {% endblock content_header %}
               {% block content_help %}
                 {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}

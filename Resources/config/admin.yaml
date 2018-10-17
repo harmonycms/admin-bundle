@@ -5,6 +5,14 @@ harmony:
     entities:
       User:
         class: App\Entity\User
+        label: 'Users'
+        form:
+          fields:
+          - 'username'
+          - 'email'
+          - 'enabled'
+          - { property: 'plainPassword', type: 'text', type_options: { required: false } }
+          - { property: 'roles' }
     # Design
     design:
       menu:
@@ -20,12 +28,10 @@ harmony:
     dashboard:
       blocks:
         Bloc1:
-          label: Users
-          size: 12
-          css_class: primary
           items:
             Item1:
               label: "Registered users"
+              template: 'v3'
               size: 3
               css_class: aqua
               class: App\Entity\User

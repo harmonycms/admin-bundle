@@ -21,9 +21,8 @@ harmony:
         children:
         - { label: 'Home', route: 'admin', icon: '' }
         - { label: 'Updates', url: '#', icon: '' }
-      - label: 'Users'
-        icon: 'user'
-        entity: 'User'
+      - { label: 'Settings', url: '#', icon: 'cogs' }
+      - { label: 'Users', entity: 'User', icon: 'user' }
     # Dashboard
     dashboard:
       blocks:

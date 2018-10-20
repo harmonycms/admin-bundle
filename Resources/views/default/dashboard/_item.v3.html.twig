@@ -8,7 +8,7 @@
     <div class="icon">
       <i class="fa fa-{{ item.icon|default('bars') }}"></i>
     </div>
-    <a href="{{ path('admin', { entity: item.entity, action: 'list' }) }}"
+    <a href="{{ path('admin_entity', { entity: item.entity, action: 'list' }) }}"
        class="small-box-footer">{{ item.link_label|default('Show list')|trans }} <i
           class="fa fa-arrow-circle-right"></i>
     </a>

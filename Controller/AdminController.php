@@ -49,16 +49,27 @@ class AdminController extends Controller
      * @Route("/", name="admin")
      * @param Request $request
      *
-     * @return RedirectResponse|Response
+     * @return Response
      * @throws ForbiddenActionException
      * @throws \ErrorException
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $this->initialize($request);
-        if (null === $request->query->get('entity')) {
-            return $this->redirectToBackendHomepage();
-        }
+
+        return $this->redirectToBackendHomepage();
+    }
+
+    /**
+     * @Route("/entity/{entity}", name="admin_entity")
+     * @param Request $request
+     * @param string  $entity
+     *
+     * @return mixed
+     */
+    public function entity(Request $request, string $entity)
+    {
+        $this->initialize($request, $entity);
         $action = $request->query->get('action', 'list');
         if (!$this->isActionAllowed($action)) {
             throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
@@ -106,9 +117,10 @@ class AdminController extends Controller
      * Utility method which initializes the configuration of the entity on which
      * the user is performing the action.
      *
-     * @param Request $request
+     * @param Request     $request
+     * @param null|string $entityName
      */
-    protected function initialize(Request $request)
+    protected function initialize(Request $request, ?string $entityName = null)
     {
         $this->dispatch(HarmonyAdminEvents::PRE_INITIALIZE);
 
@@ -116,7 +128,7 @@ class AdminController extends Controller
 
         // this condition happens when accessing the backend homepage and before
         // redirecting to the default page set as the homepage
-        if (null === $entityName = $request->query->get('entity')) {
+        if (null === $entityName) {
             return;
         }
 
@@ -209,9 +221,9 @@ class AdminController extends Controller
     protected function edit()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_EDIT);
-        $id        = $this->request->query->get('id');
+        $id           = $this->request->query->get('id');
         $harmonyadmin = $this->request->attributes->get('harmonyadmin');
-        $entity    = $harmonyadmin['item'];
+        $entity       = $harmonyadmin['item'];
         if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
             $newValue       = 'true' === mb_strtolower($this->request->query->get('newValue'));
             $fieldsMetadata = $this->entity['list']['fields'];
@@ -254,11 +266,11 @@ class AdminController extends Controller
     protected function show()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_SHOW);
-        $id         = $this->request->query->get('id');
-        $harmonyadmin  = $this->request->attributes->get('harmonyadmin');
-        $entity     = $harmonyadmin['item'];
-        $fields     = $this->entity['show']['fields'];
-        $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
+        $id           = $this->request->query->get('id');
+        $harmonyadmin = $this->request->attributes->get('harmonyadmin');
+        $entity       = $harmonyadmin['item'];
+        $fields       = $this->entity['show']['fields'];
+        $deleteForm   = $this->createDeleteForm($this->entity['name'], $id);
         $this->dispatch(HarmonyAdminEvents::POST_SHOW, [
             'deleteForm' => $deleteForm,
             'fields'     => $fields,
@@ -283,7 +295,7 @@ class AdminController extends Controller
     protected function new()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_NEW);
-        $entity            = $this->executeDynamicMethod('createNew<EntityName>Entity');
+        $entity               = $this->executeDynamicMethod('createNew<EntityName>Entity');
         $harmonyadmin         = $this->request->attributes->get('harmonyadmin');
         $harmonyadmin['item'] = $entity;
         $this->request->attributes->set('harmonyadmin', $harmonyadmin);
@@ -332,7 +344,7 @@ class AdminController extends Controller
         $form->handleRequest($this->request);
         if ($form->isSubmitted() && $form->isValid()) {
             $harmonyadmin = $this->request->attributes->get('harmonyadmin');
-            $entity    = $harmonyadmin['item'];
+            $entity       = $harmonyadmin['item'];
             $this->dispatch(HarmonyAdminEvents::PRE_REMOVE, ['entity' => $entity]);
             try {
                 $this->executeDynamicMethod('remove<EntityName>Entity', [$entity, $form]);
@@ -678,8 +690,7 @@ class AdminController extends Controller
         /** @var FormBuilder $formBuilder */
         $formBuilder = $this->get('form.factory')
             ->createNamedBuilder('delete_form')
-            ->setAction($this->generateUrl('admin',
-                ['action' => 'delete', 'entity' => $entityName, 'id' => $entityId]))
+            ->setAction($this->generateUrl('admin', ['action' => 'delete', 'entity' => $entityName, 'id' => $entityId]))
             ->setMethod('DELETE');
         $formBuilder->add('submit', FormTypeHelper::getTypeClass('submit'),
             ['label' => 'delete_modal.action', 'translation_domain' => 'HarmonyAdminBundle']);

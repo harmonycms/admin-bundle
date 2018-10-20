@@ -1,4 +1,4 @@
-{% set _entity_config = harmonyadmin_entity(app.request.query.get('entity')) %}
+{% set _entity_config = harmonyadmin_entity(app.request.get('entity')) %}
 {% trans_default_domain _entity_config.translation_domain %}
 {% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
 
@@ -49,13 +49,13 @@
     </div>
 
     <div class="col-sm-7">
-      <div class="global-actions">
+      <div class="row">
         {% block global_actions %}
           {% if harmonyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
             {% set _action = harmonyadmin_get_action_for_list_view('search', _entity_config.name) %}
 
             {% block search_action %}
-              <div class="form-action {{ _action.css_class|default('') }}">
+              <div class="col-sm-10 {{ _action.css_class|default('') }}">
                 <form method="get" action="{{ path('admin') }}">
                   {% block search_form %}
                     <input type="hidden" name="action" value="search">
@@ -86,7 +86,7 @@
           {% if harmonyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
             {% set _action = harmonyadmin_get_action_for_list_view('new', _entity_config.name) %}
             {% block new_action %}
-              <div class="button-action">
+              <div class="col-sm-2">
                 <a class="{{ _action.css_class|default('') }}"
                    href="{{ path('admin', _request_parameters|merge({ action: _action.name })) }}"
                    target="{{ _action.target }}">

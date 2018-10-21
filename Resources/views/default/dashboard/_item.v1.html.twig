@@ -1,15 +1,10 @@
-<div class="col-md-{{ item.size|default('3') }} col-sm-6 col-xs-12">
-  <div class="info-box">
-    <span class="info-box-icon bg-{{ item.css_class|default('aqua') }}">
-        <i class="fa fa-{{ item.icon|default('bars') }}"></i>
-    </span>
-    <div class="info-box-content">
-      <a href="{{ path('admin_entity', { entity: item.entity, action: 'list' }) }}">
-        <span class="info-box-text">{{ item.label|default('items')|trans }}</span>
-      </a>
-      <span class="info-box-number">{{ item.count }}</span>
+<div class="col-{{ item.size|default('3') }}">
+  <a href="{{ path('admin_entity', { entity: item.entity, action: 'list' }) }}"
+     class="ibox bg-{{ item.css_class|default('primary') }} color-white widget-stat mb-0 d-block">
+    <div class="ibox-body">
+      <h2 class="m-b-5 font-strong">{{ item.count }}</h2>
+      <div class="m-b-5">{{ item.label|default('items')|trans }}</div>
+      <i class="widget-stat-icon {{ item.icon|default('bars') }}"></i>
     </div>
-    <!-- /.info-box-content -->
-  </div>
-  <!-- /.info-box -->
+  </a>
 </div>

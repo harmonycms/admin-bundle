@@ -18,10 +18,11 @@
     {% endif %}
 
     <a href="{{ path }}" {% if item.target|default(false) %}target="{{ item.target }}"{% endif %}>
-      {% if item.icon is not empty %}<i class="fa {{ item.icon }}"></i>{% endif %}
-      <span>{{ item.label|trans(domain = translation_domain) }}</span>
-      {% if item.children|default([]) is not empty %}<span class="pull-right-container"><i
-            class="fa fa-angle-left pull-right"></i></span>{% endif %}
+      {% if item.icon is not empty %}<i class="sidebar-item-icon {{ item.icon }}"></i>{% endif %}
+      <span class="nav-label">{{ item.label|trans(domain = translation_domain) }}</span>
+      {% if item.children|default([]) is not empty %}
+        <i class="fa fa-angle-left arrow"></i>
+      {% endif %}
     </a>
   {% endif %}
 {% endmacro %}
@@ -30,8 +31,7 @@
 
 {% block main_menu_before %}{% endblock %}
 
-<ul class="sidebar-menu" data-widget="tree" data-animation-speed="250">
-  <li class="header">MAIN NAVIGATION</li>
+<ul class="side-menu metismenu" data-widget="tree" data-animation-speed="250">
   {% set _menu_items = harmonyadmin_config('design.menu') %}
 
   {% block main_menu %}
@@ -41,7 +41,7 @@
           {{ helper.render_menu_item(item, _entity_config.translation_domain|default('messages')) }}
 
           {% if item.children|default([]) is not empty %}
-            <ul class="treeview-menu">
+            <ul class="nav-2-level">
               {% for subitem in item.children %}
                 {% block menu_subitem %}
                   <li class="{{ subitem.type == 'divider' ? 'header' }} {{ app.request.query.get('menuIndex')|default(-1) == loop.parent.loop.index0 and app.request.query.get('submenuIndex')|default(-1) == loop.index0 ? 'active' }}">

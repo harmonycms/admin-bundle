@@ -12,25 +12,12 @@
   {% block head_stylesheets %}
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/bootstrap-toggle.min.css') }}">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/font-awesome.min.css') }}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/ionicons.min.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/AdminLTE.min.css') }}">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/_all-skins.min.css') }}">
-    <!-- Morris chart -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/morris.css') }}">
-    <!-- jvectormap -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/jquery-jvectormap.css') }}">
-    <!-- Date Picker -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/bootstrap-datepicker.min.css') }}">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/daterangepicker.css') }}">
-    <!-- bootstrap wysihtml5 - text editor -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/bootstrap3-wysihtml5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/main.min.css') }}">
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -63,7 +50,13 @@
     </script>
   {% endblock %}
 
-    <script src="{{ asset('bundles/harmonyadmin/javascript/admin-all.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/popper.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap-toggle.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/metisMenu.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('bundles/harmonyadmin/javascript/app.min.js') }}"></script>
   {% endblock head_javascript %}
 
   {% if harmonyadmin_config('design.rtl') %}
@@ -74,80 +67,95 @@
 
 {% block body %}
   <body id="{% block body_id %}{% endblock %}"
-        class="hold-transition skin-blue sidebar-mini {% block body_class %}{% endblock %} {{ app.request.cookies.has('_harmonyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
-    <div class="wrapper">
+        class="fixed-navbar {% block body_class %}{% endblock %} {{ app.request.cookies.has('_harmonyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
+    <div class="page-wrapper">
       {% block wrapper %}
-        <header class="main-header">
+        <header class="header">
           {% block header %}
             <!-- Logo -->
             {% block header_logo %}
-              <a title="{{ harmonyadmin_config('site_name')|striptags }}" href="{{ path('admin') }}" class="logo">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>{{ harmonyadmin_config('site_name')|striptags|first }}</b></span>
-                <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg">{{ harmonyadmin_config('site_name')|raw }}</span>
-              </a>
+              <div class="page-brand">
+                <a class="link w-100 text-center" href="{{ path('admin') }}"
+                   title="{{ harmonyadmin_config('site_name')|striptags }}">
+                  <span class="brand">
+                    {{ harmonyadmin_config('site_name')|raw }}
+                  </span>
+                  <span class="brand-mini">{{ harmonyadmin_config('site_name')|striptags|first }}</span>
+                </a>
+              </div>
             {% endblock header_logo %}
 
-            <!-- Header Navbar: style can be found in header.less -->
-            <nav class="navbar navbar-static-top">
-              <!-- Sidebar toggle button-->
-              <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                <span class="sr-only">{{ 'toggle_navigation'|trans(domain = 'HarmonyAdminBundle') }}</span>
-              </a>
-
-              <div class="navbar-custom-menu">
-                {% block header_custom_menu %}
-                  {% set _logout_path = harmonyadmin_logout_path() %}
-                  <ul class="nav navbar-nav">
-                    <li><a href="#" title="Visit site"><i class="fa fa-home"></i></a></li>
-                    <li class="dropdown user user-menu">
-                      {% block user_menu %}
-                        <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'HarmonyAdminBundle') }}</span>
-                        {% if app.user|default(false) == false %}
-                          <i class="hidden-xs fa fa-user-times"></i>
-                          {{ 'user.anonymous'|trans(domain = 'HarmonyAdminBundle') }}
-                        {% elseif not _logout_path %}
-                          <i class="hidden-xs fa fa-user"></i>
+            <div class="flexbox flex-1">
+              <ul class="nav navbar-toolbar">
+                <li><a class="nav-link sidebar-toggler js-sidebar-toggler"><i class="fas fa-bars"
+                                                                              title="{{ 'toggle_navigation'|trans(domain = 'HarmonyAdminBundle') }}"></i></a>
+                </li>
+              </ul>
+              {% block header_custom_menu %}
+                {% set _logout_path = harmonyadmin_logout_path() %}
+                <ul class="nav navbar-toolbar">
+                  <li><a href="#" title="Visit site"><i class="fa fa-home"></i></a></li>
+                  <li class="dropdown dropdown-user">
+                    {% block user_menu %}
+                      <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'HarmonyAdminBundle') }}</span>
+                      {% if app.user|default(false) == false %}
+                        <i class="hidden-xs fa fa-user-times"></i>
+                        {{ 'user.anonymous'|trans(domain = 'HarmonyAdminBundle') }}
+                      {% elseif not _logout_path %}
+                        <i class="hidden-xs fa fa-user"></i>
+                        {{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}
+                      {% else %}
+                        <a class="nav-link dropdown-toggle link" data-toggle="dropdown" aria-expanded="false">
+                          <i class="far fa-user-circle mr-2"></i>
+                          <span></span>
                           {{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}
-                        {% else %}
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                            <i class="hidden-xs fa fa-user-o"></i>
-                            <span>{{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}</span>
-                          </a>
-                          <ul class="dropdown-menu" role="menu">
-                            {% block user_menu_dropdown %}
-                              <li class="user-footer">
-                                <div class="pull-left">
-                                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                </div>
-                                <div class="pull-right">
-                                  <a href="{{ _logout_path }}"
-                                     class="btn btn-default btn-flat">{{ 'user.signout'|trans(domain = 'HarmonyAdminBundle') }}</a>
-                                </div>
+                          <i class="fa fa-angle-down m-l-5"></i>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                          {% block user_menu_dropdown %}
+                            <li><a class="dropdown-item" href="profile.html"><i class="fa fa-user"></i>Profile</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ _logout_path }}"><i
+                                    class="fa fa-power-off"></i>{{ 'user.signout'|trans(domain = 'HarmonyAdminBundle') }}
+                              </a></li>
+                            {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                              <li>
+                                <a href="?_switch_user=_exit"><i
+                                      class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'HarmonyAdminBundle') }}
+                                </a>
                               </li>
-                              {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-                                <li>
-                                  <a href="?_switch_user=_exit"><i
-                                        class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'HarmonyAdminBundle') }}
-                                  </a>
-                                </li>
-                              {% endif %}
-                            {% endblock user_menu_dropdown %}
-                          </ul>
-                        {% endif %}
-                      {% endblock user_menu %}
-                    </li>
-                  </ul>
-                {% endblock header_custom_menu %}
-              </div>
-            </nav>
+                            {% endif %}
+                          {% endblock user_menu_dropdown %}
+                        </ul>
+                      {% endif %}
+                    {% endblock user_menu %}
+                  </li>
+                </ul>
+              {% endblock header_custom_menu %}
+            </div>
           {% endblock header %}
         </header>
 
-        <aside class="main-sidebar">
+        <nav class="page-sidebar" id="sidebar">
           {% block sidebar %}
-            <section class="sidebar">
+            <div id="sidebar-collapse">
+              {% if app.user %}
+                <div class="admin-block d-flex">
+                  <div><img src="{{ asset('bundles/harmonyadmin/img/empty-avatar.png') }}" width="45px"></div>
+                  <div class="admin-info">
+                    <div class="font-strong">
+                      {{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}
+                    </div>
+                    {% if is_granted('ROLE_ADMIN') %}
+                      <small>Administrator</small>
+                    {% elseif is_granted('ROLE_USER') %}
+                      <small>User</small>
+                    {% else %}
+                      <small>Anonymous</small>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
               {% block main_menu_wrapper %}
                 {{ include([
                   _entity_config is defined ? _entity_config.templates.menu,
@@ -155,9 +163,9 @@
                   '@HarmonyAdmin/default/menu.html.twig'
                 ]) }}
               {% endblock main_menu_wrapper %}
-            </section>
+            </div>
           {% endblock sidebar %}
-        </aside>
+        </nav>
 
         <div class="content-wrapper">
           {% block content %}
@@ -165,9 +173,9 @@
               {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@HarmonyAdmin/default/flash_messages.html.twig') }}
             {% endblock flash_messages %}
 
-            <section class="content-header">
+            <div class="page-heading">
               {% block content_header %}
-                <h1>{% block content_title %}{% endblock %}</h1>
+                <h1 class="page-title">{% block content_title %}{% endblock %}</h1>
               {% endblock content_header %}
               {% block content_help %}
                 {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
@@ -178,7 +186,7 @@
                   </div>
                 {% endif %}
               {% endblock content_help %}
-            </section>
+            </div>
 
             <section id="main" class="content">
               {% block main %}{% endblock %}

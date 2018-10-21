@@ -57,33 +57,6 @@ class AdminController extends Controller
     {
         $this->initialize($request);
 
-        return $this->redirectToBackendHomepage();
-    }
-
-    /**
-     * @Route("/entity/{entity}", name="admin_entity")
-     * @param Request $request
-     * @param string  $entity
-     *
-     * @return mixed
-     */
-    public function entity(Request $request, string $entity)
-    {
-        $this->initialize($request, $entity);
-        $action = $request->query->get('action', 'list');
-        if (!$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
-        }
-
-        return $this->executeDynamicMethod($action . '<EntityName>');
-    }
-
-    /**
-     * @return Response
-     * @throws \ErrorException
-     */
-    protected function redirectToBackendHomepage(): Response
-    {
         $dashboard = $this->container->getParameter(HarmonyCoreExtension::ALIAS . '.admin')['dashboard'];
         if (!empty($dashboard['blocks'])) {
             foreach ($dashboard['blocks'] as $key => $block) {
@@ -111,6 +84,24 @@ class AdminController extends Controller
         return $this->render('@HarmonyAdmin\default\index.html.twig', [
             'dashboard' => $dashboard
         ]);
+    }
+
+    /**
+     * @Route("/entity/{entity}/{action}", name="admin_entity")
+     * @param Request $request
+     * @param string  $entity
+     * @param string  $action
+     *
+     * @return mixed
+     */
+    public function entity(Request $request, string $entity, string $action = 'list')
+    {
+        $this->initialize($request, $entity);
+        if (!$this->isActionAllowed($action)) {
+            throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
+        }
+
+        return $this->executeDynamicMethod($action . '<EntityName>');
     }
 
     /**

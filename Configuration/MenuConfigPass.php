@@ -73,8 +73,6 @@ class MenuConfigPass implements ConfigPassInterface
                 $itemConfig['icon'] = ($parentItemIndex > -1) ? 'fa-chevron-right' : 'fa-chevron-circle-right';
             } elseif (empty($itemConfig['icon'])) {
                 $itemConfig['icon'] = null;
-            } else {
-                $itemConfig['icon'] = 'fa-'.$itemConfig['icon'];
             }
 
             // normalize css_class configuration

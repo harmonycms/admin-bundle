@@ -17,12 +17,11 @@ harmony:
     design:
       menu:
       - label: 'Dashboard'
-        icon: 'dashboard'
+        icon: 'fa fa-th-large'
         children:
         - { label: 'Home', route: 'admin', icon: '' }
         - { label: 'Updates', url: '#', icon: '' }
-      - { label: 'Settings', url: '#', icon: 'cogs' }
-      - { label: 'Users', entity: 'User', icon: 'user' }
+      - { label: 'Users', entity: 'User', icon: 'fas fa-users' }
     # Dashboard
     dashboard:
       blocks:
@@ -30,9 +29,9 @@ harmony:
           items:
             Item1:
               label: "Registered users"
-              template: 'v3'
+              template: '@HarmonyAdmin/default/dashboard/_item.v1.html.twig'
               size: 3
-              css_class: aqua
+              css_class: 'success'
               class: App\Entity\User
-              icon:  users
+              icon:  'fas fa-users'
               link_label: "User list"

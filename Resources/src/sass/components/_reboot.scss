@@ -2,62 +2,80 @@
   &:after, &:before {
     content: '';
     display: table;
-  }  
+  }
   &:after {
     clear: both;
-  }  
+  }
 }
-
 html {
-    font-size: 14px;
+  font-size: 14px;
+  height: 100%;
 }
-
 body {
-    overflow-x: hidden;
-    font-family: 'Open Sans', sans-serif;
-    background-color: $body-bg;
-    color: $body-color;
+  overflow-x: hidden;
+  font-family: 'Open Sans', sans-serif;
+  background-color: $body-bg;
+  color: $body-color;
+  height: 100%;
 }
-
 a {
-    cursor: pointer;
-    color: $link-color;
+  cursor: pointer;
+  color: $link-color;
 }
 a:hover, a:focus {
-    text-decoration:none;
-    color: $link-hover-color;
+  text-decoration: none;
+  color: $link-hover-color;
 }
 a.link {
-    color:inherit
+  color: inherit
 }
-
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-    font-weight: 400;
+  font-weight: 400;
 }
-
 h6 {
   font-weight: 600;
 }
-
 h1, .h1 {
-  sup {top:-10px}
+  sup {
+    top: -10px
+  }
 }
 h2, .h2 {
-  sup {font-size:20px; top:-7px}
+  sup {
+    font-size: 20px;
+    top: -7px
+  }
 }
 h3, .h3 {
-  sup {font-size:16px; top:-5px}
+  sup {
+    font-size: 16px;
+    top: -5px
+  }
 }
-
-small {font-size: 85%}
-button:focus, select:focus, input:focus, a:focus {outline: none }
-input, textarea, img, canvas {   max-width:100% }
-button.reset {border:0;background-color:inherit;padding:0;outline:none;}
-
-strong {font-weight:600}
-b {font-weight:700}
-dt {font-weight: 700}
-
+small {
+  font-size: 85%
+}
+button:focus, select:focus, input:focus, a:focus {
+  outline: none
+}
+input, textarea, img, canvas {
+  max-width: 100%
+}
+button.reset {
+  border: 0;
+  background-color: inherit;
+  padding: 0;
+  outline: none;
+}
+strong {
+  font-weight: 600
+}
+b {
+  font-weight: 700
+}
+dt {
+  font-weight: 700
+}
 mark {
   padding: 1px 2px;
 }
@@ -69,10 +87,16 @@ pre {
   position: relative;
   border: none;
   border-radius: 2px;
-  margin-top:10px;
+  margin-top: 10px;
   padding: 12px;
   background: #F0F0F0;
-  code {white-space: pre; display:block; overflow-x: auto;}
+  code {
+    white-space: pre;
+    display: block;
+    overflow-x: auto;
+  }
 }
-
-.collapse.in {display: block} // support bootstrap 3 for plugins
+.collapse.in {
+  display: block
+}
+// support bootstrap 3 for plugins

@@ -35,30 +35,6 @@
     <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}"/>
   {% endblock %}
 
-  {% block head_javascript %}
-  {% block adminlte_options %}
-    <script type="text/javascript">
-      var AdminLTEOptions = {
-        animationSpeed      : 'normal',
-        sidebarExpandOnHover: false,
-        enableBoxRefresh    : false,
-        enableBSToppltip    : false,
-        enableFastclick     : false,
-        enableControlSidebar: false,
-        enableBoxWidget     : false
-      };
-    </script>
-  {% endblock %}
-
-    <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.min.js') }}"></script>
-    <script src="{{ asset('bundles/harmonyadmin/javascript/popper.min.js') }}"></script>
-    <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap-toggle.min.js') }}"></script>
-    <script src="{{ asset('bundles/harmonyadmin/javascript/metisMenu.min.js') }}"></script>
-    <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.slimscroll.min.js') }}"></script>
-    <script src="{{ asset('bundles/harmonyadmin/javascript/app.min.js') }}"></script>
-  {% endblock head_javascript %}
-
   {% if harmonyadmin_config('design.rtl') %}
     <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/bootstrap-rtl.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/adminlte-rtl.min.css') }}">
@@ -196,7 +172,15 @@
       {% endblock wrapper %}
     </div>
 
-    {% block body_javascript %}{% endblock body_javascript %}
+    {% block body_javascript %}
+      <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.min.js') }}"></script>
+      <script src="{{ asset('bundles/harmonyadmin/javascript/popper.min.js') }}"></script>
+      <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap.bundle.min.js') }}"></script>
+      <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap-toggle.min.js') }}"></script>
+      <script src="{{ asset('bundles/harmonyadmin/javascript/metisMenu.min.js') }}"></script>
+      <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.slimscroll.min.js') }}"></script>
+      <script src="{{ asset('bundles/harmonyadmin/javascript/app.min.js') }}"></script>
+    {% endblock body_javascript %}
 
     {% for js_asset in harmonyadmin_config('design.assets.js') %}
       <script src="{{ asset(js_asset) }}"></script>

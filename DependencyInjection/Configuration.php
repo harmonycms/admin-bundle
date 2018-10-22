@@ -251,8 +251,8 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->variableNode('form_theme')
-                    ->defaultValue(['@HarmonyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
-                    ->treatNullLike(['@HarmonyAdmin/form/bootstrap_3_horizontal_layout.html.twig'])
+                    ->defaultValue(['@HarmonyAdmin/form/bootstrap_4_horizontal_layout.html.twig'])
+                    ->treatNullLike(['@HarmonyAdmin/form/bootstrap_4_horizontal_layout.html.twig'])
                     ->info('The form theme applied to backend forms. Allowed values: "horizontal", "vertical", any valid form theme path or an array of theme paths.')
                     ->validate()
                         ->ifString()->then(function ($v) {
@@ -263,9 +263,9 @@ class Configuration implements ConfigurationInterface
                         ->ifArray()->then(function ($values) {
                             foreach ($values as $k => $v) {
                                 if ('horizontal' === $v) {
-                                    $values[$k] = '@HarmonyAdmin/form/bootstrap_3_horizontal_layout.html.twig';
+                                    $values[$k] = '@HarmonyAdmin/form/bootstrap_4_horizontal_layout.html.twig';
                                 } elseif ('vertical' === $v) {
-                                    $values[$k] = '@HarmonyAdmin/form/bootstrap_3_layout.html.twig';
+                                    $values[$k] = '@HarmonyAdmin/form/bootstrap_4_layout.html.twig';
                                 }
                             }
                             return $values;

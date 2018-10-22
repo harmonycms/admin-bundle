@@ -1,7 +1,7 @@
-<div class="col-{{ item.size|default('3') }}">
+<div class="col-md-3 col-xl-2">
   <a href="{{ path('admin_entity', { entity: item.entity, action: 'list' }) }}"
-     class="ibox bg-{{ item.css_class|default('primary') }} color-white widget-stat mb-0 d-block">
-    <div class="ibox-body">
+     class="card bg-{{ item.css_class|default('primary') }} color-white widget-stat mb-0 d-block">
+    <div class="card-body">
       <h2 class="m-b-5 font-strong">{{ item.count }}</h2>
       <div class="m-b-5">{{ item.label|default('items')|trans }}</div>
       <i class="widget-stat-icon {{ item.icon|default('bars') }}"></i>

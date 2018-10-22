@@ -1,0 +1,100 @@
+.card {
+  position: relative;
+  margin-bottom: 25px;
+  background-color: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+  border: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  .card-head {
+    padding: 0 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    background-color: inherit;
+    .card-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      margin-top: 0;
+      small {
+        font-weight: 400;
+        font-size: 13px;
+        color: #777;
+        a {
+          color: inherit
+        }
+      }
+    }
+    .card-subtitle {
+      margin-top: -10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .card-tools {
+      position: relative;
+      & > a {
+        color: #aaa;
+        font-size: 14px;
+        padding: 0 6px;
+        &:hover {
+          color: #6d7c85
+        }
+      }
+    }
+    .nav-tabs {
+      margin: 0;
+      border: 0;
+      height: 100%;
+      .nav-link {
+        height: 100%;
+        padding: .9rem 1rem;
+      }
+    }
+  }
+  .card-body {
+    padding: 15px 20px 20px 20px;
+  }
+  &.card-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    z-index: 1005;
+    .fullscreen-link > i::before {
+      content: "\f066"
+    }
+  }
+  &.collapsed-mode {
+    .card-collapse > i::before {
+      content: "\f067"
+    }
+  }
+}
+//== Contextual Panels
+.card-primary {
+  @include panel-variant($brand-primary, #fff, #fff)
+}
+.card-success {
+  @include panel-variant($brand-success, #fff, #fff)
+}
+.card-info {
+  @include panel-variant($brand-info, #fff, #fff)
+}
+.card-warning {
+  @include panel-variant($brand-warning, #fff, #fff)
+}
+.card-danger {
+  @include panel-variant($brand-danger, #fff, #fff)
+}
+.card-grey {
+  @include panel-variant($brand-default, #fff, #fff)
+}
+body.fullscreen-mode {
+  overflow-y: hidden;
+}

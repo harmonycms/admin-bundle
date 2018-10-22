@@ -68,12 +68,13 @@
                       <input class="form-control" type="search" name="query"
                              value="{{ app.request.get('query')|default('') }}">
                       <span class="input-group-btn">
-                                                <button class="btn" type="submit" formtarget="{{ _action.target }}">
-                                                    <i class="fa fa-search"></i>
-                                                    <span
-                                                        class="hidden-xs hidden-sm">{{ _action.label|default('action.search')|trans(_trans_parameters) }}</span>
-                                                </button>
-                                            </span>
+                        <button class="btn" type="submit" formtarget="{{ _action.target }}">
+                            <i class="fa fa-search"></i>
+                            <span class="hidden-xs hidden-sm">
+                              {{ _action.label|default('action.search')|trans(_trans_parameters) }}
+                            </span>
+                        </button>
+                      </span>
                     </div>
                   {% endblock %}
                 </form>
@@ -103,8 +104,8 @@
 {% block main %}
   {% set _list_item_actions = harmonyadmin_get_actions_for_list_item(_entity_config.name) %}
 
-  <div class="ibox">
-    <div class="ibox-body">
+  <div class="card">
+    <div class="card-body">
       <div class="table-responsive">
         <table class="table">
           <thead>

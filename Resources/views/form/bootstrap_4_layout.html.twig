@@ -202,7 +202,7 @@
     {{- form_label(form, null, { widget: parent() }) -}}
   {% else -%}
     <div class="checkbox">
-      {{- form_label(form, null, { widget: parent() }) -}}
+      {{- form_label(form, null, { widget: parent(), label_attr: { class: 'ui-checkbox' } }) -}}
     </div>
   {%- endif %}
 {%- endblock checkbox_widget %}
@@ -221,7 +221,7 @@
 {# Labels #}
 
 {% block form_label -%}
-  {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label')|trim}) -%}
+  {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label')|trim}) -%}
   {{- parent() -}}
 {%- endblock form_label %}
 
@@ -252,6 +252,7 @@
       {% set label = name|humanize %}
     {% endif %}
     <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+    <span class="input-span"></span>
     {{- widget|raw -}}
     {{- label is not same as(false) ? label|trans({}, translation_domain ?: harmonyadmin.entity.translation_domain) -}}
     </label>
@@ -463,7 +464,7 @@
 
 {% block harmonyadmin_rest %}
   {{- form_rest(form) -}}
-  <div class="box-footer">
+  <div class="card-footer text-right">
     {{- block('item_actions') -}}
   </div>
 {% endblock harmonyadmin_rest %}
@@ -498,10 +499,10 @@
 
 {# HarmonyAdmin form type #}
 {% block harmonyadmin_widget %}
-  {% set _translation_domain = harmonyadmin.entity.translation_domain %}
-  <div class="row">
+  <div class="card-body">
+    {% set _translation_domain = harmonyadmin.entity.translation_domain %}
     {% if harmonyadmin_form_tabs | length > 0 %}
-      <div class="col-xs-12">
+      <div class="col-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
             {% for tab_name, tab_config in harmonyadmin_form_tabs %}
@@ -540,7 +541,7 @@
 
 {% block harmonyadmin_widget_groups %}
   {% for group_name, group_config in harmonyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
-    <div class="field-group col-xs-12 {{ group_config.css_class|default('') }}">
+    <div class="field-group col-12 {{ group_config.css_class|default('') }}">
       <div class="box box-default">
         {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
           <div class="box-header with-border">
@@ -571,9 +572,7 @@
           <div class="row">
             {% for field in form if 'hidden' not in field.vars.block_prefixes and field.vars.harmonyadmin.form_group == group_name %}
               {% if not field.vars.harmonyadmin.form_tab or field.vars.harmonyadmin.form_tab == tab_name %}
-                <div class="col-xs-12 {{ field.vars.harmonyadmin.field.css_class|default('') }}">
-                  {{ form_row(field) }}
-                </div>
+                {{ form_row(field) }}
               {% endif %}
             {% endfor %}
           </div>
@@ -582,9 +581,7 @@
     </div>
   {% else %}
     {% for field in form if 'hidden' not in field.vars.block_prefixes and (not field.vars.harmonyadmin.form_tab or field.vars.harmonyadmin.form_tab == tab_name) %}
-      <div class="col-xs-12 {{ field.vars.harmonyadmin.field.css_class|default('') }}">
-        {{ form_row(field) }}
-      </div>
+      {{ form_row(field) }}
     {% endfor %}
   {% endfor %}
 {% endblock harmonyadmin_widget_groups %}

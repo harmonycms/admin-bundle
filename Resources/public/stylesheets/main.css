@@ -8,13 +8,15 @@
   clear: both; }
 
 html {
-  font-size: 14px; }
+  font-size: 14px;
+  height: 100%; }
 
 body {
   overflow-x: hidden;
   font-family: 'Open Sans', sans-serif;
   background-color: #f1f1f1;
-  color: #333; }
+  color: #333;
+  height: 100%; }
 
 a {
   cursor: pointer;
@@ -91,6 +93,39 @@ pre {
 .collapse.in {
   display: block; }
 
+/************************************************************************************
+smaller than 980
+*************************************************************************************/
+@media screen and (max-width: 980px) {
+  /* embedded videos */
+  .video embed,
+  .video object,
+  .video iframe {
+    width: 100%;
+    height: auto;
+    min-height: 300px; } }
+
+/************************************************************************************
+smaller than 768
+*************************************************************************************/
+@media screen and (max-width: 768px) {
+  body:not(.sidebar-mini):not(.drawer-sidebar)
+.dashboard-wrapper {
+    margin-left: 0; } }
+
+/************************************************************************************
+smaller than 650
+*************************************************************************************/
+@media screen and (max-width: 650px) {
+  /* embedded videos */
+  .video embed,
+  .video object,
+  .video iframe {
+    min-height: 250px; } }
+
+/************************************************************************************
+smaller than 560
+*************************************************************************************/
 .btn {
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -1199,13 +1234,16 @@ btn .caret {
   color: #720e9e;
   background-color: #fff; }
 
-.ibox {
+.card {
   position: relative;
   margin-bottom: 25px;
   background-color: #fff;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); }
-  .ibox .ibox-head {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  border: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0; }
+  .card .card-head {
     padding: 0 20px;
     border-bottom: 1px solid #eee;
     display: -webkit-box;
@@ -1220,37 +1258,41 @@ btn .caret {
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
-    height: 50px; }
-    .ibox .ibox-head .ibox-title {
+    height: 50px;
+    background-color: inherit; }
+    .card .card-head .card-title {
       font-size: 16px;
-      font-weight: 600; }
-      .ibox .ibox-head .ibox-title small {
+      font-weight: 500;
+      margin-bottom: 10px;
+      margin-top: 0; }
+      .card .card-head .card-title small {
         font-weight: 400;
         font-size: 13px;
         color: #777; }
-        .ibox .ibox-head .ibox-title small a {
+        .card .card-head .card-title small a {
           color: inherit; }
-    .ibox .ibox-head .ibox-tools {
+    .card .card-head .card-subtitle {
+      margin-top: -10px;
+      margin-bottom: 10px;
+      font-size: 13px; }
+    .card .card-head .card-tools {
       position: relative; }
-      .ibox .ibox-head .ibox-tools > a {
+      .card .card-head .card-tools > a {
         color: #aaa;
         font-size: 14px;
         padding: 0 6px; }
-        .ibox .ibox-head .ibox-tools > a:hover {
+        .card .card-head .card-tools > a:hover {
           color: #6d7c85; }
-    .ibox .ibox-head .nav-tabs {
+    .card .card-head .nav-tabs {
       margin: 0;
       border: 0;
       height: 100%; }
-      .ibox .ibox-head .nav-tabs .nav-link {
+      .card .card-head .nav-tabs .nav-link {
         height: 100%;
         padding: .9rem 1rem; }
-  .ibox .ibox-body {
+  .card .card-body {
     padding: 15px 20px 20px 20px; }
-  .ibox .ibox-footer {
-    padding: 10px 0;
-    border-top: 1px solid #eee; }
-  .ibox.ibox-fullscreen {
+  .card.card-fullscreen {
     position: fixed;
     top: 0;
     left: 0;
@@ -1258,45 +1300,45 @@ btn .caret {
     bottom: 0;
     margin: 0;
     z-index: 1005; }
-    .ibox.ibox-fullscreen .fullscreen-link > i::before {
+    .card.card-fullscreen .fullscreen-link > i::before {
       content: "\f066"; }
-  .ibox.collapsed-mode .ibox-collapse > i::before {
+  .card.collapsed-mode .card-collapse > i::before {
     content: "\f067"; }
 
-.ibox-primary .ibox-head {
+.card-primary .ibox-head {
   color: #fff;
   background-color: #3498db; }
-  .ibox-primary .ibox-head .ibox-tools > a, .ibox-primary .ibox-head .ibox-tools > a:hover {
+  .card-primary .ibox-head .ibox-tools > a, .card-primary .ibox-head .ibox-tools > a:hover {
     color: #fff; }
 
-.ibox-success .ibox-head {
+.card-success .ibox-head {
   color: #fff;
   background-color: #2ecc71; }
-  .ibox-success .ibox-head .ibox-tools > a, .ibox-success .ibox-head .ibox-tools > a:hover {
+  .card-success .ibox-head .ibox-tools > a, .card-success .ibox-head .ibox-tools > a:hover {
     color: #fff; }
 
-.ibox-info .ibox-head {
+.card-info .ibox-head {
   color: #fff;
   background-color: #23B7E5; }
-  .ibox-info .ibox-head .ibox-tools > a, .ibox-info .ibox-head .ibox-tools > a:hover {
+  .card-info .ibox-head .ibox-tools > a, .card-info .ibox-head .ibox-tools > a:hover {
     color: #fff; }
 
-.ibox-warning .ibox-head {
+.card-warning .ibox-head {
   color: #fff;
   background-color: #F39C12; }
-  .ibox-warning .ibox-head .ibox-tools > a, .ibox-warning .ibox-head .ibox-tools > a:hover {
+  .card-warning .ibox-head .ibox-tools > a, .card-warning .ibox-head .ibox-tools > a:hover {
     color: #fff; }
 
-.ibox-danger .ibox-head {
+.card-danger .ibox-head {
   color: #fff;
   background-color: #e74c3c; }
-  .ibox-danger .ibox-head .ibox-tools > a, .ibox-danger .ibox-head .ibox-tools > a:hover {
+  .card-danger .ibox-head .ibox-tools > a, .card-danger .ibox-head .ibox-tools > a:hover {
     color: #fff; }
 
-.ibox-grey .ibox-head {
+.card-grey .ibox-head {
   color: #fff;
   background-color: #bdc3c7; }
-  .ibox-grey .ibox-head .ibox-tools > a, .ibox-grey .ibox-head .ibox-tools > a:hover {
+  .card-grey .ibox-head .ibox-tools > a, .card-grey .ibox-head .ibox-tools > a:hover {
     color: #fff; }
 
 body.fullscreen-mode {
@@ -1703,20 +1745,6 @@ body.fullscreen-mode {
 
 .media-list.media-list-divider .media:not(:first-child) {
   border-top: 1px solid #e1eaec; }
-
-.card-title {
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 10px;
-  margin-top: 0; }
-
-.card-subtitle {
-  margin-top: -10px;
-  margin-bottom: 10px;
-  font-size: 13px; }
-
-.card-header, .card-footer {
-  background-color: inherit; }
 
 .form-control {
   -webkit-border-radius: 2px;
@@ -2163,39 +2191,18 @@ body.fullscreen-mode {
   -webkit-animation: fadeInUp .5s;
   animation: fadeInUp .5s; }
 
-/************************************************************************************
-smaller than 980
-*************************************************************************************/
-@media screen and (max-width: 980px) {
-  /* embedded videos */
-  .video embed,
-  .video object,
-  .video iframe {
-    width: 100%;
-    height: auto;
-    min-height: 300px; } }
+/* Bootstrap Toggle v2.2.2 corrections for Bootstrap 4 */
+.toggle-off {
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); }
 
-/************************************************************************************
-smaller than 768
-*************************************************************************************/
-@media screen and (max-width: 768px) {
-  body:not(.sidebar-mini):not(.drawer-sidebar)
-.dashboard-wrapper {
-    margin-left: 0; } }
+.toggle.off {
+  border-color: rgba(0, 0, 0, 0.25); }
 
-/************************************************************************************
-smaller than 650
-*************************************************************************************/
-@media screen and (max-width: 650px) {
-  /* embedded videos */
-  .video embed,
-  .video object,
-  .video iframe {
-    min-height: 250px; } }
+.toggle-handle {
+  background-color: white;
+  border: thin rgba(0, 0, 0, 0.25) solid; }
 
-/************************************************************************************
-smaller than 560
-*************************************************************************************/
 .bg-blue-800 {
   background-color: #256d9e !important; }
 
@@ -3128,15 +3135,11 @@ body.fixed-layout.sidebar-mini .content-wrapper {
 
 .content-wrapper {
   position: relative;
-  background-color: #f7f7f7;
-  background-color: #f2f2f2;
-  background-color: #f1f1f1;
   margin-left: 220px;
   padding: 0 15px 60px 15px;
   -webkit-transition: margin .2s ease-in-out;
   -o-transition: margin .2s ease-in-out;
-  transition: margin .2s ease-in-out;
-  min-height: 1200px; }
+  transition: margin .2s ease-in-out; }
 
 .page-header {
   padding-top: 35px;
@@ -3145,31 +3148,32 @@ body.fixed-layout.sidebar-mini .content-wrapper {
 .page-content {
   padding-top: 20px; }
 
-.page-heading .page-title {
-  font-size: 26px;
-  margin: 20px 0 10px 0; }
-
-.page-heading .breadcrumb {
-  padding: 0;
-  margin: 0;
-  font-size: 13px;
-  background-color: inherit;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center; }
-  .page-heading .breadcrumb li {
-    float: none;
-    color: #868e96; }
-    .page-heading .breadcrumb li a {
-      color: inherit; }
-    .page-heading .breadcrumb li + li:before {
-      content: '\002022';
-      color: inherit; }
+.page-heading {
+  padding: 0 5px; }
+  .page-heading .page-title {
+    font-size: 26px;
+    margin: 20px 0 10px 0; }
+  .page-heading .breadcrumb {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    background-color: inherit;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center; }
+    .page-heading .breadcrumb li {
+      float: none;
+      color: #868e96; }
+      .page-heading .breadcrumb li a {
+        color: inherit; }
+      .page-heading .breadcrumb li + li:before {
+        content: '\002022';
+        color: inherit; }
 
 body.empty-layout .theme-config, body.empty-layout .to-top {
   display: none !important; }

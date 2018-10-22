@@ -681,7 +681,11 @@ class AdminController extends Controller
         /** @var FormBuilder $formBuilder */
         $formBuilder = $this->get('form.factory')
             ->createNamedBuilder('delete_form')
-            ->setAction($this->generateUrl('admin', ['action' => 'delete', 'entity' => $entityName, 'id' => $entityId]))
+            ->setAction($this->generateUrl('admin_entity', [
+                'action' => 'delete',
+                'entity' => $entityName,
+                'id'     => $entityId
+            ]))
             ->setMethod('DELETE');
         $formBuilder->add('submit', FormTypeHelper::getTypeClass('submit'),
             ['label' => 'delete_modal.action', 'translation_domain' => 'HarmonyAdminBundle']);

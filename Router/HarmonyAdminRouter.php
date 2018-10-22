@@ -14,21 +14,34 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 final class HarmonyAdminRouter
 {
+
     /** @var ConfigManager */
     private $configManager;
+
     /** @var UrlGeneratorInterface */
     private $urlGenerator;
+
     /** @var PropertyAccessorInterface */
     private $propertyAccessor;
+
     /** @var RequestStack */
     private $requestStack;
 
-    public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator, PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)
+    /**
+     * HarmonyAdminRouter constructor.
+     *
+     * @param ConfigManager             $configManager
+     * @param UrlGeneratorInterface     $urlGenerator
+     * @param PropertyAccessorInterface $propertyAccessor
+     * @param RequestStack|null         $requestStack
+     */
+    public function __construct(ConfigManager $configManager, UrlGeneratorInterface $urlGenerator,
+                                PropertyAccessorInterface $propertyAccessor, RequestStack $requestStack = null)
     {
-        $this->configManager = $configManager;
-        $this->urlGenerator = $urlGenerator;
+        $this->configManager    = $configManager;
+        $this->urlGenerator     = $urlGenerator;
         $this->propertyAccessor = $propertyAccessor;
-        $this->requestStack = $requestStack;
+        $this->requestStack     = $requestStack;
     }
 
     /**
@@ -37,7 +50,6 @@ final class HarmonyAdminRouter
      * @param array         $parameters
      *
      * @throws UndefinedEntityException
-     *
      * @return string
      */
     public function generate($entity, $action, array $parameters = [])
@@ -46,11 +58,10 @@ final class HarmonyAdminRouter
             $config = $this->getEntityConfigByClass(\get_class($entity));
 
             // casting to string is needed because entities can use objects as primary keys
-            $parameters['id'] = (string) $this->propertyAccessor->getValue($entity, 'id');
+            $parameters['id'] = (string)$this->propertyAccessor->getValue($entity, 'id');
         } else {
-            $config = class_exists($entity)
-                ? $this->getEntityConfigByClass($entity)
-                : $this->configManager->getEntityConfig($entity);
+            $config = class_exists($entity) ? $this->getEntityConfigByClass($entity) :
+                $this->configManager->getEntityConfig($entity);
         }
 
         $parameters['entity'] = $config['name'];
@@ -65,22 +76,18 @@ final class HarmonyAdminRouter
 
         if (false === $referer) {
             unset($parameters['referer']);
-        } elseif (
-            $request
-            && !\is_string($referer)
-            && (true === $referer || \in_array($action, ['new', 'edit', 'delete'], true))
-        ) {
+        } elseif ($request && !\is_string($referer) &&
+            (true === $referer || \in_array($action, ['new', 'edit', 'delete'], true))) {
             $parameters['referer'] = urlencode($request->getUri());
         }
 
-        return $this->urlGenerator->generate('harmony_admin', $parameters);
+        return $this->urlGenerator->generate('admin', $parameters);
     }
 
     /**
      * @param string $class
      *
      * @throws UndefinedEntityException
-     *
      * @return array
      */
     private function getEntityConfigByClass($class)
@@ -99,7 +106,7 @@ final class HarmonyAdminRouter
      */
     private function getRealClass($class)
     {
-        if (false === $pos = strrpos($class, '\\'.Proxy::MARKER.'\\')) {
+        if (false === $pos = strrpos($class, '\\' . Proxy::MARKER . '\\')) {
             return $class;
         }
 

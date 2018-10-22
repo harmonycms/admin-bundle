@@ -21,7 +21,10 @@ harmony:
         children:
         - { label: 'Home', route: 'admin', icon: '' }
         - { label: 'Updates', url: '#', icon: '' }
-      - { label: 'Users', entity: 'User', icon: 'fas fa-users' }
+      - label: 'User management'
+        icon: ''
+        children:
+        - { label: 'Users', entity: 'User', icon: 'fas fa-users' }
     # Dashboard
     dashboard:
       blocks:

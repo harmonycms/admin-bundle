@@ -6,6 +6,12 @@ harmony:
       User:
         class: App\Entity\User
         label: 'Users'
+        list:
+          fields:
+            - 'username'
+            - 'email'
+            - 'enabled'
+            - 'lastLogin'
         form:
           fields:
           - 'username'

@@ -69,9 +69,7 @@ class MenuConfigPass implements ConfigPassInterface
 
         foreach ($menuConfig as $i => $itemConfig) {
             // normalize icon configuration
-            if (!array_key_exists('icon', $itemConfig)) {
-                $itemConfig['icon'] = ($parentItemIndex > -1) ? 'fa-chevron-right' : 'fa-chevron-circle-right';
-            } elseif (empty($itemConfig['icon'])) {
+            if (empty($itemConfig['icon'])) {
                 $itemConfig['icon'] = null;
             }
 

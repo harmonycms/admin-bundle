@@ -16,7 +16,7 @@ class HarmonyAdminDividerType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'harmonyadmin_divider';
+        return 'harmony_admin_divider';
     }
 
     /**

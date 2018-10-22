@@ -19,8 +19,8 @@ final class HarmonyAdminConfigPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $configPasses = $this->findAndSortTaggedServices('harmonyadmin.config_pass', $container);
-        $definition   = $container->getDefinition('harmonyadmin.config.manager');
+        $configPasses = $this->findAndSortTaggedServices('harmony_admin.config_pass', $container);
+        $definition   = $container->getDefinition('harmony_admin.config.manager');
 
         foreach ($configPasses as $service) {
             $definition->addMethodCall('addConfigPass', [$service]);

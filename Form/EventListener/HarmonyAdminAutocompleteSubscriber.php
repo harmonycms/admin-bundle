@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormEvents;
  */
 class HarmonyAdminAutocompleteSubscriber implements EventSubscriberInterface
 {
+
     /**
      * {@inheritdoc}
      */
@@ -19,26 +20,32 @@ class HarmonyAdminAutocompleteSubscriber implements EventSubscriberInterface
     {
         return [
             FormEvents::PRE_SET_DATA => 'preSetData',
-            FormEvents::PRE_SUBMIT => 'preSubmit',
+            FormEvents::PRE_SUBMIT   => 'preSubmit',
         ];
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preSetData(FormEvent $event)
     {
         $form = $event->getForm();
         $data = $event->getData() ?: [];
 
-        $options = $form->getConfig()->getOptions();
+        $options             = $form->getConfig()->getOptions();
         $options['compound'] = false;
-        $options['choices'] = \is_array($data) || $data instanceof \Traversable ? $data : [$data];
+        $options['choices']  = \is_array($data) || $data instanceof \Traversable ? $data : [$data];
 
         $form->add('autocomplete', FormTypeHelper::getTypeClass('entity'), $options);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preSubmit(FormEvent $event)
     {
-        $data = $event->getData();
-        $form = $event->getForm();
+        $data    = $event->getData();
+        $form    = $event->getForm();
         $options = $form->get('autocomplete')->getConfig()->getOptions();
 
         if (!isset($data['autocomplete']) || '' === $data['autocomplete']) {

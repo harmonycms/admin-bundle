@@ -1,7 +1,7 @@
 {% use "@HarmonyAdmin/form/bootstrap_4_layout.html.twig" %}
 
 {% block form_start -%}
-  {% set _harmonyadmin_form_type = 'horizontal' %}
+  {% set _harmony_admin_form_type = 'horizontal' %}
   {{- parent() -}}
 {%- endblock form_start %}
 
@@ -24,14 +24,14 @@
 
 {% block form_row -%}
   {% spaceless %}
-    {% set _field_type = harmonyadmin.field.fieldType|default('default') %}
+    {% set _field_type = harmony_admin.field.fieldType|default('default') %}
     <div
         class="form-group row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
       {{ form_label(form) }}
       <div class="{{ block('form_group_class') }}">
         {{ form_widget(form) }}
 
-        {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and harmonyadmin.field.nullable|default(false) %}
+        {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and harmony_admin.field.nullable|default(false) %}
           <div class="nullable-control">
             <label>
               <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
@@ -42,9 +42,9 @@
 
         {{ form_errors(form) }}
 
-        {% if harmonyadmin.field.help|default('') != '' %}
+        {% if harmony_admin.field.help|default('') != '' %}
           <span class="help-block"><i
-                class="fa fa-info-circle"></i> {{ harmonyadmin.field.help|trans(domain = harmonyadmin.entity.translation_domain)|raw }}</span>
+                class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.entity.translation_domain)|raw }}</span>
         {% endif %}
       </div>
     </div>
@@ -67,9 +67,9 @@
         {{ form_widget(form) }}
         {{ form_errors(form) }}
 
-        {% if harmonyadmin.field.help|default('') != '' %}
+        {% if harmony_admin.field.help|default('') != '' %}
           <span class="help-block"><i
-                class="fa fa-info-circle"></i> {{ harmonyadmin.field.help|trans(domain = harmonyadmin.entity.translation_domain)|raw }}</span>
+                class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.entity.translation_domain)|raw }}</span>
         {% endif %}
       </div>
     </div>

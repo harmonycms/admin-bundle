@@ -73,7 +73,7 @@ final class HarmonyAdminRouter
             $parameters['referer'] = urlencode($request->getUri());
         }
 
-        return $this->urlGenerator->generate('harmonyadmin', $parameters);
+        return $this->urlGenerator->generate('harmony_admin', $parameters);
     }
 
     /**

@@ -1,4 +1,4 @@
-{% set _entity_config = harmonyadmin_entity(app.request.query.get('entity')) %}
+{% set _entity_config = harmony_admin_entity(app.request.query.get('entity')) %}
 {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
 {% set _entity_id = '' ~ attribute(entity, _entity_config.primary_key_field_name) %}
 {% trans_default_domain _entity_config.translation_domain %}
@@ -6,7 +6,7 @@
 
 {% extends _entity_config.templates.layout %}
 
-{% block body_id 'harmonyadmin-show-' ~ _entity_config.name ~ '-' ~ _entity_id %}
+{% block body_id 'harmony_admin-show-' ~ _entity_config.name ~ '-' ~ _entity_id %}
 {% block body_class 'show show-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
@@ -27,7 +27,7 @@
                         </label>
                         <div class="col-sm-10">
                             <div class="form-control">
-                                {{ harmonyadmin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
+                                {{ harmony_admin_render_field_for_show_view(_entity_config.name, entity, metadata) }}
                             </div>
 
                             {% if metadata.help|default('') != '' %}
@@ -42,7 +42,7 @@
         <div class="form-group form-actions">
             <div class="col-sm-10 col-sm-offset-2">
             {% block item_actions %}
-                {% set _show_actions = harmonyadmin_get_actions_for_show_item(_entity_config.name) %}
+                {% set _show_actions = harmony_admin_get_actions_for_show_item(_entity_config.name) %}
                 {% set _request_parameters = { entity: _entity_config.name, referer: app.request.query.get('referer') } %}
 
                 {{ include('@HarmonyAdmin/default/includes/_actions.html.twig', {

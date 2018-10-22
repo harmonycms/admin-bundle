@@ -22,20 +22,20 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     {#<style>#}
-    {#{{ harmonyadmin_config('_internal.custom_css')|raw }}#}
+    {#{{ harmony_admin_config('_internal.custom_css')|raw }}#}
     {#</style>#}
   {% endblock %}
 
-  {% for css_asset in harmonyadmin_config('design.assets.css') %}
+  {% for css_asset in harmony_admin_config('design.assets.css') %}
     <link rel="stylesheet" href="{{ asset(css_asset) }}">
   {% endfor %}
 
   {% block head_favicon %}
-    {% set favicon = harmonyadmin_config('design.assets.favicon') %}
+    {% set favicon = harmony_admin_config('design.assets.favicon') %}
     <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}"/>
   {% endblock %}
 
-  {% if harmonyadmin_config('design.rtl') %}
+  {% if harmony_admin_config('design.rtl') %}
     <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/bootstrap-rtl.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/adminlte-rtl.min.css') }}">
   {% endif %}
@@ -43,7 +43,7 @@
 
 {% block body %}
   <body id="{% block body_id %}{% endblock %}"
-        class="fixed-navbar {% block body_class %}{% endblock %} {{ app.request.cookies.has('_harmonyadmin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
+        class="fixed-navbar {% block body_class %}{% endblock %} {{ app.request.cookies.has('_harmony_admin_navigation_iscollapsed') ? 'sidebar-collapse' }}">
     <div class="page-wrapper">
       {% block wrapper %}
         <header class="header">
@@ -52,11 +52,11 @@
             {% block header_logo %}
               <div class="page-brand">
                 <a class="link w-100 text-center" href="{{ path('admin') }}"
-                   title="{{ harmonyadmin_config('site_name')|striptags }}">
+                   title="{{ harmony_admin_config('site_name')|striptags }}">
                   <span class="brand">
-                    {{ harmonyadmin_config('site_name')|raw }}
+                    {{ harmony_admin_config('site_name')|raw }}
                   </span>
-                  <span class="brand-mini">{{ harmonyadmin_config('site_name')|striptags|first }}</span>
+                  <span class="brand-mini">{{ harmony_admin_config('site_name')|striptags|first }}</span>
                 </a>
               </div>
             {% endblock header_logo %}
@@ -68,7 +68,7 @@
                 </li>
               </ul>
               {% block header_custom_menu %}
-                {% set _logout_path = harmonyadmin_logout_path() %}
+                {% set _logout_path = harmony_admin_logout_path() %}
                 <ul class="nav navbar-toolbar">
                   <li><a href="#" title="Visit site"><i class="fa fa-home"></i></a></li>
                   <li class="dropdown dropdown-user">
@@ -135,7 +135,7 @@
               {% block main_menu_wrapper %}
                 {{ include([
                   _entity_config is defined ? _entity_config.templates.menu,
-                  harmonyadmin_config('design.templates.menu'),
+                  harmony_admin_config('design.templates.menu'),
                   '@HarmonyAdmin/default/menu.html.twig'
                 ]) }}
               {% endblock main_menu_wrapper %}
@@ -182,7 +182,7 @@
       <script src="{{ asset('bundles/harmonyadmin/javascript/app.min.js') }}"></script>
     {% endblock body_javascript %}
 
-    {% for js_asset in harmonyadmin_config('design.assets.js') %}
+    {% for js_asset in harmony_admin_config('design.assets.js') %}
       <script src="{{ asset(js_asset) }}"></script>
     {% endfor %}
   </body>

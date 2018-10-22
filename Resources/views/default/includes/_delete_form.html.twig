@@ -16,8 +16,8 @@
           {{ 'action.cancel'|trans(_trans_parameters, _translation_domain) }}
         </button>
 
-        {% if harmonyadmin_action_is_enabled(view, 'delete', _entity_config.name) %}
-          {% set _delete_action = harmonyadmin_get_action(view, 'delete', _entity_config.name) %}
+        {% if harmony_admin_action_is_enabled(view, 'delete', _entity_config.name) %}
+          {% set _delete_action = harmony_admin_get_action(view, 'delete', _entity_config.name) %}
           <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button"
                   formtarget="{{ _delete_action.target }}">
             {% if _delete_action.icon %}<i class="fa fa-{{ _delete_action.icon }}"></i>{% endif %}

@@ -1,119 +1,120 @@
 services:
-  Harmony\Bundle\AdminBundle\DataCollector\AdminCollector:
+  harmony_admin.data_collector:
+    class: Harmony\Bundle\AdminBundle\DataCollector\AdminCollector
     arguments: ['@service_container']
     tags: ['harmony.data_collector']
 
-  harmonyadmin.config.manager:
+  harmony_admin.config.manager:
     class: Harmony\Bundle\AdminBundle\Configuration\ConfigManager
-    arguments: ['%harmonyadmin.config%', '%kernel.debug%', '@property_accessor', '@Psr\Cache\CacheItemPoolInterface']
+    arguments: ['%harmony_admin.config%', '%kernel.debug%', '@property_accessor', '@Psr\Cache\CacheItemPoolInterface']
     public: true
 
-  harmonyadmin.query_builder:
+  harmony_admin.query_builder:
     class: Harmony\Bundle\AdminBundle\Search\QueryBuilder
     arguments: ['@doctrine']
     public: true
 
-  harmonyadmin.finder:
+  harmony_admin.finder:
     class: Harmony\Bundle\AdminBundle\Search\Finder
     public: false
-    arguments: ['@harmonyadmin.query_builder', '@harmonyadmin.paginator']
+    arguments: ['@harmony_admin.query_builder', '@harmony_admin.paginator']
 
-  harmonyadmin.autocomplete:
+  harmony_admin.autocomplete:
     class: Harmony\Bundle\AdminBundle\Search\Autocomplete
-    arguments: ['@harmonyadmin.config.manager', '@harmonyadmin.finder', '@property_accessor']
+    arguments: ['@harmony_admin.config.manager', '@harmony_admin.finder', '@property_accessor']
 
-  harmonyadmin.paginator:
+  harmony_admin.paginator:
     class: Harmony\Bundle\AdminBundle\Search\Paginator
     public: true
 
-  harmonyadmin.router:
+  harmony_admin.router:
     class: Harmony\Bundle\AdminBundle\Router\HarmonyAdminRouter
-    arguments: ['@harmonyadmin.config.manager', '@router', '@property_accessor', '@?request_stack']
+    arguments: ['@harmony_admin.config.manager', '@router', '@property_accessor', '@?request_stack']
 
-  harmonyadmin.twig.extension:
+  harmony_admin.twig.extension:
     class: Harmony\Bundle\AdminBundle\Twig\HarmonyAdminTwigExtension
     public: false
     tags:
     - { name: twig.extension }
-    arguments: ['@harmonyadmin.config.manager', '@property_accessor', '@harmonyadmin.router', '%kernel.debug%', '@?security.logout_url_generator']
+    arguments: ['@harmony_admin.config.manager', '@property_accessor', '@harmony_admin.router', '%kernel.debug%', '@?security.logout_url_generator']
 
-  harmonyadmin.listener.controller:
+  harmony_admin.listener.controller:
     class: Harmony\Bundle\AdminBundle\EventListener\ControllerListener
     tags:
     - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
-    arguments: ['@harmonyadmin.config.manager', '@controller_resolver']
+    arguments: ['@harmony_admin.config.manager', '@controller_resolver']
 
-  harmonyadmin.listener.exception:
+  harmony_admin.listener.exception:
     class: Harmony\Bundle\AdminBundle\EventListener\ExceptionListener
     tags:
     - { name: monolog.logger, channel: request }
     - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: -64 }
-    arguments: ['@twig', '%harmonyadmin.config%', 'harmonyadmin.listener.exception:showExceptionPageAction', '@?logger']
+    arguments: ['@twig', '%harmony_admin.config%', 'harmony_admin.listener.exception:showExceptionPageAction', '@?logger']
 
-  harmonyadmin.listener.request_post_initialize:
+  harmony_admin.listener.request_post_initialize:
     class: Harmony\Bundle\AdminBundle\EventListener\RequestPostInitializeListener
     tags:
     - { name: kernel.event_listener, event: harmony_admin.post_initialize, method: initializeRequest }
     arguments: ['@doctrine', '@?request_stack']
 
-  harmonyadmin.configuration.normalizer_config_pass:
+  harmony_admin.configuration.normalizer_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\NormalizerConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 90 }
+    - { name: harmony_admin.config_pass, priority: 90 }
     arguments: ['@service_container']
 
-  harmonyadmin.configuration.design_config_pass:
+  harmony_admin.configuration.design_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\DesignConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 80 }
+    - { name: harmony_admin.config_pass, priority: 80 }
     arguments: ['@service_container', '%kernel.debug%', '%kernel.default_locale%']
 
-  harmonyadmin.configuration.menu_config_pass:
+  harmony_admin.configuration.menu_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\MenuConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 70 }
+    - { name: harmony_admin.config_pass, priority: 70 }
 
-  harmonyadmin.configuration.action_config_pass:
+  harmony_admin.configuration.action_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\ActionConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 60 }
+    - { name: harmony_admin.config_pass, priority: 60 }
 
-  harmonyadmin.configuration.metadata_config_pass:
+  harmony_admin.configuration.metadata_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\MetadataConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 50 }
+    - { name: harmony_admin.config_pass, priority: 50 }
     arguments: ['@doctrine']
 
-  harmonyadmin.configuration.property_config_pass:
+  harmony_admin.configuration.property_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\PropertyConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 40 }
+    - { name: harmony_admin.config_pass, priority: 40 }
     arguments: ['@form.registry']
 
-  harmonyadmin.configuration.view_config_pass:
+  harmony_admin.configuration.view_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\ViewConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 30 }
+    - { name: harmony_admin.config_pass, priority: 30 }
 
-  harmonyadmin.configuration.template_config_pass:
+  harmony_admin.configuration.template_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\TemplateConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 20 }
+    - { name: harmony_admin.config_pass, priority: 20 }
     arguments: ['@twig.loader.filesystem']
 
-  harmonyadmin.configuration.default_config_pass:
+  harmony_admin.configuration.default_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\DefaultConfigPass
     public: false
     tags:
-    - { name: harmonyadmin.config_pass, priority: 10 }
+    - { name: harmony_admin.config_pass, priority: 10 }
 
   harmony_admin.property_accessor:
     alias: 'property_accessor'

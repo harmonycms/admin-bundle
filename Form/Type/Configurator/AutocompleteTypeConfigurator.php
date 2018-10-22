@@ -7,7 +7,7 @@ use Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminAutocompleteType;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
- * This configurator is applied to any form field of type 'harmonyadmin_autocomplete'
+ * This configurator is applied to any form field of type 'harmony_admin_autocomplete'
  * and is used to configure the class of the autocompleted entity.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -43,7 +43,7 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
     public function supports($type, array $options, array $metadata)
     {
         $supportedTypes = [
-            'harmonyadmin_autocomplete',
+            'harmony_admin_autocomplete',
             HarmonyAdminAutocompleteType::class,
         ];
 

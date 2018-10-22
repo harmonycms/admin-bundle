@@ -43,68 +43,69 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
-/*
+/**
  * Utility class to map shortcut form types (e.g. `text` or `submit`) to its
  * associated FQCN type.
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
- *
  * @internal
  */
 final class FormTypeHelper
 {
-    private static $nameToClassMap = [
-        // Symfony's built-in types
-        'birthday' => BirthdayType::class,
-        'button' => ButtonType::class,
-        'checkbox' => CheckboxType::class,
-        'choice' => ChoiceType::class,
-        'collection' => CollectionType::class,
-        'color' => ColorType::class,
-        'country' => CountryType::class,
-        'currency' => CurrencyType::class,
-        'datetime' => DateTimeType::class,
-        'datetime_immutable' => DateTimeType::class,
-        'date' => DateType::class,
-        'date_immutable' => DateType::class,
-        'date_interval' => DateIntervalType::class,
-        'email' => EmailType::class,
-        'entity' => EntityType::class,
-        'file' => FileType::class,
-        'form' => FormType::class,
-        'hidden' => HiddenType::class,
-        'integer' => IntegerType::class,
-        'language' => LanguageType::class,
-        'locale' => LocaleType::class,
-        'money' => MoneyType::class,
-        'number' => NumberType::class,
-        'password' => PasswordType::class,
-        'percent' => PercentType::class,
-        'radio' => RadioType::class,
-        'range' => RangeType::class,
-        'repeated' => RepeatedType::class,
-        'reset' => ResetType::class,
-        'search' => SearchType::class,
-        'submit' => SubmitType::class,
-        'tel' => TelType::class,
-        'textarea' => TextareaType::class,
-        'text' => TextType::class,
-        'time' => TimeType::class,
-        'time_immutable' => TimeType::class,
-        'timezone' => TimezoneType::class,
-        'url' => UrlType::class,
-        // HarmonyAdmin custom types
-        'harmonyadmin' => HarmonyAdminFormType::class,
-        'harmonyadmin_autocomplete' => HarmonyAdminAutocompleteType::class,
-        'harmonyadmin_divider' => HarmonyAdminDividerType::class,
-        'harmonyadmin_group' => HarmonyAdminGroupType::class,
-        'harmonyadmin_section' => HarmonyAdminSectionType::class,
-        // Popular third-party bundles types
-        'ckeditor' => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
-        'fos_ckeditor' => 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType',
-        'vich_file' => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',
-        'vich_image' => 'Vich\\UploaderBundle\\Form\\Type\\VichImageType',
-    ];
+
+    private static $nameToClassMap
+        = [
+            // Symfony's built-in types
+            'birthday'                   => BirthdayType::class,
+            'button'                     => ButtonType::class,
+            'checkbox'                   => CheckboxType::class,
+            'choice'                     => ChoiceType::class,
+            'collection'                 => CollectionType::class,
+            'color'                      => ColorType::class,
+            'country'                    => CountryType::class,
+            'currency'                   => CurrencyType::class,
+            'datetime'                   => DateTimeType::class,
+            'datetime_immutable'         => DateTimeType::class,
+            'date'                       => DateType::class,
+            'date_immutable'             => DateType::class,
+            'date_interval'              => DateIntervalType::class,
+            'email'                      => EmailType::class,
+            'entity'                     => EntityType::class,
+            'file'                       => FileType::class,
+            'form'                       => FormType::class,
+            'hidden'                     => HiddenType::class,
+            'integer'                    => IntegerType::class,
+            'language'                   => LanguageType::class,
+            'locale'                     => LocaleType::class,
+            'money'                      => MoneyType::class,
+            'number'                     => NumberType::class,
+            'password'                   => PasswordType::class,
+            'percent'                    => PercentType::class,
+            'radio'                      => RadioType::class,
+            'range'                      => RangeType::class,
+            'repeated'                   => RepeatedType::class,
+            'reset'                      => ResetType::class,
+            'search'                     => SearchType::class,
+            'submit'                     => SubmitType::class,
+            'tel'                        => TelType::class,
+            'textarea'                   => TextareaType::class,
+            'text'                       => TextType::class,
+            'time'                       => TimeType::class,
+            'time_immutable'             => TimeType::class,
+            'timezone'                   => TimezoneType::class,
+            'url'                        => UrlType::class,
+            // HarmonyAdmin custom types
+            'harmony_admin'              => HarmonyAdminFormType::class,
+            'harmony_admin_autocomplete' => HarmonyAdminAutocompleteType::class,
+            'harmony_admin_divider'      => HarmonyAdminDividerType::class,
+            'harmony_admin_group'        => HarmonyAdminGroupType::class,
+            'harmony_admin_section'      => HarmonyAdminSectionType::class,
+            // Popular third-party bundles types
+            'ckeditor'                   => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
+            'fos_ckeditor'               => 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType',
+            'vich_file'                  => 'Vich\\UploaderBundle\\Form\\Type\\VichFileType',
+            'vich_image'                 => 'Vich\\UploaderBundle\\Form\\Type\\VichImageType',
+        ];
 
     /**
      * It returns the FQCN of the given short type name. If the FQCN is not
@@ -134,7 +135,7 @@ final class FormTypeHelper
         $filteredNameToClassMap = array_filter(self::$nameToClassMap, function ($typeName) {
             return !\in_array($typeName, ['datetime_immutable', 'date_immutable', 'time_immutable']);
         }, ARRAY_FILTER_USE_KEY);
-        $classToNameMap = array_flip($filteredNameToClassMap);
+        $classToNameMap         = array_flip($filteredNameToClassMap);
 
         return $classToNameMap[$typeFqcn] ?? $typeFqcn;
     }

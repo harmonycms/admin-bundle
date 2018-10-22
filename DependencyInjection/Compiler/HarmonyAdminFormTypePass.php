@@ -14,7 +14,11 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
 {
 
     /**
-     * {@inheritdoc}
+     * You can modify the container here before it is dumped to PHP code.
+     *
+     * @param ContainerBuilder $container
+     *
+     * @throws \ReflectionException
      */
     public function process(ContainerBuilder $container)
     {
@@ -22,9 +26,12 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
         $this->registerTypeConfigurators($container);
     }
 
+    /**
+     * @param ContainerBuilder $container
+     */
     private function configureTypeGuesserChain(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('harmonyadmin.form.type_guesser_chain');
+        $definition = $container->getDefinition('harmony_admin.form.type_guesser_chain');
         $guesserIds = array_keys($container->findTaggedServiceIds('form.type_guesser'));
         $guessers   = array_map(function ($id) {
             return new Reference($id);
@@ -32,10 +39,16 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
         $definition->replaceArgument(0, $guessers);
     }
 
+    /**
+     * @param ContainerBuilder $container
+     *
+     * @throws \ReflectionException
+     * @throws \Exception
+     */
     private function registerTypeConfigurators(ContainerBuilder $container)
     {
         $configurators = new \SplPriorityQueue();
-        foreach ($container->findTaggedServiceIds('harmonyadmin.form.type.configurator') as $id => $tags) {
+        foreach ($container->findTaggedServiceIds('harmony_admin.form.type.configurator') as $id => $tags) {
             $configuratorClass         = new \ReflectionClass($container->getDefinition($id)->getClass());
             $typeConfiguratorInterface = TypeConfiguratorInterface::class;
             if (!$configuratorClass->implementsInterface($typeConfiguratorInterface)) {
@@ -45,10 +58,10 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
 
             // Register the Ivory CKEditor type configurator only if the bundle
             // is installed and no default configuration is provided.
-            if ('harmonyadmin.form.type.configurator.ivory_ckeditor' === $id &&
+            if ('harmony_admin.form.type.configurator.ivory_ckeditor' === $id &&
                 !($container->has('ivory_ck_editor.config_manager') &&
                     null === $container->get('ivory_ck_editor.config_manager')->getDefaultConfig())) {
-                $container->removeDefinition('harmonyadmin.form.type.configurator.ivory_ckeditor');
+                $container->removeDefinition('harmony_admin.form.type.configurator.ivory_ckeditor');
                 continue;
             }
 
@@ -58,6 +71,6 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition('harmonyadmin.form.type')->replaceArgument(1, iterator_to_array($configurators));
+        $container->getDefinition('harmony_admin.form.type')->replaceArgument(1, iterator_to_array($configurators));
     }
 }

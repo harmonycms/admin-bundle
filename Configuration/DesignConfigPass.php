@@ -55,7 +55,7 @@ class DesignConfigPass implements ConfigPassInterface
 
     private function processCustomCss(array $backendConfig)
     {
-        $customCssContent = $this->container->get('twig')->render('@HarmonyAdmin/css/harmonyadmin.css.twig', [
+        $customCssContent = $this->container->get('twig')->render('@HarmonyAdmin/css/harmony_admin.css.twig', [
             'brand_color' => $backendConfig['design']['brand_color'],
             'color_scheme' => $backendConfig['design']['color_scheme'],
             'kernel_debug' => $this->kernelDebug,

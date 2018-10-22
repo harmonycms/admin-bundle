@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class HarmonyAdminExtension extends AbstractTypeExtension
 {
+
     /** @var RequestStack|null */
     private $requestStack;
 
@@ -41,26 +42,26 @@ class HarmonyAdminExtension extends AbstractTypeExtension
             return;
         }
 
-        if ($request->attributes->has('harmonyadmin')) {
-            $harmonyadmin = $request->attributes->get('harmonyadmin');
-            $entity = $harmonyadmin['entity'];
-            $action = $harmonyadmin['view'];
-            $fields = $entity[$action]['fields'] ?? [];
-            $view->vars['harmonyadmin'] = [
-                'entity' => $entity,
-                'view' => $action,
-                'item' => $harmonyadmin['item'],
-                'field' => null,
-                'form_group' => $form->getConfig()->getAttribute('harmonyadmin_form_group'),
-                'form_tab' => $form->getConfig()->getAttribute('harmonyadmin_form_tab'),
+        if ($request->attributes->has('harmony_admin')) {
+            $harmonyAdmin                = $request->attributes->get('harmony_admin');
+            $entity                      = $harmonyAdmin['entity'];
+            $action                      = $harmonyAdmin['view'];
+            $fields                      = $entity[$action]['fields'] ?? [];
+            $view->vars['harmony_admin'] = [
+                'entity'     => $entity,
+                'view'       => $action,
+                'item'       => $harmonyAdmin['item'],
+                'field'      => null,
+                'form_group' => $form->getConfig()->getAttribute('harmony_admin_form_group'),
+                'form_tab'   => $form->getConfig()->getAttribute('harmony_admin_form_tab'),
             ];
 
             /*
              * Checks if current form view is direct child on the topmost form
-             * (ie. this form view`s field exists in harmonyadmin configuration)
+             * (ie. this form view`s field exists in harmony_admin configuration)
              */
             if (null !== $view->parent && null === $view->parent->parent) {
-                $view->vars['harmonyadmin']['field'] = $fields[$view->vars['name']] ?? null;
+                $view->vars['harmony_admin']['field'] = $fields[$view->vars['name']] ?? null;
             }
         }
     }

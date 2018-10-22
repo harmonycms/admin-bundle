@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Router\HarmonyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -17,22 +18,39 @@ use Twig\TwigFunction;
  */
 class HarmonyAdminTwigExtension extends AbstractExtension
 {
-    /** @var ConfigManager */
+
+    /** @var ConfigManager $configManager */
     private $configManager;
-    /** @var PropertyAccessor */
+
+    /** @var PropertyAccessor $propertyAccessor */
     private $propertyAccessor;
-    /** @var HarmonyAdminRouter */
+
+    /** @var HarmonyAdminRouter $harmonyAdminRouter */
     private $harmonyAdminRouter;
-    /** @var bool */
-    private $debug;
+
+    /** @var bool $debug */
+    private $debug = false;
+
+    /** @var LogoutUrlGenerator $logoutUrlGenerator */
     private $logoutUrlGenerator;
 
-    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor, HarmonyAdminRouter $harmonyAdminRouter, $debug = false, $logoutUrlGenerator)
+    /**
+     * HarmonyAdminTwigExtension constructor.
+     *
+     * @param ConfigManager      $configManager
+     * @param PropertyAccessor   $propertyAccessor
+     * @param HarmonyAdminRouter $harmonyAdminRouter
+     * @param bool               $debug
+     * @param LogoutUrlGenerator $logoutUrlGenerator
+     */
+    public function __construct(ConfigManager $configManager, PropertyAccessor $propertyAccessor,
+                                HarmonyAdminRouter $harmonyAdminRouter, bool $debug,
+                                LogoutUrlGenerator $logoutUrlGenerator)
     {
-        $this->configManager = $configManager;
-        $this->propertyAccessor = $propertyAccessor;
+        $this->configManager      = $configManager;
+        $this->propertyAccessor   = $propertyAccessor;
         $this->harmonyAdminRouter = $harmonyAdminRouter;
-        $this->debug = $debug;
+        $this->debug              = $debug;
         $this->logoutUrlGenerator = $logoutUrlGenerator;
     }
 
@@ -42,16 +60,17 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('harmonyadmin_render_field_for_*_view', [$this, 'renderEntityField'], ['is_safe' => ['html'], 'needs_environment' => true]),
-            new TwigFunction('harmonyadmin_config', [$this, 'getBackendConfiguration']),
-            new TwigFunction('harmonyadmin_entity', [$this, 'getEntityConfiguration']),
-            new TwigFunction('harmonyadmin_path', [$this, 'getEntityPath']),
-            new TwigFunction('harmonyadmin_action_is_enabled', [$this, 'isActionEnabled']),
-            new TwigFunction('harmonyadmin_action_is_enabled_for_*_view', [$this, 'isActionEnabled']),
-            new TwigFunction('harmonyadmin_get_action', [$this, 'getActionConfiguration']),
-            new TwigFunction('harmonyadmin_get_action_for_*_view', [$this, 'getActionConfiguration']),
-            new TwigFunction('harmonyadmin_get_actions_for_*_item', [$this, 'getActionsForItem']),
-            new TwigFunction('harmonyadmin_logout_path', [$this, 'getLogoutPath']),
+            new TwigFunction('harmony_admin_render_field_for_*_view', [$this, 'renderEntityField'],
+                ['is_safe' => ['html'], 'needs_environment' => true]),
+            new TwigFunction('harmony_admin_config', [$this, 'getBackendConfiguration']),
+            new TwigFunction('harmony_admin_entity', [$this, 'getEntityConfiguration']),
+            new TwigFunction('harmony_admin_path', [$this, 'getEntityPath']),
+            new TwigFunction('harmony_admin_action_is_enabled', [$this, 'isActionEnabled']),
+            new TwigFunction('harmony_admin_action_is_enabled_for_*_view', [$this, 'isActionEnabled']),
+            new TwigFunction('harmony_admin_get_action', [$this, 'getActionConfiguration']),
+            new TwigFunction('harmony_admin_get_action_for_*_view', [$this, 'getActionConfiguration']),
+            new TwigFunction('harmony_admin_get_actions_for_*_item', [$this, 'getActionsForItem']),
+            new TwigFunction('harmony_admin_logout_path', [$this, 'getLogoutPath']),
         ];
     }
 
@@ -61,8 +80,8 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('harmonyadmin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
-            new TwigFilter('harmonyadmin_urldecode', 'urldecode'),
+            new TwigFilter('harmony_admin_truncate', [$this, 'truncateText'], ['needs_environment' => true]),
+            new TwigFilter('harmony_admin_urldecode', 'urldecode'),
         ];
     }
 
@@ -89,9 +108,8 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      */
     public function getEntityConfiguration($entityName)
     {
-        return null !== $this->getBackendConfiguration('entities.'.$entityName)
-            ? $this->configManager->getEntityConfig($entityName)
-            : null;
+        return null !== $this->getBackendConfiguration('entities.' . $entityName) ?
+            $this->configManager->getEntityConfig($entityName) : null;
     }
 
     /**
@@ -119,14 +137,13 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      * @param array             $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
-     *
      * @throws \Exception
      */
     public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
-        $hasCustomTemplate = 0 !== strpos($fieldMetadata['template'], '@HarmonyAdmin/');
-        $templateParameters = [];
+        $hasCustomTemplate   = 0 !== strpos($fieldMetadata['template'], '@HarmonyAdmin/');
+        $templateParameters  = [];
 
         try {
             $templateParameters = $this->getTemplateParameters($entityName, $view, $fieldMetadata, $item);
@@ -144,12 +161,15 @@ class HarmonyAdminTwigExtension extends AbstractExtension
                 return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
             }
 
-            if (empty($templateParameters['value']) && \in_array($fieldMetadata['dataType'], ['image', 'file', 'array', 'simple_array'])) {
-                return $twig->render($templateParameters['entity_config']['templates']['label_empty'], $templateParameters);
+            if (empty($templateParameters['value']) &&
+                \in_array($fieldMetadata['dataType'], ['image', 'file', 'array', 'simple_array'])) {
+                return $twig->render($templateParameters['entity_config']['templates']['label_empty'],
+                    $templateParameters);
             }
 
             return $twig->render($fieldMetadata['template'], $templateParameters);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             if ($this->debug) {
                 throw $e;
             }
@@ -158,24 +178,32 @@ class HarmonyAdminTwigExtension extends AbstractExtension
         }
     }
 
-    private function getTemplateParameters($entityName, $view, array $fieldMetadata, $item)
+    /**
+     * @param       $entityName
+     * @param       $view
+     * @param array $fieldMetadata
+     * @param       $item
+     *
+     * @return array
+     */
+    private function getTemplateParameters($entityName, $view, array $fieldMetadata, $item): array
     {
         $fieldName = $fieldMetadata['property'];
         $fieldType = $fieldMetadata['dataType'];
 
         $parameters = [
             'backend_config' => $this->getBackendConfiguration(),
-            'entity_config' => $this->configManager->getEntityConfig($entityName),
-            'field_options' => $fieldMetadata,
-            'item' => $item,
-            'view' => $view,
+            'entity_config'  => $this->configManager->getEntityConfig($entityName),
+            'field_options'  => $fieldMetadata,
+            'item'           => $item,
+            'view'           => $view,
         ];
 
         if ($this->propertyAccessor->isReadable($item, $fieldName)) {
-            $parameters['value'] = $this->propertyAccessor->getValue($item, $fieldName);
+            $parameters['value']         = $this->propertyAccessor->getValue($item, $fieldName);
             $parameters['is_accessible'] = true;
         } else {
-            $parameters['value'] = null;
+            $parameters['value']         = null;
             $parameters['is_accessible'] = false;
         }
 
@@ -193,19 +221,25 @@ class HarmonyAdminTwigExtension extends AbstractExtension
 
         // when a virtual field doesn't define it's type, consider it a string
         if (true === $fieldMetadata['virtual'] && null === $parameters['field_options']['dataType']) {
-            $parameters['value'] = (string) $parameters['value'];
+            $parameters['value'] = (string)$parameters['value'];
         }
 
         return $parameters;
     }
 
-    private function addImageFieldParameters(array $templateParameters)
+    /**
+     * @param array $templateParameters
+     *
+     * @return array
+     */
+    private function addImageFieldParameters(array $templateParameters): array
     {
         // add the base path only to images that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
-            $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
-                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
-                : '/'.ltrim($templateParameters['value'], '/');
+        if (null !== $templateParameters['value'] &&
+            0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+            $templateParameters['value'] = isset($templateParameters['field_options']['base_path']) ?
+                rtrim($templateParameters['field_options']['base_path'], '/') . '/' .
+                ltrim($templateParameters['value'], '/') : '/' . ltrim($templateParameters['value'], '/');
         }
 
         $templateParameters['uuid'] = md5($templateParameters['value']);
@@ -213,23 +247,36 @@ class HarmonyAdminTwigExtension extends AbstractExtension
         return $templateParameters;
     }
 
-    private function addFileFieldParameters(array $templateParameters)
+    /**
+     * @param array $templateParameters
+     *
+     * @return array
+     */
+    private function addFileFieldParameters(array $templateParameters): array
     {
         // add the base path only to files that are not absolute URLs (http or https) or protocol-relative URLs (//)
-        if (null !== $templateParameters['value'] && 0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
-            $templateParameters['value'] = isset($templateParameters['field_options']['base_path'])
-                ? rtrim($templateParameters['field_options']['base_path'], '/').'/'.ltrim($templateParameters['value'], '/')
-                : '/'.ltrim($templateParameters['value'], '/');
+        if (null !== $templateParameters['value'] &&
+            0 === preg_match('/^(http[s]?|\/\/)/i', $templateParameters['value'])) {
+            $templateParameters['value'] = isset($templateParameters['field_options']['base_path']) ?
+                rtrim($templateParameters['field_options']['base_path'], '/') . '/' .
+                ltrim($templateParameters['value'], '/') : '/' . ltrim($templateParameters['value'], '/');
         }
 
-        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ?? basename($templateParameters['value']);
+        $templateParameters['filename'] = $templateParameters['field_options']['filename'] ??
+            basename($templateParameters['value']);
 
         return $templateParameters;
     }
 
-    private function addAssociationFieldParameters(array $templateParameters)
+    /**
+     * @param array $templateParameters
+     *
+     * @return array
+     */
+    private function addAssociationFieldParameters(array $templateParameters): array
     {
-        $targetEntityConfig = $this->configManager->getEntityConfigByClass($templateParameters['field_options']['targetEntity']);
+        $targetEntityConfig
+            = $this->configManager->getEntityConfigByClass($templateParameters['field_options']['targetEntity']);
         // the associated entity is not managed by HarmonyAdmin
         if (null === $targetEntityConfig) {
             return $templateParameters;
@@ -238,15 +285,17 @@ class HarmonyAdminTwigExtension extends AbstractExtension
         $isShowActionAllowed = !\in_array('show', $targetEntityConfig['disabled_actions']);
 
         if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_ONE) {
-            if ($this->propertyAccessor->isReadable($templateParameters['value'], $targetEntityConfig['primary_key_field_name'])) {
-                $primaryKeyValue = $this->propertyAccessor->getValue($templateParameters['value'], $targetEntityConfig['primary_key_field_name']);
+            if ($this->propertyAccessor->isReadable($templateParameters['value'],
+                $targetEntityConfig['primary_key_field_name'])) {
+                $primaryKeyValue = $this->propertyAccessor->getValue($templateParameters['value'],
+                    $targetEntityConfig['primary_key_field_name']);
             } else {
                 $primaryKeyValue = null;
             }
 
             // get the string representation of the associated *-to-one entity
             if (method_exists($templateParameters['value'], '__toString')) {
-                $templateParameters['value'] = (string) $templateParameters['value'];
+                $templateParameters['value'] = (string)$templateParameters['value'];
             } elseif (null !== $primaryKeyValue) {
                 $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
             } else {
@@ -260,7 +309,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
                     'action' => 'show',
                     'entity' => $targetEntityConfig['name'],
                     // casting to string is needed because entities can use objects as primary keys
-                    'id' => (string) $primaryKeyValue,
+                    'id'     => (string)$primaryKeyValue,
                 ];
             }
         }
@@ -270,8 +319,8 @@ class HarmonyAdminTwigExtension extends AbstractExtension
             // action is enabled for the associated entity, display a link to it
             if (null !== $targetEntityConfig && $isShowActionAllowed) {
                 $templateParameters['link_parameters'] = [
-                    'action' => 'show',
-                    'entity' => $targetEntityConfig['name'],
+                    'action'           => 'show',
+                    'entity'           => $targetEntityConfig['name'],
                     'primary_key_name' => $targetEntityConfig['primary_key_field_name'],
                 ];
             }
@@ -289,7 +338,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      *
      * @return bool
      */
-    public function isActionEnabled($view, $action, $entityName)
+    public function isActionEnabled($view, $action, $entityName): bool
     {
         return $this->configManager->isActionEnabled($entityName, $view, $action);
     }
@@ -303,7 +352,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      *
      * @return array
      */
-    public function getActionConfiguration($view, $action, $entityName)
+    public function getActionConfiguration($view, $action, $entityName): array
     {
         return $this->configManager->getActionConfig($entityName, $view, $action);
     }
@@ -318,44 +367,52 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      *
      * @return array
      */
-    public function getActionsForItem($view, $entityName)
+    public function getActionsForItem($view, $entityName): array
     {
         try {
             $entityConfig = $this->configManager->getEntityConfig($entityName);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return [];
         }
 
         $disabledActions = $entityConfig['disabled_actions'];
-        $viewActions = $entityConfig[$view]['actions'];
+        $viewActions     = $entityConfig[$view]['actions'];
 
         $actionsExcludedForItems = [
             'list' => ['new', 'search'],
             'edit' => [],
-            'new' => [],
+            'new'  => [],
             'show' => [],
         ];
-        $excludedActions = $actionsExcludedForItems[$view];
+        $excludedActions         = $actionsExcludedForItems[$view];
 
         return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
             return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
         });
     }
 
-    /*
+    /**
      * Copied from the official Text Twig extension.
-     *
      * code: https://github.com/twigphp/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
      * author: Henrik Bjornskov <hb@peytz.dk>
      * copyright holder: (c) 2009 Fabien Potencier
      *
+     * @param \Twig_Environment $env
+     * @param                   $value
+     * @param int               $length
+     * @param bool              $preserve
+     * @param string            $separator
+     *
      * @return string
      */
-    public function truncateText(\Twig_Environment $env, $value, $length = 64, $preserve = false, $separator = '...')
+    public function truncateText(\Twig_Environment $env, $value, $length = 64, $preserve = false,
+                                 $separator = '...'): string
     {
         try {
-            $value = (string) $value;
-        } catch (\Exception $e) {
+            $value = (string)$value;
+        }
+        catch (\Exception $e) {
             $value = '';
         }
 
@@ -369,7 +426,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
                 $length = $breakpoint;
             }
 
-            return rtrim(mb_substr($value, 0, $length, $env->getCharset())).$separator;
+            return rtrim(mb_substr($value, 0, $length, $env->getCharset())) . $separator;
         }
 
         return $value;
@@ -379,17 +436,20 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      * This reimplementation of Symfony's logout_path() helper is needed because
      * when no arguments are passed to the getLogoutPath(), it's common to get
      * exceptions and there is no way to recover from them in a Twig template.
+     *
+     * @return null|string
      */
-    public function getLogoutPath()
+    public function getLogoutPath(): ?string
     {
         if (null === $this->logoutUrlGenerator) {
-            return;
+            return null;
         }
 
         try {
             return $this->logoutUrlGenerator->getLogoutPath();
-        } catch (\Exception $e) {
-            return;
+        }
+        catch (\Exception $e) {
+            return null;
         }
     }
 }

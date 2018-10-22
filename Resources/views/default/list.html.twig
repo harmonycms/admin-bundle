@@ -1,4 +1,4 @@
-{% set _entity_config = harmonyadmin_entity(app.request.get('entity')) %}
+{% set _entity_config = harmony_admin_entity(app.request.get('entity')) %}
 {% trans_default_domain _entity_config.translation_domain %}
 {% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
 
@@ -25,7 +25,7 @@
 
 {% set _request_parameters = _request_parameters|merge({ referer: path('admin_entity', _request_parameters)|url_encode }) %}
 
-{% block body_id 'harmonyadmin-list-' ~ _entity_config.name %}
+{% block body_id 'harmony_admin-list-' ~ _entity_config.name %}
 {% block body_class 'list list-' ~ _entity_config.name|lower %}
 
 {% block content_title %}
@@ -51,8 +51,8 @@
     <div class="col-sm-7">
       <div class="row mt-4 ml-0 mr-0">
         {% block global_actions %}
-          {% if harmonyadmin_action_is_enabled_for_list_view('search', _entity_config.name) %}
-            {% set _action = harmonyadmin_get_action_for_list_view('search', _entity_config.name) %}
+          {% if harmony_admin_action_is_enabled_for_list_view('search', _entity_config.name) %}
+            {% set _action = harmony_admin_get_action_for_list_view('search', _entity_config.name) %}
 
             {% block search_action %}
               <div class="col {{ _action.css_class|default('') }}">
@@ -82,8 +82,8 @@
             {% endblock search_action %}
           {% endif %}
 
-          {% if harmonyadmin_action_is_enabled_for_list_view('new', _entity_config.name) %}
-            {% set _action = harmonyadmin_get_action_for_list_view('new', _entity_config.name) %}
+          {% if harmony_admin_action_is_enabled_for_list_view('new', _entity_config.name) %}
+            {% set _action = harmony_admin_get_action_for_list_view('new', _entity_config.name) %}
             {% block new_action %}
               <div>
                 <a class="{{ _action.css_class|default('') }}"
@@ -102,7 +102,7 @@
 {% endblock content_header %}
 
 {% block main %}
-  {% set _list_item_actions = harmonyadmin_get_actions_for_list_item(_entity_config.name) %}
+  {% set _list_item_actions = harmony_admin_get_actions_for_list_item(_entity_config.name) %}
 
   <div class="card">
     <div class="card-body">
@@ -118,7 +118,7 @@
                 {% set _column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-caret-up' : 'fa-caret-down') : 'fa-sort' %}
 
                 <th data-property-name="{{ metadata.property }}"
-                    class="{{ isSortingField ? 'sorted' }} {{ metadata.virtual ? 'virtual' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmonyadmin_config('design.rtl') ? 'dir="rtl"' }}>
+                    class="{{ isSortingField ? 'sorted' }} {{ metadata.virtual ? 'virtual' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
                   {% if metadata.sortable %}
                     <a href="{{ path('admin_entity', _request_parameters|merge({ page: 1, sortField: metadata.property, sortDirection: nextSortDirection })) }}">
                       <i class="fa {{ _column_icon }}"></i>
@@ -131,7 +131,7 @@
               {% endfor %}
 
               {% if _list_item_actions|length > 0 %}
-                <th {{ harmonyadmin_config('design.rtl') ? 'dir="rtl"' }}>
+                <th {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
                   <span>{{ 'list.row_actions'|trans(_trans_parameters, 'HarmonyAdminBundle') }}</span>
                 </th>
               {% endif %}
@@ -150,8 +150,8 @@
                   {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
 
                   <td data-label="{{ _column_label }}"
-                      class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmonyadmin_config('design.rtl') ? 'dir="rtl"' }}>
-                    {{ harmonyadmin_render_field_for_list_view(_entity_config.name, item, metadata) }}
+                      class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
+                    {{ harmony_admin_render_field_for_list_view(_entity_config.name, item, metadata) }}
                   </td>
                 {% endfor %}
 

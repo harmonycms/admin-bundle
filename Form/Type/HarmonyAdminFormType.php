@@ -22,10 +22,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class HarmonyAdminFormType extends AbstractType
 {
-    /** @var ConfigManager */
+
+    /** @var ConfigManager $configManager */
     private $configManager;
 
-    /** @var TypeConfiguratorInterface[] */
+    /** @var TypeConfiguratorInterface[] $configurators */
     private $configurators;
 
     /**
@@ -43,13 +44,13 @@ class HarmonyAdminFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $entity = $options['entity'];
-        $view = $options['view'];
-        $entityConfig = $this->configManager->getEntityConfig($entity);
+        $entity           = $options['entity'];
+        $view             = $options['view'];
+        $entityConfig     = $this->configManager->getEntityConfig($entity);
         $entityProperties = $entityConfig[$view]['fields'] ?? [];
-        $formTabs = [];
-        $currentFormTab = null;
-        $formGroups = [];
+        $formTabs         = [];
+        $currentFormTab   = null;
+        $formGroups       = [];
         $currentFormGroup = null;
 
         foreach ($entityProperties as $name => $metadata) {
@@ -68,9 +69,9 @@ class HarmonyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, ['harmonyadmin_group', HarmonyAdminGroupType::class])) {
-                $metadata['form_tab'] = $currentFormTab ?: null;
-                $currentFormGroup = $metadata['fieldName'];
+            if (in_array($formFieldType, ['harmony_admin_group', HarmonyAdminGroupType::class])) {
+                $metadata['form_tab']          = $currentFormTab ?: null;
+                $currentFormGroup              = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
 
                 continue;
@@ -80,11 +81,11 @@ class HarmonyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (\in_array($formFieldType, ['harmonyadmin_tab', HarmonyAdminTabType::class])) {
+            if (\in_array($formFieldType, ['harmony_admin_tab', HarmonyAdminTabType::class])) {
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;
-                $currentFormTab = $metadata['fieldName'];
+                $currentFormTab     = $metadata['fieldName'];
 
                 // plain arrays are not enough for tabs because they are modified in the
                 // lifecycle of a form (e.g. add info about form errors). Use an ArrayObject instead.
@@ -95,20 +96,20 @@ class HarmonyAdminFormType extends AbstractType
 
             // 'divider' and 'section' are 'fake' form fields used to create the design
             // elements of the complex form layouts: define them as unmapped and non-required
-            if (0 === strpos($metadata['property'], '_harmonyadmin_form_design_element_')) {
-                $formFieldOptions['mapped'] = false;
+            if (0 === strpos($metadata['property'], '_harmony_admin_form_design_element_')) {
+                $formFieldOptions['mapped']   = false;
                 $formFieldOptions['required'] = false;
             }
 
             $formField = $builder->getFormFactory()->createNamedBuilder($name, $formFieldType, null, $formFieldOptions);
-            $formField->setAttribute('harmonyadmin_form_tab', $currentFormTab);
-            $formField->setAttribute('harmonyadmin_form_group', $currentFormGroup);
+            $formField->setAttribute('harmony_admin_form_tab', $currentFormTab);
+            $formField->setAttribute('harmony_admin_form_group', $currentFormGroup);
 
             $builder->add($formField);
         }
 
-        $builder->setAttribute('harmonyadmin_form_tabs', $formTabs);
-        $builder->setAttribute('harmonyadmin_form_groups', $formGroups);
+        $builder->setAttribute('harmony_admin_form_tabs', $formTabs);
+        $builder->setAttribute('harmony_admin_form_groups', $formGroups);
 
         if (\count($formTabs) > 0) {
             $builder->addEventSubscriber(new HarmonyAdminTabSubscriber());
@@ -120,8 +121,8 @@ class HarmonyAdminFormType extends AbstractType
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['harmonyadmin_form_tabs'] = $form->getConfig()->getAttribute('harmonyadmin_form_tabs');
-        $view->vars['harmonyadmin_form_groups'] = $form->getConfig()->getAttribute('harmonyadmin_form_groups');
+        $view->vars['harmony_admin_form_tabs']   = $form->getConfig()->getAttribute('harmony_admin_form_tabs');
+        $view->vars['harmony_admin_form_groups'] = $form->getConfig()->getAttribute('harmony_admin_form_groups');
     }
 
     /**
@@ -131,18 +132,15 @@ class HarmonyAdminFormType extends AbstractType
     {
         $configManager = $this->configManager;
 
-        $resolver
-            ->setDefaults([
-                'allow_extra_fields' => true,
-                'data_class' => function (Options $options) use ($configManager) {
-                    $entity = $options['entity'];
-                    $entityConfig = $configManager->getEntityConfig($entity);
+        $resolver->setDefaults([
+            'allow_extra_fields' => true,
+            'data_class'         => function (Options $options) use ($configManager) {
+                $entity       = $options['entity'];
+                $entityConfig = $configManager->getEntityConfig($entity);
 
-                    return $entityConfig['class'];
-                },
-            ])
-            ->setRequired(['entity', 'view'])
-            ->setNormalizer('attr', $this->getAttributesNormalizer());
+                return $entityConfig['class'];
+            },
+        ])->setRequired(['entity', 'view'])->setNormalizer('attr', $this->getAttributesNormalizer());
     }
 
     /**
@@ -150,7 +148,7 @@ class HarmonyAdminFormType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'harmonyadmin';
+        return 'harmony_admin';
     }
 
     /**

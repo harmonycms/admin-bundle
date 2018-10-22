@@ -6,26 +6,38 @@ use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
+/**
+ * Class ConfigManager
+ *
+ * @package Harmony\Bundle\AdminBundle\Configuration
+ */
 final class ConfigManager
 {
-    private const CACHE_KEY = 'harmonyadmin.processed_config';
+
+    private const CACHE_KEY = 'harmony_admin.processed_config';
 
     /** @var array */
     private $backendConfig;
+
     private $debug;
+
     private $propertyAccessor;
+
     private $cache;
+
     /** @var array */
     private $originalBackendConfig;
+
     /** @var ConfigPassInterface[] */
     private $configPasses;
 
-    public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor, CacheItemPoolInterface $cache)
+    public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor,
+                                CacheItemPoolInterface $cache)
     {
         $this->originalBackendConfig = $originalBackendConfig;
-        $this->debug = $debug;
-        $this->propertyAccessor = $propertyAccessor;
-        $this->cache = $cache;
+        $this->debug                 = $debug;
+        $this->propertyAccessor      = $propertyAccessor;
+        $this->cache                 = $cache;
     }
 
     /**
@@ -45,7 +57,7 @@ final class ConfigManager
         }
 
         // turns 'design.menu' into '[design][menu]', the format required by PropertyAccess
-        $propertyPath = '['.str_replace('.', '][', $propertyPath).']';
+        $propertyPath = '[' . str_replace('.', '][', $propertyPath) . ']';
 
         return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
     }
@@ -76,7 +88,8 @@ final class ConfigManager
     {
         try {
             $entityConfig = $this->getEntityConfig($entityName);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $entityConfig = [];
         }
 
@@ -87,7 +100,8 @@ final class ConfigManager
     {
         $entityConfig = $this->getEntityConfig($entityName);
 
-        return !\in_array($action, $entityConfig['disabled_actions'], true) && array_key_exists($action, $entityConfig[$view]['actions']);
+        return !\in_array($action, $entityConfig['disabled_actions'], true) &&
+            array_key_exists($action, $entityConfig[$view]['actions']);
     }
 
     /**

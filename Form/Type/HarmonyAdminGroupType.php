@@ -16,7 +16,7 @@ class HarmonyAdminGroupType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'harmonyadmin_group';
+        return 'harmony_admin_group';
     }
 
     /**

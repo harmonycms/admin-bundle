@@ -16,7 +16,7 @@ class HarmonyAdminTabType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'harmonyadmin_tab';
+        return 'harmony_admin_tab';
     }
 
     /**

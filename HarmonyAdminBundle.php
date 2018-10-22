@@ -16,7 +16,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class HarmonyAdminBundle extends Bundle
 {
 
-    const VERSION = '1.17.15-DEV';
+    /** Constant */
+    const VERSION = '1.0.0';
 
     /**
      * Builds the bundle.

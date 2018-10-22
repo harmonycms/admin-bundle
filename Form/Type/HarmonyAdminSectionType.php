@@ -16,7 +16,7 @@ class HarmonyAdminSectionType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'harmonyadmin_section';
+        return 'harmony_admin_section';
     }
 
     /**

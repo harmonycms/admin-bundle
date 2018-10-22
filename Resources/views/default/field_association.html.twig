@@ -30,7 +30,7 @@
     {% endif %}
 {# a simple *-to-one value associated with an entity managed by this backend #}
 {% elseif link_parameters is defined %}
-    <a href="{{ path('admin', link_parameters|merge({ referer: '' })) }}">{{ value|harmonyadmin_truncate }}</a>
+    <a href="{{ path('admin', link_parameters|merge({ referer: '' })) }}">{{ value|harmony_admin_truncate }}</a>
 {% else %}
-    {{ value|harmonyadmin_truncate }}
+    {{ value|harmony_admin_truncate }}
 {% endif %}

@@ -29,7 +29,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
     public function load(array $configs, ContainerBuilder $container)
     {
         // process bundle's configuration parameters
-        $container->setParameter('harmonyadmin.cache.dir',
+        $container->setParameter('harmony_admin.cache.dir',
             $container->getParameter('kernel.cache_dir') . '/harmony_admin');
 
         $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
@@ -38,12 +38,12 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
 
         if ($container->getParameter('kernel.debug')) {
             // in 'dev', use the built-in Symfony exception listener
-            $container->removeDefinition('harmonyadmin.listener.exception');
+            $container->removeDefinition('harmony_admin.listener.exception');
             // avoid parsing the entire config in 'dev' (even for requests unrelated to the backend)
-            $container->removeDefinition('harmonyadmin.cache.config_warmer');
+            $container->removeDefinition('harmony_admin.cache.config_warmer');
         }
         if ($container->hasParameter('locale')) {
-            $container->getDefinition('harmonyadmin.configuration.design_config_pass')
+            $container->getDefinition('harmony_admin.configuration.design_config_pass')
                 ->replaceArgument(2, $container->getParameter('locale'));
         }
 
@@ -75,7 +75,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         $configs = $this->processConfigFiles($configs);
         // use the Configuration class to generate a config array
         $config = $this->processConfiguration(new Configuration(), $configs);
-        $container->setParameter('harmonyadmin.config', $config['admin']);
+        $container->setParameter('harmony_admin.config', $config['admin']);
         foreach ($config as $key => $value) {
             $container->setParameter(HarmonyCoreExtension::ALIAS . '.' . $key, $value);
         }

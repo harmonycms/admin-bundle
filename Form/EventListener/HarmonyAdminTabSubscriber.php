@@ -13,13 +13,14 @@ use Symfony\Component\Form\FormEvents;
  */
 class HarmonyAdminTabSubscriber implements EventSubscriberInterface
 {
+
     /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::POST_SUBMIT => ['handleViolations', -1],
+            FormEvents::POST_SUBMIT => ['handleViolations', - 1],
         ];
     }
 
@@ -31,14 +32,14 @@ class HarmonyAdminTabSubscriber implements EventSubscriberInterface
      */
     public function handleViolations(FormEvent $event)
     {
-        $formTabs = $event->getForm()->getConfig()->getAttribute('harmonyadmin_form_tabs');
+        $formTabs = $event->getForm()->getConfig()->getAttribute('harmony_admin_form_tabs');
 
         $firstTabWithErrors = null;
         foreach ($event->getForm() as $child) {
             $errors = $child->getErrors(true);
 
             if (\count($errors) > 0) {
-                $formTab = $child->getConfig()->getAttribute('harmonyadmin_form_tab');
+                $formTab                      = $child->getConfig()->getAttribute('harmony_admin_form_tab');
                 $formTabs[$formTab]['errors'] += \count($errors);
 
                 if (null === $firstTabWithErrors) {
@@ -50,7 +51,7 @@ class HarmonyAdminTabSubscriber implements EventSubscriberInterface
         // ensure that the first tab with errors is displayed
         $firstTab = key($formTabs);
         if ($firstTab !== $firstTabWithErrors) {
-            $formTabs[$firstTab]['active'] = false;
+            $formTabs[$firstTab]['active']           = false;
             $formTabs[$firstTabWithErrors]['active'] = true;
         }
     }

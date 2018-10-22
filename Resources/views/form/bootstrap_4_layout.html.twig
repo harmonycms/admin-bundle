@@ -1,16 +1,16 @@
 {% use 'form_div_layout.html.twig' %}
 
 {% block form_start -%}
-  {% if 'harmonyadmin' == block_prefixes|slice(-2)|first %}
+  {% if 'harmony_admin' == block_prefixes|slice(-2)|first %}
     {% set attr = attr|merge({
       'class': [
-        _harmonyadmin_form_type|default('') == 'horizontal' ? 'form-horizontal' : 'form-vertical',
+        _harmony_admin_form_type|default('') == 'horizontal' ? 'form-horizontal' : 'form-vertical',
         attr.class|default(''),
-        harmonyadmin.view ~ '-form'
+        harmony_admin.view ~ '-form'
       ]|join(' '),
-      'data-view': harmonyadmin.view,
-      'data-entity': harmonyadmin.entity.name,
-      'data-entity-id': attribute(value, harmonyadmin.entity.primary_key_field_name),
+      'data-view': harmony_admin.view,
+      'data-entity': harmony_admin.entity.name,
+      'data-entity-id': attribute(value, harmony_admin.entity.primary_key_field_name),
     }) %}
   {% endif %}
 
@@ -36,7 +36,7 @@
       var containerDiv = $('#{{ id }}').parents('.form-group:first');
       var parentDiv = containerDiv.parents('[data-prototype]:first');
       containerDiv.remove();
-      parentDiv.trigger('harmonyadmin.collection.item-deleted');
+      parentDiv.trigger('harmony_admin.collection.item-deleted');
 
       var hasCountAttr = parentDiv.data('count');
 
@@ -157,7 +157,7 @@
       var containerDiv = $('#{{ id }}').parents('.form-group:first');
       var parentDiv = containerDiv.parents('[data-prototype]:first');
       containerDiv.remove();
-      parentDiv.trigger('harmonyadmin.collection.item-deleted');
+      parentDiv.trigger('harmony_admin.collection.item-deleted');
 
       if (0 == parentDiv.children().length && 'undefined' !== parentDiv.attr('data-empty-collection')) {
       $(parentDiv.attr('data-empty-collection')).insertBefore(parentDiv);
@@ -254,7 +254,7 @@
     <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
     <span class="input-span"></span>
     {{- widget|raw -}}
-    {{- label is not same as(false) ? label|trans({}, translation_domain ?: harmonyadmin.entity.translation_domain) -}}
+    {{- label is not same as(false) ? label|trans({}, translation_domain ?: harmony_admin.entity.translation_domain) -}}
     </label>
   {% endif %}
 {% endblock checkbox_radio_label %}
@@ -262,13 +262,13 @@
 {# Rows #}
 
 {% block form_row -%}
-  {% set _field_type = harmonyadmin.field.fieldType|default('default') %}
+  {% set _field_type = harmony_admin.field.fieldType|default('default') %}
   <div
       class="form-group {% if (not compound or force_error|default(false)) and not valid %}has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
     {{- form_label(form) -}}
     {{- form_widget(form) -}}
 
-    {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and harmonyadmin.field.nullable|default(false) %}
+    {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and harmony_admin.field.nullable|default(false) %}
       <div class="nullable-control">
         <label>
           <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
@@ -279,9 +279,9 @@
 
     {{- form_errors(form) -}}
 
-    {% if harmonyadmin.field.help|default('') != '' %}
+    {% if harmony_admin.field.help|default('') != '' %}
       <span class="help-block"><i
-            class="fa fa-info-circle"></i> {{ harmonyadmin.field.help|trans(domain = harmonyadmin.entity.translation_domain)|raw }}</span>
+            class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.entity.translation_domain)|raw }}</span>
     {% endif %}
   </div>
 {%- endblock form_row %}
@@ -309,7 +309,7 @@
       // Increment the counter and store it in the collection
       collection.data('count', ++numItems);
 
-      collection.append(newItem).trigger('harmonyadmin.collection.item-added');
+      collection.append(newItem).trigger('harmony_admin.collection.item-added');
       });
     {% endset %}
 
@@ -323,7 +323,7 @@
 {% endblock collection_row %}
 
 {% block button_row -%}
-  <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ harmonyadmin.field.css_class|default('') }}">
+  <div class="form-group field-{{ block_prefixes|slice(-2)|first }} {{ harmony_admin.field.css_class|default('') }}">
     {{- form_widget(form) -}}
   </div>
 {%- endblock button_row %}
@@ -396,7 +396,7 @@
 
 {% block empty_collection %}
   <div class="empty collection-empty">
-    {{ include(harmonyadmin.entity.templates.label_empty) }}
+    {{ include(harmony_admin.entity.templates.label_empty) }}
   </div>
 {% endblock empty_collection %}
 
@@ -407,7 +407,7 @@
 
 {% block vich_file_widget %}
   {% spaceless %}
-    <div class="harmonyadmin-vich-file">
+    <div class="harmony_admin-vich-file">
       {% if download_uri|default('') is not empty %}
         {% set download_title = download_uri|split('/')|last ?: 'download'|trans({}, 'VichUploaderBundle') %}
         <a href="{{ asset(download_uri) }}">{{ download_title }}</a>
@@ -434,7 +434,7 @@
 
 {% block vich_image_widget %}
   {% spaceless %}
-    <div class="harmonyadmin-vich-image">
+    <div class="harmony_admin-vich-image">
       {{ form_widget(form.file) }}
       {% if form.delete is defined %}
         {{ form_row(form.delete, { label: 'form.label.delete' }) }}
@@ -442,18 +442,18 @@
 
       {% if image_uri|default('') is not empty %}
         {% if download_uri|default('') is empty %}
-          <div class="harmonyadmin-thumbnail">
+          <div class="harmony_admin-thumbnail">
             <img style="cursor: initial" src="{{ asset(image_uri) }}">
           </div>
         {% else %}
-          {% set _lightbox_id = 'harmonyadmin-lightbox-' ~ id %}
+          {% set _lightbox_id = 'harmony_admin-lightbox-' ~ id %}
 
-          <a href="#" class="harmonyadmin-thumbnail" data-featherlight="#{{ _lightbox_id }}"
+          <a href="#" class="harmony_admin-thumbnail" data-featherlight="#{{ _lightbox_id }}"
              data-featherlight-close-on-click="anywhere">
             <img src="{{ asset(download_uri) }}">
           </a>
 
-          <div id="{{ _lightbox_id }}" class="harmonyadmin-lightbox">
+          <div id="{{ _lightbox_id }}" class="harmony_admin-lightbox">
             <img src="{{ asset(download_uri) }}">
           </div>
         {% endif %}
@@ -462,31 +462,31 @@
   {% endspaceless %}
 {% endblock %}
 
-{% block harmonyadmin_rest %}
+{% block harmony_admin_rest %}
   {{- form_rest(form) -}}
   <div class="card-footer text-right">
     {{- block('item_actions') -}}
   </div>
-{% endblock harmonyadmin_rest %}
+{% endblock harmony_admin_rest %}
 
 {% block item_actions %}
-  {% set _translation_domain = harmonyadmin.entity.translation_domain %}
-  {% set _trans_parameters = { '%entity_name%':  harmonyadmin.entity.name|trans, '%entity_label%': harmonyadmin.entity.label|trans } %}
+  {% set _translation_domain = harmony_admin.entity.translation_domain %}
+  {% set _trans_parameters = { '%entity_name%':  harmony_admin.entity.name|trans, '%entity_label%': harmony_admin.entity.label|trans } %}
 
   {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
   <button type="submit" class="btn btn-primary action-save">
     <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
   </button>
 
-  {% set _entity_actions = (harmonyadmin.view == 'new')
-    ? harmonyadmin_get_actions_for_new_item(harmonyadmin.entity.name)
-    : harmonyadmin_get_actions_for_edit_item(harmonyadmin.entity.name) %}
+  {% set _entity_actions = (harmony_admin.view == 'new')
+    ? harmony_admin_get_actions_for_new_item(harmony_admin.entity.name)
+    : harmony_admin_get_actions_for_edit_item(harmony_admin.entity.name) %}
 
-  {% set _entity_id = (harmonyadmin.view == 'new')
+  {% set _entity_id = (harmony_admin.view == 'new')
     ? null
-    : attribute(harmonyadmin.item, harmonyadmin.entity.primary_key_field_name) %}
+    : attribute(harmony_admin.item, harmony_admin.entity.primary_key_field_name) %}
 
-  {% set _request_parameters = { entity: harmonyadmin.entity.name, referer: app.request.query.get('referer') } %}
+  {% set _request_parameters = { entity: harmony_admin.entity.name, referer: app.request.query.get('referer') } %}
 
   {{ include('@HarmonyAdmin/default/includes/_actions.html.twig', {
     actions: _entity_actions,
@@ -498,14 +498,14 @@
 {% endblock item_actions %}
 
 {# HarmonyAdmin form type #}
-{% block harmonyadmin_widget %}
+{% block harmony_admin_widget %}
   <div class="card-body">
-    {% set _translation_domain = harmonyadmin.entity.translation_domain %}
-    {% if harmonyadmin_form_tabs | length > 0 %}
+    {% set _translation_domain = harmony_admin.entity.translation_domain %}
+    {% if harmony_admin_form_tabs | length > 0 %}
       <div class="col-12">
         <div class="nav-tabs-custom">
           <ul class="nav nav-tabs">
-            {% for tab_name, tab_config in harmonyadmin_form_tabs %}
+            {% for tab_name, tab_config in harmony_admin_form_tabs %}
               <li class="{% if tab_config.active %}active{% endif %}">
                 <a href="#{{ tab_config['id'] }}" id="{{ tab_config['id'] }}-tab" data-toggle="tab">
                   {% if tab_config.icon|default(false) %}
@@ -523,10 +523,10 @@
             {% endfor %}
           </ul>
           <div class="tab-content">
-            {% for tab_name, tab_config in harmonyadmin_form_tabs %}
+            {% for tab_name, tab_config in harmony_admin_form_tabs %}
               <div id="{{ tab_config['id'] }}" class="tab-pane {% if tab_config.active %}active{% endif %}">
                 <div class="row">
-                  {{ block('harmonyadmin_widget_groups') }}
+                  {{ block('harmony_admin_widget_groups') }}
                 </div>
               </div>
             {% endfor %}
@@ -534,13 +534,13 @@
         </div>
       </div>
     {% else %}
-      {{ block('harmonyadmin_widget_groups') }}
+      {{ block('harmony_admin_widget_groups') }}
     {% endif %}
   </div>
-{% endblock harmonyadmin_widget %}
+{% endblock harmony_admin_widget %}
 
-{% block harmonyadmin_widget_groups %}
-  {% for group_name, group_config in harmonyadmin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
+{% block harmony_admin_widget_groups %}
+  {% for group_name, group_config in harmony_admin_form_groups if not group_config.form_tab or group_config.form_tab == tab_name %}
     <div class="field-group col-12 {{ group_config.css_class|default('') }}">
       <div class="box box-default">
         {% if group_config.label|default(false) or group_config.icon|default(false) or group_config.collapsible|default(false) %}
@@ -570,8 +570,8 @@
           {% endif %}
 
           <div class="row">
-            {% for field in form if 'hidden' not in field.vars.block_prefixes and field.vars.harmonyadmin.form_group == group_name %}
-              {% if not field.vars.harmonyadmin.form_tab or field.vars.harmonyadmin.form_tab == tab_name %}
+            {% for field in form if 'hidden' not in field.vars.block_prefixes and field.vars.harmony_admin.form_group == group_name %}
+              {% if not field.vars.harmony_admin.form_tab or field.vars.harmony_admin.form_tab == tab_name %}
                 {{ form_row(field) }}
               {% endif %}
             {% endfor %}
@@ -580,48 +580,48 @@
       </div>
     </div>
   {% else %}
-    {% for field in form if 'hidden' not in field.vars.block_prefixes and (not field.vars.harmonyadmin.form_tab or field.vars.harmonyadmin.form_tab == tab_name) %}
+    {% for field in form if 'hidden' not in field.vars.block_prefixes and (not field.vars.harmony_admin.form_tab or field.vars.harmony_admin.form_tab == tab_name) %}
       {{ form_row(field) }}
     {% endfor %}
   {% endfor %}
-{% endblock harmonyadmin_widget_groups %}
+{% endblock harmony_admin_widget_groups %}
 
 {# HarmonyAdminAutocomplete form type #}
-{% block harmonyadmin_autocomplete_widget %}
+{% block harmony_admin_autocomplete_widget %}
   {{ form_widget(form.autocomplete, {
     attr: attr|merge({
-      'data-harmonyadmin-autocomplete-url' : path('admin', {
+      'data-harmony_admin-autocomplete-url' : path('admin', {
         action: 'autocomplete',
         entity: autocomplete_entity_name,
       })|raw })
   }) }}
-{% endblock harmonyadmin_autocomplete_widget %}
+{% endblock harmony_admin_autocomplete_widget %}
 
-{% block harmonyadmin_autocomplete_inner_label %}
+{% block harmony_admin_autocomplete_inner_label %}
   {% set name = form.parent.vars.name %}
   {{- block('form_label') -}}
-{% endblock harmonyadmin_autocomplete_inner_label %}
+{% endblock harmony_admin_autocomplete_inner_label %}
 
 {# HarmonyAdminDivider form type #}
-{% block harmonyadmin_divider_row %}
+{% block harmony_admin_divider_row %}
   <div class="field-divider">
     <hr>
   </div>
-{% endblock harmonyadmin_divider_row %}
+{% endblock harmony_admin_divider_row %}
 
 {# HarmonyAdminSection form type #}
-{% block harmonyadmin_section_row %}
-  {% set _translation_domain = harmonyadmin.entity.translation_domain %}
-  <div class="field-section {{ harmonyadmin.field.css_class|default('') }}">
-    {% if harmonyadmin.field.label|default(false) or harmonyadmin.field.icon|default(false) %}
+{% block harmony_admin_section_row %}
+  {% set _translation_domain = harmony_admin.entity.translation_domain %}
+  <div class="field-section {{ harmony_admin.field.css_class|default('') }}">
+    {% if harmony_admin.field.label|default(false) or harmony_admin.field.icon|default(false) %}
       <h2>
-        {% if harmonyadmin.field.icon|default(false) %}<i class="fa fa-{{ harmonyadmin.field.icon }}"></i>{% endif %}
-        {{ harmonyadmin.field.label|default('')|trans(domain = _translation_domain)|raw }}
+        {% if harmony_admin.field.icon|default(false) %}<i class="fa fa-{{ harmony_admin.field.icon }}"></i>{% endif %}
+        {{ harmony_admin.field.label|default('')|trans(domain = _translation_domain)|raw }}
       </h2>
     {% endif %}
 
-    {% if harmonyadmin.field.help|default(false) %}
-      <p class="help-block">{{ harmonyadmin.field.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
+    {% if harmony_admin.field.help|default(false) %}
+      <p class="help-block">{{ harmony_admin.field.help|trans(domain = _translation_domain)|nl2br|raw }}</p>
     {% endif %}
   </div>
-{% endblock harmonyadmin_section_row %}
+{% endblock harmony_admin_section_row %}

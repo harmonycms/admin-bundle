@@ -53,7 +53,7 @@ class HarmonyAdminAutocompleteType extends AbstractType implements DataMapperInt
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // Add a custom block prefix to inner field to ease theming:
-        array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'harmonyadmin_autocomplete_inner');
+        array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'harmony_admin_autocomplete_inner');
     }
 
     /**
@@ -75,7 +75,7 @@ class HarmonyAdminAutocompleteType extends AbstractType implements DataMapperInt
      */
     public function getBlockPrefix()
     {
-        return 'harmonyadmin_autocomplete';
+        return 'harmony_admin_autocomplete';
     }
 
     /**

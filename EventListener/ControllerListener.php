@@ -16,15 +16,23 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class ControllerListener
 {
+
     /** @var ConfigManager */
     private $configManager;
+
     /** @var ControllerResolverInterface */
     private $resolver;
 
+    /**
+     * ControllerListener constructor.
+     *
+     * @param ConfigManager               $configManager
+     * @param ControllerResolverInterface $resolver
+     */
     public function __construct(ConfigManager $configManager, ControllerResolverInterface $resolver)
     {
         $this->configManager = $configManager;
-        $this->resolver = $resolver;
+        $this->resolver      = $resolver;
     }
 
     /**
@@ -41,7 +49,7 @@ class ControllerListener
         }
 
         $request = $event->getRequest();
-        if ('harmonyadmin' !== $request->attributes->get('_route')) {
+        if ('admin' !== $request->attributes->get('_route')) {
             return;
         }
 
@@ -71,17 +79,18 @@ class ControllerListener
         // build the full controller name depending on its type
         if (class_exists($customController) || Kernel::VERSION_ID >= 40100) {
             // 'class::method' syntax for normal controllers
-            $customController .= '::'.$controllerMethod;
+            $customController .= '::' . $controllerMethod;
         } else {
             // 'service:method' syntax for controllers as services
-            $customController .= ':'.$controllerMethod;
+            $customController .= ':' . $controllerMethod;
         }
 
         $request->attributes->set('_controller', $customController);
         $newController = $this->resolver->getController($request);
 
         if (false === $newController) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your HarmonyAdmin backend.', $request->getPathInfo(), $entityName));
+            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your HarmonyAdmin backend.',
+                $request->getPathInfo(), $entityName));
         }
 
         $event->setController($newController);

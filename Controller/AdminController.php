@@ -3,17 +3,13 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
 use Harmony\Bundle\AdminBundle\Exception\EntityRemoveException;
 use Harmony\Bundle\AdminBundle\Exception\ForbiddenActionException;
-use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
-use Harmony\Bundle\CoreBundle\DependencyInjection\HarmonyCoreExtension;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;

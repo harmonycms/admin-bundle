@@ -56,7 +56,7 @@ class DashboardController extends Controller
             }
         }
 
-        return $this->render('@HarmonyAdmin\default\index.html.twig', [
+        return $this->render('@HarmonyAdmin\dashboard\index.html.twig', [
             'dashboard' => $dashboard
         ]);
     }

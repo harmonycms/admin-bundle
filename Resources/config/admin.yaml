@@ -32,7 +32,7 @@ harmony:
           items:
             Item1:
               label: "Registered users"
-              template: '@HarmonyAdmin/default/dashboard/_item.v1.html.twig'
+              template: '@HarmonyAdmin/dashboard/_item.v1.html.twig'
               size: 3
               css_class: 'success'
               class: App\Entity\User

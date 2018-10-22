@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ app.request.locale|split('_')|first|default('en') }}">
 <head>
+  {% trans_default_domain 'HarmonyAdminBundle' %}
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache"/>
@@ -64,7 +65,7 @@
             <div class="flexbox flex-1">
               <ul class="nav navbar-toolbar">
                 <li><a class="nav-link sidebar-toggler js-sidebar-toggler"><i class="fas fa-bars"
-                                                                              title="{{ 'toggle_navigation'|trans(domain = 'HarmonyAdminBundle') }}"></i></a>
+                                                                              title="{{ 'toggle_navigation'|trans }}"></i></a>
                 </li>
               </ul>
               {% block header_custom_menu %}
@@ -73,18 +74,18 @@
                   <li><a href="#" title="Visit site"><i class="fa fa-home"></i></a></li>
                   <li class="dropdown dropdown-user">
                     {% block user_menu %}
-                      <span class="sr-only">{{ 'user.logged_in_as'|trans(domain = 'HarmonyAdminBundle') }}</span>
+                      <span class="sr-only">{{ 'user.logged_in_as'|trans }}</span>
                       {% if app.user|default(false) == false %}
                         <i class="hidden-xs fa fa-user-times"></i>
-                        {{ 'user.anonymous'|trans(domain = 'HarmonyAdminBundle') }}
+                        {{ 'user.anonymous'|trans }}
                       {% elseif not _logout_path %}
                         <i class="hidden-xs fa fa-user"></i>
-                        {{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}
+                        {{ app.user.username|default('user.unnamed'|trans) }}
                       {% else %}
                         <a class="nav-link dropdown-toggle link" data-toggle="dropdown" aria-expanded="false">
                           <i class="far fa-user-circle mr-2"></i>
                           <span></span>
-                          {{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}
+                          {{ app.user.username|default('user.unnamed'|trans) }}
                           <i class="fa fa-angle-down m-l-5"></i>
                         </a>
                         <ul class="dropdown-menu" role="menu">
@@ -92,12 +93,12 @@
                             <li><a class="dropdown-item" href="profile.html"><i class="fa fa-user"></i>Profile</a></li>
                             <li class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ _logout_path }}"><i
-                                    class="fa fa-power-off"></i>{{ 'user.signout'|trans(domain = 'HarmonyAdminBundle') }}
+                                    class="fa fa-power-off"></i>{{ 'user.signout'|trans }}
                               </a></li>
                             {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                               <li>
                                 <a href="?_switch_user=_exit"><i
-                                      class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans(domain = 'HarmonyAdminBundle') }}
+                                      class="fa fa-sign-out"></i> {{ 'user.exit_impersonation'|trans }}
                                 </a>
                               </li>
                             {% endif %}
@@ -120,14 +121,14 @@
                   <div><img src="{{ asset('bundles/harmonyadmin/img/empty-avatar.png') }}" width="45px"></div>
                   <div class="admin-info">
                     <div class="font-strong">
-                      {{ app.user.username|default('user.unnamed'|trans(domain = 'HarmonyAdminBundle')) }}
+                      {{ app.user.username|default('user.unnamed'|trans) }}
                     </div>
                     {% if is_granted('ROLE_ADMIN') %}
-                      <small>Administrator</small>
+                      <small>{{ 'user.administrator'|trans }}</small>
                     {% elseif is_granted('ROLE_USER') %}
-                      <small>User</small>
+                      <small>{{ 'user'|trans }}</small>
                     {% else %}
-                      <small>Anonymous</small>
+                      <small>{{ 'user.anonymous'|trans }}</small>
                     {% endif %}
                   </div>
                 </div>

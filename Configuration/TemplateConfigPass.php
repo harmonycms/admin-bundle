@@ -13,59 +13,78 @@ use Symfony\Component\Finder\Finder;
  */
 class TemplateConfigPass implements ConfigPassInterface
 {
+
+    /** @var \Twig_Loader_Filesystem $twigLoader */
     private $twigLoader;
-    private $defaultBackendTemplates = [
-        'layout' => '@HarmonyAdmin/default/layout.html.twig',
-        'menu' => '@HarmonyAdmin/default/menu.html.twig',
-        'edit' => '@HarmonyAdmin/default/edit.html.twig',
-        'list' => '@HarmonyAdmin/default/list.html.twig',
-        'new' => '@HarmonyAdmin/default/new.html.twig',
-        'show' => '@HarmonyAdmin/default/show.html.twig',
-        'exception' => '@HarmonyAdmin/default/exception.html.twig',
-        'flash_messages' => '@HarmonyAdmin/default/flash_messages.html.twig',
-        'paginator' => '@HarmonyAdmin/default/paginator.html.twig',
-        'field_array' => '@HarmonyAdmin/default/field_array.html.twig',
-        'field_association' => '@HarmonyAdmin/default/field_association.html.twig',
-        'field_bigint' => '@HarmonyAdmin/default/field_bigint.html.twig',
-        'field_boolean' => '@HarmonyAdmin/default/field_boolean.html.twig',
-        'field_date' => '@HarmonyAdmin/default/field_date.html.twig',
-        'field_dateinterval' => '@HarmonyAdmin/default/field_dateinterval.html.twig',
-        'field_datetime' => '@HarmonyAdmin/default/field_datetime.html.twig',
-        'field_datetimetz' => '@HarmonyAdmin/default/field_datetimetz.html.twig',
-        'field_decimal' => '@HarmonyAdmin/default/field_decimal.html.twig',
-        'field_email' => '@HarmonyAdmin/default/field_email.html.twig',
-        'field_file' => '@HarmonyAdmin/default/field_file.html.twig',
-        'field_float' => '@HarmonyAdmin/default/field_float.html.twig',
-        'field_guid' => '@HarmonyAdmin/default/field_guid.html.twig',
-        'field_id' => '@HarmonyAdmin/default/field_id.html.twig',
-        'field_image' => '@HarmonyAdmin/default/field_image.html.twig',
-        'field_json' => '@HarmonyAdmin/default/field_json.html.twig',
-        'field_json_array' => '@HarmonyAdmin/default/field_json_array.html.twig',
-        'field_integer' => '@HarmonyAdmin/default/field_integer.html.twig',
-        'field_object' => '@HarmonyAdmin/default/field_object.html.twig',
-        'field_percent' => '@HarmonyAdmin/default/field_percent.html.twig',
-        'field_raw' => '@HarmonyAdmin/default/field_raw.html.twig',
-        'field_simple_array' => '@HarmonyAdmin/default/field_simple_array.html.twig',
-        'field_smallint' => '@HarmonyAdmin/default/field_smallint.html.twig',
-        'field_string' => '@HarmonyAdmin/default/field_string.html.twig',
-        'field_tel' => '@HarmonyAdmin/default/field_tel.html.twig',
-        'field_text' => '@HarmonyAdmin/default/field_text.html.twig',
-        'field_time' => '@HarmonyAdmin/default/field_time.html.twig',
-        'field_toggle' => '@HarmonyAdmin/default/field_toggle.html.twig',
-        'field_url' => '@HarmonyAdmin/default/field_url.html.twig',
-        'label_empty' => '@HarmonyAdmin/default/label_empty.html.twig',
-        'label_inaccessible' => '@HarmonyAdmin/default/label_inaccessible.html.twig',
-        'label_null' => '@HarmonyAdmin/default/label_null.html.twig',
-        'label_undefined' => '@HarmonyAdmin/default/label_undefined.html.twig',
-    ];
+
+    /** @var array $defaultBackendTemplates */
+    private $defaultBackendTemplates
+        = [
+            'layout'             => '@HarmonyAdmin/default/layout.html.twig',
+            'menu'               => '@HarmonyAdmin/default/menu.html.twig',
+            'edit'               => '@HarmonyAdmin/default/edit.html.twig',
+            'list'               => '@HarmonyAdmin/default/list.html.twig',
+            'new'                => '@HarmonyAdmin/default/new.html.twig',
+            'show'               => '@HarmonyAdmin/default/show.html.twig',
+            'exception'          => '@HarmonyAdmin/default/exception.html.twig',
+            'flash_messages'     => '@HarmonyAdmin/default/flash_messages.html.twig',
+            'paginator'          => '@HarmonyAdmin/default/paginator.html.twig',
+            // fields
+            'field_array'        => '@HarmonyAdmin/fields/field_array.html.twig',
+            'field_association'  => '@HarmonyAdmin/fields/field_association.html.twig',
+            'field_bigint'       => '@HarmonyAdmin/fields/field_bigint.html.twig',
+            'field_boolean'      => '@HarmonyAdmin/fields/field_boolean.html.twig',
+            'field_date'         => '@HarmonyAdmin/fields/field_date.html.twig',
+            'field_dateinterval' => '@HarmonyAdmin/fields/field_dateinterval.html.twig',
+            'field_datetime'     => '@HarmonyAdmin/fields/field_datetime.html.twig',
+            'field_datetimetz'   => '@HarmonyAdmin/fields/field_datetimetz.html.twig',
+            'field_decimal'      => '@HarmonyAdmin/fields/field_decimal.html.twig',
+            'field_email'        => '@HarmonyAdmin/fields/field_email.html.twig',
+            'field_file'         => '@HarmonyAdmin/fields/field_file.html.twig',
+            'field_float'        => '@HarmonyAdmin/fields/field_float.html.twig',
+            'field_guid'         => '@HarmonyAdmin/fields/field_guid.html.twig',
+            'field_id'           => '@HarmonyAdmin/fields/field_id.html.twig',
+            'field_image'        => '@HarmonyAdmin/fields/field_image.html.twig',
+            'field_json'         => '@HarmonyAdmin/fields/field_json.html.twig',
+            'field_json_array'   => '@HarmonyAdmin/fields/field_json_array.html.twig',
+            'field_integer'      => '@HarmonyAdmin/fields/field_integer.html.twig',
+            'field_object'       => '@HarmonyAdmin/fields/field_object.html.twig',
+            'field_percent'      => '@HarmonyAdmin/fields/field_percent.html.twig',
+            'field_raw'          => '@HarmonyAdmin/fields/field_raw.html.twig',
+            'field_simple_array' => '@HarmonyAdmin/fields/field_simple_array.html.twig',
+            'field_smallint'     => '@HarmonyAdmin/fields/field_smallint.html.twig',
+            'field_string'       => '@HarmonyAdmin/fields/field_string.html.twig',
+            'field_tel'          => '@HarmonyAdmin/fields/field_tel.html.twig',
+            'field_text'         => '@HarmonyAdmin/fields/field_text.html.twig',
+            'field_time'         => '@HarmonyAdmin/fields/field_time.html.twig',
+            'field_toggle'       => '@HarmonyAdmin/fields/field_toggle.html.twig',
+            'field_url'          => '@HarmonyAdmin/fields/field_url.html.twig',
+            // labels
+            'label_empty'        => '@HarmonyAdmin/default/label_empty.html.twig',
+            'label_inaccessible' => '@HarmonyAdmin/default/label_inaccessible.html.twig',
+            'label_null'         => '@HarmonyAdmin/default/label_null.html.twig',
+            'label_undefined'    => '@HarmonyAdmin/default/label_undefined.html.twig',
+        ];
+
+    /** @var array $existingTemplates */
     private $existingTemplates = [];
 
+    /**
+     * TemplateConfigPass constructor.
+     *
+     * @param \Twig_Loader_Filesystem $twigLoader
+     */
     public function __construct(\Twig_Loader_Filesystem $twigLoader)
     {
         $this->twigLoader = $twigLoader;
     }
 
-    public function process(array $backendConfig)
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    public function process(array $backendConfig): array
     {
         $backendConfig = $this->processEntityTemplates($backendConfig);
         $backendConfig = $this->processDefaultTemplates($backendConfig);
@@ -84,7 +103,6 @@ class TemplateConfigPass implements ConfigPassInterface
      * @param array $backendConfig
      *
      * @return array
-     *
      * @throws \RuntimeException
      */
     private function processEntityTemplates(array $backendConfig)
@@ -99,14 +117,16 @@ class TemplateConfigPass implements ConfigPassInterface
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 $candidateTemplates = [
                     isset($entityConfig['templates'][$templateName]) ? $entityConfig['templates'][$templateName] : null,
-                    isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
-                    'harmony_admin/'.$entityName.'/'.$templateName.'.html.twig',
-                    'harmony_admin/'.$templateName.'.html.twig',
+                    isset($backendConfig['design']['templates'][$templateName]) ?
+                        $backendConfig['design']['templates'][$templateName] : null,
+                    'harmony_admin/' . $entityName . '/' . $templateName . '.html.twig',
+                    'harmony_admin/' . $templateName . '.html.twig',
                 ];
-                $templatePath = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
+                $templatePath       = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
 
                 if (null === $templatePath) {
-                    throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).', $templateName, $entityName, implode(', ', $candidateTemplates)));
+                    throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).',
+                        $templateName, $entityName, implode(', ', $candidateTemplates)));
                 }
 
                 $entityConfig['templates'][$templateName] = $templatePath;
@@ -128,8 +148,8 @@ class TemplateConfigPass implements ConfigPassInterface
                         // * app/Resources/views/harmony_admin/<entityName>/<templatePath>
                         // * app/Resources/views/harmony_admin/<templatePath>
                         $templatePath = $this->findFirstExistingTemplate([
-                            'harmony_admin/'.$entityName.'/'.$templatePath,
-                            'harmony_admin/'.$templatePath,
+                            'harmony_admin/' . $entityName . '/' . $templatePath,
+                            'harmony_admin/' . $templatePath,
                             $templatePath,
                         ]);
                     } else {
@@ -159,20 +179,22 @@ class TemplateConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function processDefaultTemplates(array $backendConfig)
+    private function processDefaultTemplates(array $backendConfig): array
     {
         // 1st level priority: harmony_admin.design.templates.<templateName> config option
         // 2nd level priority: app/Resources/views/harmony_admin/<templateName>.html.twig
         // 3rd level priority: @HarmonyAdmin/default/<templateName>.html.twig
         foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
             $candidateTemplates = [
-                isset($backendConfig['design']['templates'][$templateName]) ? $backendConfig['design']['templates'][$templateName] : null,
-                'harmony_admin/'.$templateName.'.html.twig',
+                isset($backendConfig['design']['templates'][$templateName]) ?
+                    $backendConfig['design']['templates'][$templateName] : null,
+                'harmony_admin/' . $templateName . '.html.twig',
             ];
-            $templatePath = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
+            $templatePath       = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
 
             if (null === $templatePath) {
-                throw new \RuntimeException(sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).', $templateName, implode(', ', $candidateTemplates)));
+                throw new \RuntimeException(sprintf('None of the templates defined for the global "%s" template of the backend exists (templates defined: %s).',
+                    $templateName, implode(', ', $candidateTemplates)));
             }
 
             $backendConfig['design']['templates'][$templateName] = $templatePath;
@@ -190,7 +212,7 @@ class TemplateConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function processFieldTemplates(array $backendConfig)
+    private function processFieldTemplates(array $backendConfig): array
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach (['list', 'show'] as $view) {
@@ -201,10 +223,10 @@ class TemplateConfigPass implements ConfigPassInterface
 
                     // needed to add support for immutable datetime/date/time fields
                     // (which are rendered using the same templates as their non immutable counterparts)
-                    if ('_immutable' === mb_substr($fieldMetadata['dataType'], -10)) {
-                        $fieldTemplateName = 'field_'.mb_substr($fieldMetadata['dataType'], 0, -10);
+                    if ('_immutable' === mb_substr($fieldMetadata['dataType'], - 10)) {
+                        $fieldTemplateName = 'field_' . mb_substr($fieldMetadata['dataType'], 0, - 10);
                     } else {
-                        $fieldTemplateName = 'field_'.$fieldMetadata['dataType'];
+                        $fieldTemplateName = 'field_' . $fieldMetadata['dataType'];
                     }
 
                     // primary key values are displayed unmodified to prevent common issues
@@ -227,16 +249,22 @@ class TemplateConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
+    /**
+     * @param array $templatePaths
+     *
+     * @return mixed|null|string|string[]
+     */
     private function findFirstExistingTemplate(array $templatePaths)
     {
         foreach ($templatePaths as $templatePath) {
             // template name normalization code taken from \Twig_Loader_Filesystem::normalizeName()
             $templatePath = preg_replace('#/{2,}#', '/', str_replace('\\', '/', $templatePath));
-            $namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE;
+            $namespace    = \Twig_Loader_Filesystem::MAIN_NAMESPACE;
 
             if (isset($templatePath[0]) && '@' === $templatePath[0]) {
                 if (false === $pos = strpos($templatePath, '/')) {
-                    throw new \LogicException(sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").', $templatePath));
+                    throw new \LogicException(sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").',
+                        $templatePath));
                 }
 
                 $namespace = substr($templatePath, 1, $pos - 1);

@@ -252,9 +252,9 @@
       {% set label = name|humanize %}
     {% endif %}
     <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-    <span class="input-span"></span>
     {{- widget|raw -}}
     {{- label is not same as(false) ? label|trans({}, translation_domain ?: harmony_admin.entity.translation_domain) -}}
+    <span class="input-span"></span>
     </label>
   {% endif %}
 {% endblock checkbox_radio_label %}

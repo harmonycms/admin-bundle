@@ -10,25 +10,35 @@ namespace Harmony\Bundle\AdminBundle\Configuration;
  */
 class ActionConfigPass implements ConfigPassInterface
 {
-    private $views = ['edit', 'list', 'new', 'show'];
-    private $defaultActionConfig = [
-        // either the name of a controller method or an application route (it depends on the 'type' option)
-        'name' => null,
-        // 'method' if the action is a controller method; 'route' if it's an application route
-        'type' => 'method',
-        // action label (displayed as link or button) (if 'null', autogenerate it)
-        'label' => null,
-        // the HTML title attribute of the action link (useful when action only displays its icon)
-        'title' => null,
-        // the CSS class applied to the button/link displayed by the action
-        'css_class' => null,
-        // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
-        'icon' => null,
-        // the value of the HTML 'target' attribute add to the links of the actions (e.g. '_blank')
-        'target' => '_self',
-    ];
 
-    public function process(array $backendConfig)
+    /** @var array $views */
+    private $views = ['edit', 'list', 'new', 'show'];
+
+    /** @var array $defaultActionConfig */
+    private $defaultActionConfig
+        = [
+            // either the name of a controller method or an application route (it depends on the 'type' option)
+            'name'      => null,
+            // 'method' if the action is a controller method; 'route' if it's an application route
+            'type'      => 'method',
+            // action label (displayed as link or button) (if 'null', autogenerate it)
+            'label'     => null,
+            // the HTML title attribute of the action link (useful when action only displays its icon)
+            'title'     => null,
+            // the CSS class applied to the button/link displayed by the action
+            'css_class' => null,
+            // the name of the FontAwesome icon to display next to the 'label' (doesn't include the 'fa-' prefix)
+            'icon'      => null,
+            // the value of the HTML 'target' attribute add to the links of the actions (e.g. '_blank')
+            'target'    => '_self',
+        ];
+
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    public function process(array $backendConfig): array
     {
         $backendConfig = $this->processDisabledActions($backendConfig);
         $backendConfig = $this->normalizeActionsConfig($backendConfig);
@@ -38,12 +48,18 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function processDisabledActions(array $backendConfig)
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function processDisabledActions(array $backendConfig): array
     {
         $actionsDisabledByBackend = $backendConfig['disabled_actions'];
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
-            $actionsDisabledByEntity = isset($entityConfig['disabled_actions']) ? $entityConfig['disabled_actions'] : [];
-            $disabledActions = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByEntity));
+            $actionsDisabledByEntity = isset($entityConfig['disabled_actions']) ? $entityConfig['disabled_actions'] :
+                [];
+            $disabledActions         = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByEntity));
 
             $backendConfig['entities'][$entityName]['disabled_actions'] = $disabledActions;
         }
@@ -54,14 +70,12 @@ class ActionConfigPass implements ConfigPassInterface
     /**
      * Transforms the different action configuration formats into a normalized
      * and expanded format. These are the two simple formats allowed:.
-     *
      * # Config format #1: no custom option
      * harmony_admin:
      *     entities:
      *         User:
      *             list:
      *                 actions: ['search', 'show', 'grantAccess']
-     *
      * # Config format #2: one or more actions define any of their options
      * harmony_admin:
      *     entities:
@@ -73,12 +87,13 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function normalizeActionsConfig(array $backendConfig)
+    private function normalizeActionsConfig(array $backendConfig): array
     {
         // first, normalize actions defined globally for the entire backend
         foreach ($this->views as $view) {
             $actionsConfig = $backendConfig[$view]['actions'];
-            $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the global "%s" view defined under "harmony_admin" option', $view));
+            $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig,
+                sprintf('the global "%s" view defined under "harmony_admin" option', $view));
             $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
 
             $backendConfig[$view]['actions'] = $actionsConfig;
@@ -88,7 +103,8 @@ class ActionConfigPass implements ConfigPassInterface
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
                 $actionsConfig = $entityConfig[$view]['actions'];
-                $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig, sprintf('the "%s" view of the "%s" entity', $view, $entityName));
+                $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig,
+                    sprintf('the "%s" view of the "%s" entity', $view, $entityName));
                 $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
 
                 $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
@@ -98,13 +114,20 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function doNormalizeActionsConfig(array $actionsConfig, $errorOrigin = '')
+    /**
+     * @param array  $actionsConfig
+     * @param string $errorOrigin
+     *
+     * @return array
+     */
+    private function doNormalizeActionsConfig(array $actionsConfig, $errorOrigin = ''): array
     {
         $normalizedConfig = [];
 
         foreach ($actionsConfig as $i => $actionConfig) {
             if (!is_string($actionConfig) && !is_array($actionConfig)) {
-                throw new \RuntimeException(sprintf('One of the actions defined by %s contains an invalid value (action config can only be a YAML string or hash).', $errorOrigin));
+                throw new \RuntimeException(sprintf('One of the actions defined by %s contains an invalid value (action config can only be a YAML string or hash).',
+                    $errorOrigin));
             }
 
             // config format #1
@@ -117,10 +140,11 @@ class ActionConfigPass implements ConfigPassInterface
             // 'name' is the only mandatory option for actions (it might
             // be missing when using the config format #2)
             if (!isset($actionConfig['name'])) {
-                throw new \RuntimeException(sprintf('One of the actions defined by %s does not define its name, which is the only mandatory option for actions.', $errorOrigin));
+                throw new \RuntimeException(sprintf('One of the actions defined by %s does not define its name, which is the only mandatory option for actions.',
+                    $errorOrigin));
             }
 
-            $actionName = $actionConfig['name'];
+            $actionName                    = $actionConfig['name'];
             $normalizedConfig[$actionName] = $actionConfig;
         }
 
@@ -132,7 +156,6 @@ class ActionConfigPass implements ConfigPassInterface
      * define just the options they want to change. For example:
      *   actions: ['delete', 'list'] just to redefine the order
      *   actions: [ { name: 'list', label: 'Listing' }] just to redefine the label.
-     *
      * For that reason, this method merges the full configuration of the default
      * actions with the new action configuration. This means that you get the
      * default value for any option that you don't explicitly set (e.g. the icon
@@ -143,14 +166,14 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function doNormalizeDefaultActionsConfig(array $actionsConfig, $view)
+    private function doNormalizeDefaultActionsConfig(array $actionsConfig, $view): array
     {
         $defaultActionsConfig = $this->getDefaultActionsConfig($view);
 
         foreach ($actionsConfig as $actionName => $actionConfig) {
             if (array_key_exists($actionName, $defaultActionsConfig)) {
                 // remove null config options but maintain empty options (this allows to set an empty label for the action)
-                $actionConfig = array_filter($actionConfig, function ($element) {
+                $actionConfig               = array_filter($actionConfig, function ($element) {
                     return null !== $element;
                 });
                 $actionsConfig[$actionName] = array_merge($defaultActionsConfig[$actionName], $actionConfig);
@@ -166,21 +189,25 @@ class ActionConfigPass implements ConfigPassInterface
      * wins over the global config (e.g. if backend removes 'delete' action in the
      * 'list' view but some action explicitly adds 'delete' in its 'list' view,
      * then that entity shows the 'delete' action and the others don't).
+     *
+     * @param array $backendConfig
+     *
+     * @return array
      */
-    private function resolveActionInheritance(array $backendConfig)
+    private function resolveActionInheritance(array $backendConfig): array
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
                 $defaultActions = $this->getDefaultActions($view);
                 $backendActions = $backendConfig[$view]['actions'];
-                $entityActions = $entityConfig[$view]['actions'];
+                $entityActions  = $entityConfig[$view]['actions'];
 
                 // filter actions removed in the global view configuration
                 foreach ($backendActions as $backendAction) {
                     if ('-' === $backendAction['name'][0]) {
                         $actionName = mb_substr($backendAction['name'], 1);
 
-                        unset($backendActions[$actionName], $backendActions['-'.$actionName]);
+                        unset($backendActions[$actionName], $backendActions['-' . $actionName]);
 
                         // unless the entity explicitly adds this globally removed action, remove it from the
                         // default actions config to avoid adding it to the entity later when merging everything
@@ -195,7 +222,8 @@ class ActionConfigPass implements ConfigPassInterface
                     if ('-' === $entityAction['name'][0]) {
                         $actionName = mb_substr($entityAction['name'], 1);
 
-                        unset($entityActions[$actionName], $entityActions['-'.$actionName], $defaultActions[$actionName], $backendActions[$actionName]);
+                        unset($entityActions[$actionName], $entityActions['-' .
+                            $actionName], $defaultActions[$actionName], $backendActions[$actionName]);
                     }
                 }
 
@@ -216,7 +244,12 @@ class ActionConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
-    private function processActionsConfig(array $backendConfig)
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     */
+    private function processActionsConfig(array $backendConfig): array
     {
         foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
@@ -224,7 +257,8 @@ class ActionConfigPass implements ConfigPassInterface
                     // 'name' value is used as the class method name or the Symfony route name
                     // check that its value complies with the PHP method name rules
                     if (!$this->isValidMethodName($actionName)) {
-                        throw new \InvalidArgumentException(sprintf('The name of the "%s" action defined in the "%s" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).', $actionName, $view, $entityName));
+                        throw new \InvalidArgumentException(sprintf('The name of the "%s" action defined in the "%s" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).',
+                            $actionName, $view, $entityName));
                     }
 
                     if (null === $actionConfig['label']) {
@@ -232,7 +266,7 @@ class ActionConfigPass implements ConfigPassInterface
                     }
 
                     // Add default classes ("action-{actionName}") to each action configuration
-                    $actionConfig['css_class'] .= ' action-'.$actionName;
+                    $actionConfig['css_class'] .= ' action-' . $actionName;
 
                     $backendConfig['entities'][$entityName][$view]['actions'][$actionName] = $actionConfig;
                 }
@@ -251,7 +285,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function getDefaultActionsConfig($view)
+    private function getDefaultActionsConfig($view): array
     {
         $actions = $this->doNormalizeActionsConfig([
             'delete' => [
@@ -293,16 +327,16 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return array
      */
-    private function getDefaultActions($view)
+    private function getDefaultActions($view): array
     {
-        $defaultActions = [];
+        $defaultActions       = [];
         $defaultActionsConfig = $this->getDefaultActionsConfig($view);
 
         // actions are displayed in the same order as defined in this array
         $actionsEnabledByView = [
             'edit' => ['delete', 'list'],
             'list' => ['edit', 'delete', 'new', 'search'],
-            'new' => ['list'],
+            'new'  => ['list'],
             'show' => ['edit', 'delete', 'list'],
         ];
 
@@ -320,7 +354,7 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return bool
      */
-    private function isValidMethodName($name)
+    private function isValidMethodName($name): bool
     {
         return 0 !== preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name);
     }
@@ -333,12 +367,18 @@ class ActionConfigPass implements ConfigPassInterface
      *
      * @return string
      */
-    private function humanizeString($content)
+    private function humanizeString($content): string
     {
         return ucfirst(mb_strtolower(trim(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $content))));
     }
 
-    private function reorderArrayItems(array $originalArray, array $newKeyOrder)
+    /**
+     * @param array $originalArray
+     * @param array $newKeyOrder
+     *
+     * @return array
+     */
+    private function reorderArrayItems(array $originalArray, array $newKeyOrder): array
     {
         $newArray = [];
         foreach ($newKeyOrder as $key) {

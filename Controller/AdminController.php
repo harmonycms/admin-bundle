@@ -734,7 +734,6 @@ class AdminController extends Controller
 
     /**
      * @return Response
-     * @throws \ErrorException
      */
     protected function redirectToReferrer(): Response
     {
@@ -775,7 +774,7 @@ class AdminController extends Controller
             ]);
         }
 
-        return $this->redirectToBackendHomepage();
+        return $this->redirectToRoute('admin');
     }
 
     /**

@@ -254,15 +254,17 @@ class ActionConfigPass implements ConfigPassInterface
     private function getDefaultActionsConfig($view)
     {
         $actions = $this->doNormalizeActionsConfig([
-            'delete' => ['name'      => 'delete',
-                         'label'     => 'action.delete',
-                         'icon'      => 'trash-o',
-                         'css_class' => 'btn btn-default'
+            'delete' => [
+                'name'      => 'delete',
+                'label'     => 'action.delete',
+                'icon'      => 'far fa-trash-alt',
+                'css_class' => 'btn btn-default'
             ],
-            'edit'   => ['name'      => 'edit',
-                         'label'     => 'action.edit',
-                         'icon'      => 'edit',
-                         'css_class' => 'btn btn-primary'
+            'edit'   => [
+                'name'      => 'edit',
+                'label'     => 'action.edit',
+                'icon'      => 'fas fa-edit',
+                'css_class' => 'btn btn-primary'
             ],
             'new'    => ['name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'],
             'search' => ['name' => 'search', 'label' => 'action.search'],

@@ -4,7 +4,7 @@ namespace Harmony\Bundle\AdminBundle\Form\Util;
 
 use Harmony\Bundle\AdminBundle\Form\Type\AutocompleteType;
 use Harmony\Bundle\AdminBundle\Form\Type\DividerType;
-use Harmony\Bundle\AdminBundle\Form\Type\FormType;
+use Harmony\Bundle\AdminBundle\Form\Type\FormType as DefaultFormType;
 use Harmony\Bundle\AdminBundle\Form\Type\GroupType;
 use Harmony\Bundle\AdminBundle\Form\Type\SectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -95,7 +95,7 @@ final class FormTypeHelper
             'timezone'                   => TimezoneType::class,
             'url'                        => UrlType::class,
             // HarmonyAdmin custom types
-            'harmony_admin'              => FormType::class,
+            'harmony_admin'              => DefaultFormType::class,
             'harmony_admin_autocomplete' => AutocompleteType::class,
             'harmony_admin_divider'      => DividerType::class,
             'harmony_admin_group'        => GroupType::class,

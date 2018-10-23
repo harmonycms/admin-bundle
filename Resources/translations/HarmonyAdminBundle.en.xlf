@@ -212,7 +212,7 @@
         <target>None</target>
       </trans-unit>
 
-      <!-- Exceptions -->
+      <!-- exceptions -->
       <trans-unit id="exception.entity_not_found">
         <source>exception.entity_not_found</source>
         <target>This item is no longer available.</target>
@@ -262,9 +262,11 @@
         <source>form.password_invalid</source>
         <target>The password fields must match.</target>
       </trans-unit>
-      <trans-unit id="form.">
-        <source>form.</source>
-        <target></target>
+
+      <!-- messages -->
+      <trans-unit id="flash.profile_success">
+        <source>flash.profile_success</source>
+        <target>Your profile was successfully updated</target>
       </trans-unit>
     </body>
   </file>

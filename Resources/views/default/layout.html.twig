@@ -64,8 +64,9 @@
 
             <div class="flexbox flex-1">
               <ul class="nav navbar-toolbar">
-                <li><a class="nav-link sidebar-toggler js-sidebar-toggler"><i class="fas fa-bars"
-                                                                              title="{{ 'toggle_navigation'|trans }}"></i></a>
+                <li><a class="nav-link sidebar-toggler js-sidebar-toggler">
+                    <i class="fas fa-bars" title="{{ 'toggle_navigation'|trans }}"></i>
+                  </a>
                 </li>
               </ul>
               {% block header_custom_menu %}
@@ -120,7 +121,11 @@
             <div id="sidebar-collapse">
               {% if app.user %}
                 <div class="admin-block d-flex">
-                  <div><img src="{{ asset('bundles/harmonyadmin/img/user-avatar.svg') }}" width="45px"></div>
+                  {% if is_granted('ROLE_ADMIN') %}
+                    <img src="{{ asset('bundles/harmonyadmin/img/admin-avatar.svg') }}" width="45px" height="45px">
+                  {% else %}
+                    <img src="{{ asset('bundles/harmonyadmin/img/user-avatar.svg') }}" width="45px" height="45px">
+                  {% endif %}
                   <div class="admin-info">
                     <div class="font-strong">
                       {{ app.user.username|default('user.unnamed'|trans) }}

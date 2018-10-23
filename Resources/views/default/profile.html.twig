@@ -14,7 +14,11 @@
       <div class="card">
         <div class="card-body text-center">
           <div class="m-t-20">
-            <img class="img-circle" src="{{ asset('bundles/harmonyadmin/img/user-avatar.svg') }}" width="128px">
+            {% if is_granted('ROLE_ADMIN') %}
+              <img src="{{ asset('bundles/harmonyadmin/img/admin-avatar.svg') }}" width="128px" height="128px">
+            {% else %}
+              <img src="{{ asset('bundles/harmonyadmin/img/user-avatar.svg') }}" width="128px" height="128px">
+            {% endif %}
           </div>
           <h5 class="font-strong m-b-10 m-t-10">{{ user.username }}</h5>
           <div class="m-b-20 text-muted">

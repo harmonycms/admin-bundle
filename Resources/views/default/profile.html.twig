@@ -7,3 +7,73 @@
     {{ 'user.profile'|trans }}
   {% endspaceless %}
 {% endblock %}
+
+{% block main %}
+  <div class="row">
+    <div class="col-lg-3 col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="m-t-20">
+            <img class="img-circle" src="{{ asset('bundles/harmonyadmin/img/user-avatar.svg') }}" width="128px">
+          </div>
+          <h5 class="font-strong m-b-10 m-t-10">{{ user.username }}</h5>
+          <div class="m-b-20 text-muted">
+            {% if is_granted('ROLE_ADMIN') %}
+              {{ 'user.administrator'|trans }}
+            {% elseif is_granted('ROLE_USER') %}
+              {{ 'user'|trans }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-9 col-md-8">
+      <div class="card">
+        <ul class="nav nav-tabs tabs-line">
+          <li class="nav-item">
+            <a class="nav-link active" href="#tab-1" data-toggle="tab" aria-expanded="true">Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#tab-2" data-toggle="tab" aria-expanded="false">Settings</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane card-body fade active show" id="tab-1" aria-expanded="true">
+            <div class="row">
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab-2" aria-expanded="false">
+            {{ form_start(form) }}
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6 form-group">
+                  {{ form_label(form.username) }}
+                  {{ form_widget(form.username, { 'attr': { 'class': 'form-control' } }) }}
+                </div>
+                <div class="col-sm-6 form-group">
+                  {{ form_label(form.email) }}
+                  {{ form_widget(form.email, { 'attr': { 'class': 'form-control' } }) }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 form-group">
+                  {{ form_label(form.password.first) }}
+                  {{ form_widget(form.password.first, { 'attr': { 'class': 'form-control' } }) }}
+                </div>
+                <div class="col-sm-6 form-group">
+                  {{ form_label(form.password.second) }}
+                  {{ form_widget(form.password.second, { 'attr': { 'class': 'form-control' } }) }}
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              {{ form_widget(form.save, { 'attr': { 'class': 'btn btn-default' } }) }}
+            </div>
+            {{ form_end(form) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock main %}

@@ -240,7 +240,32 @@
         <source>__name__label__</source>
         <target>__name__label__</target>
       </trans-unit>
-
+      
+      <!-- security -->
+      <trans-unit id="form.username">
+        <source>form.username</source>
+        <target>Username</target>
+      </trans-unit>
+      <trans-unit id="form.email">
+        <source>form.email</source>
+        <target>Email</target>
+      </trans-unit>
+      <trans-unit id="form.new_password">
+        <source>form.new_password</source>
+        <target>New password</target>
+      </trans-unit>
+      <trans-unit id="form.new_password_confirmation">
+        <source>form.new_password_confirmation</source>
+        <target>Repeat new password</target>
+      </trans-unit>
+      <trans-unit id="form.password_invalid">
+        <source>form.password_invalid</source>
+        <target>The password fields must match.</target>
+      </trans-unit>
+      <trans-unit id="form.">
+        <source>form.</source>
+        <target></target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -2,7 +2,6 @@
 
 namespace Harmony\Bundle\AdminBundle\Form\Type;
 
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -17,8 +16,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @package Harmony\Bundle\AdminBundle\Form\Type
  */
-class UserType extends AbstractType
+class ProfileType extends AbstractType
 {
+
+    /** @var string $class */
+    protected $class;
+
+    /**
+     * ProfileType constructor.
+     *
+     * @param string $class The User class name
+     */
+    public function __construct(string $class)
+    {
+        $this->class = $class;
+    }
 
     /**
      * Builds the form.
@@ -51,6 +63,6 @@ class UserType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => User::class, 'translation_domain' => 'HarmonyAdminBundle']);
+        $resolver->setDefaults(['data_class' => $this->class, 'translation_domain' => 'HarmonyAdminBundle']);
     }
 }

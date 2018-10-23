@@ -3,7 +3,7 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use FOS\UserBundle\Doctrine\UserManager;
-use Harmony\Bundle\AdminBundle\Form\Type\UserType;
+use Harmony\Bundle\AdminBundle\Form\Type\ProfileType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,16 +25,14 @@ class UserController extends Controller
      */
     public function profile(Request $request): Response
     {
-        $form = $this->createForm(UserType::class, $this->getUser());
+        $form = $this->createForm(ProfileType::class, $this->getUser());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user          = $form->getData();
-            $entityManager = $this->getDoctrine()->getManager();
+            $user = $form->getData();
             /** @var UserManager $userManager */
             $userManager = $this->get('fos_user.user_manager');
-            $userManager->updatePassword($user);
-            $entityManager->flush();
+            $userManager->updateUser($user);
 
             $this->addFlash('success', 'flash.profile_success');
 

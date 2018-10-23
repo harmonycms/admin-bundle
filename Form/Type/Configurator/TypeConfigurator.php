@@ -10,11 +10,17 @@ use Symfony\Component\Form\FormConfigInterface;
  */
 final class TypeConfigurator implements TypeConfiguratorInterface
 {
+
     /**
      * @var ConfigManager
      */
     private $configManager;
 
+    /**
+     * TypeConfigurator constructor.
+     *
+     * @param ConfigManager $configManager
+     */
     public function __construct(ConfigManager $configManager)
     {
         $this->configManager = $configManager;

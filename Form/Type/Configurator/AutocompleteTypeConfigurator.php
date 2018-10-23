@@ -3,7 +3,7 @@
 namespace Harmony\Bundle\AdminBundle\Form\Type\Configurator;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminAutocompleteType;
+use Harmony\Bundle\AdminBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\FormConfigInterface;
 
 /**
@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormConfigInterface;
  */
 class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
 {
+
     /**
      * {@inheritdoc}
      */
@@ -26,7 +27,8 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
         }
 
         // by default, allow to autocomplete multiple values for OneToMany and ManyToMany associations
-        if (!isset($options['multiple']) && isset($metadata['associationType']) && $metadata['associationType'] & ClassMetadata::TO_MANY) {
+        if (!isset($options['multiple']) && isset($metadata['associationType']) &&
+            $metadata['associationType'] & ClassMetadata::TO_MANY) {
             $options['multiple'] = true;
         }
 
@@ -44,7 +46,7 @@ class AutocompleteTypeConfigurator implements TypeConfiguratorInterface
     {
         $supportedTypes = [
             'harmony_admin_autocomplete',
-            HarmonyAdminAutocompleteType::class,
+            AutocompleteType::class,
         ];
 
         return \in_array($type, $supportedTypes, true);

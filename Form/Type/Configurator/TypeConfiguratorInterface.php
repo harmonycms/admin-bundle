@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormConfigInterface;
  */
 interface TypeConfiguratorInterface
 {
+
     /**
      * Configure the options for this type.
      *

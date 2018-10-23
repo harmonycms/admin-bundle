@@ -2,11 +2,11 @@
 
 namespace Harmony\Bundle\AdminBundle\Form\Util;
 
-use Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminAutocompleteType;
-use Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminDividerType;
-use Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminFormType;
-use Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminGroupType;
-use Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminSectionType;
+use Harmony\Bundle\AdminBundle\Form\Type\AutocompleteType;
+use Harmony\Bundle\AdminBundle\Form\Type\DividerType;
+use Harmony\Bundle\AdminBundle\Form\Type\FormType;
+use Harmony\Bundle\AdminBundle\Form\Type\GroupType;
+use Harmony\Bundle\AdminBundle\Form\Type\SectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -95,11 +95,11 @@ final class FormTypeHelper
             'timezone'                   => TimezoneType::class,
             'url'                        => UrlType::class,
             // HarmonyAdmin custom types
-            'harmony_admin'              => HarmonyAdminFormType::class,
-            'harmony_admin_autocomplete' => HarmonyAdminAutocompleteType::class,
-            'harmony_admin_divider'      => HarmonyAdminDividerType::class,
-            'harmony_admin_group'        => HarmonyAdminGroupType::class,
-            'harmony_admin_section'      => HarmonyAdminSectionType::class,
+            'harmony_admin'              => FormType::class,
+            'harmony_admin_autocomplete' => AutocompleteType::class,
+            'harmony_admin_divider'      => DividerType::class,
+            'harmony_admin_group'        => GroupType::class,
+            'harmony_admin_section'      => SectionType::class,
             // Popular third-party bundles types
             'ckeditor'                   => 'Ivory\\CKEditorBundle\\Form\\Type\\CKEditorType',
             'fos_ckeditor'               => 'FOS\\CKEditorBundle\\Form\\Type\\CKEditorType',

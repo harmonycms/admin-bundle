@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class HarmonyAdminFormType extends AbstractType
+class FormType extends AbstractType
 {
 
     /** @var ConfigManager $configManager */
@@ -69,7 +69,7 @@ class HarmonyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (in_array($formFieldType, ['harmony_admin_group', HarmonyAdminGroupType::class])) {
+            if (in_array($formFieldType, ['harmony_admin_group', GroupType::class])) {
                 $metadata['form_tab']          = $currentFormTab ?: null;
                 $currentFormGroup              = $metadata['fieldName'];
                 $formGroups[$currentFormGroup] = $metadata;
@@ -81,7 +81,7 @@ class HarmonyAdminFormType extends AbstractType
             // to the form. Instead, consider it the current form group (this is
             // applied to the form fields defined after it) and store its details
             // in a property to get them in form template
-            if (\in_array($formFieldType, ['harmony_admin_tab', HarmonyAdminTabType::class])) {
+            if (\in_array($formFieldType, ['harmony_admin_tab', AdminTabType::class])) {
                 // The first tab should be marked as active by default
                 $metadata['active'] = 0 === \count($formTabs);
                 $metadata['errors'] = 0;

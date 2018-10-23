@@ -16,10 +16,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
-class HarmonyAdminAutocompleteType extends AbstractType implements DataMapperInterface
+class AutocompleteType extends AbstractType implements DataMapperInterface
 {
+
     private $configManager;
 
+    /**
+     * AutocompleteType constructor.
+     *
+     * @param ConfigManager $configManager
+     */
     public function __construct(ConfigManager $configManager)
     {
         $this->configManager = $configManager;
@@ -30,9 +36,7 @@ class HarmonyAdminAutocompleteType extends AbstractType implements DataMapperInt
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->addEventSubscriber(new HarmonyAdminAutocompleteSubscriber())
-            ->setDataMapper($this);
+        $builder->addEventSubscriber(new HarmonyAdminAutocompleteSubscriber())->setDataMapper($this);
     }
 
     /**
@@ -41,7 +45,8 @@ class HarmonyAdminAutocompleteType extends AbstractType implements DataMapperInt
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         if (null === $config = $this->configManager->getEntityConfigByClass($options['class'])) {
-            throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).', $options['class'], $form->getName()));
+            throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).',
+                $options['class'], $form->getName()));
         }
 
         $view->vars['autocomplete_entity_name'] = $config['name'];
@@ -53,7 +58,7 @@ class HarmonyAdminAutocompleteType extends AbstractType implements DataMapperInt
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // Add a custom block prefix to inner field to ease theming:
-        array_splice($view['autocomplete']->vars['block_prefixes'], -1, 0, 'harmony_admin_autocomplete_inner');
+        array_splice($view['autocomplete']->vars['block_prefixes'], - 1, 0, 'harmony_admin_autocomplete_inner');
     }
 
     /**
@@ -62,7 +67,7 @@ class HarmonyAdminAutocompleteType extends AbstractType implements DataMapperInt
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'multiple' => false,
+            'multiple'       => false,
             // force display errors on this form field
             'error_bubbling' => false,
         ]);

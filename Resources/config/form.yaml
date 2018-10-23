@@ -1,28 +1,28 @@
 services:
   harmony_admin.form.type:
-    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminFormType
+    class: Harmony\Bundle\AdminBundle\Form\Type\FormType
     tags:
     - { name: form.type, alias: harmony_admin }
     arguments: ['@harmony_admin.config.manager', {  }]
 
   harmony_admin.form.type.autocomplete:
-    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminAutocompleteType
+    class: Harmony\Bundle\AdminBundle\Form\Type\AutocompleteType
     tags:
     - { name: form.type, alias: harmony_admin_autocomplete }
     arguments: ['@harmony_admin.config.manager']
 
   harmony_admin.form.type.divider:
-    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminDividerType
+    class: Harmony\Bundle\AdminBundle\Form\Type\DividerType
     tags:
     - { name: form.type, alias: harmony_admin_divider }
 
   harmony_admin.form.type.section:
-    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminSectionType
+    class: Harmony\Bundle\AdminBundle\Form\Type\SectionType
     tags:
     - { name: form.type, alias: harmony_admin_section }
 
   harmony_admin.form.type.group:
-    class: Harmony\Bundle\AdminBundle\Form\Type\HarmonyAdminGroupType
+    class: Harmony\Bundle\AdminBundle\Form\Type\GroupType
     tags:
     - { name: form.type, alias: harmony_admin_group }
 

@@ -23,8 +23,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root(HarmonyCoreExtension::ALIAS);
+        $treeBuilder = new TreeBuilder(HarmonyCoreExtension::ALIAS);
+        $rootNode    = $treeBuilder->getRoot();
 
         $rootNode
             ->ignoreExtraKeys(true)
@@ -32,7 +32,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('admin')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('site_name')
+                         ->scalarNode('site_name')
                             ->defaultValue('HarmonyAdmin')
                             ->info('The name displayed as the title of the administration zone (e.g. company name, project name).')
                         ->end()
@@ -144,9 +144,7 @@ class Configuration implements ConfigurationInterface
      */
     protected function addDashboard()
     {
-        $treeBuilder = new TreeBuilder();
-        $node        = $treeBuilder->root('dashboard');
-
+        $node = (new TreeBuilder('dashboard'))->getRoot();
         $node
             ->addDefaultsIfNotSet()
             ->children()
@@ -171,9 +169,7 @@ class Configuration implements ConfigurationInterface
      */
     private function addFormats()
     {
-        $treeBuilder = new TreeBuilder();
-        $node        = $treeBuilder->root('formats');
-
+        $node = (new TreeBuilder('formats'))->getRoot();
         $node
             ->addDefaultsIfNotSet()
             ->children()
@@ -212,9 +208,7 @@ class Configuration implements ConfigurationInterface
      */
     private function addDesignSection()
     {
-        $treeBuilder = new TreeBuilder();
-        $node        = $treeBuilder->root('design');
-
+        $node = (new TreeBuilder('design'))->getRoot();
         $node
             ->addDefaultsIfNotSet()
             ->children()
@@ -376,9 +370,7 @@ class Configuration implements ConfigurationInterface
      */
     private function addEntitiesSection()
     {
-        $treeBuilder = new TreeBuilder();
-        $node        = $treeBuilder->root('entities');
-
+        $node = (new TreeBuilder('entities'))->getRoot();
         $node
             ->normalizeKeys(false)
             ->useAttributeAsKey('name', false)

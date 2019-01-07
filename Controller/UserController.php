@@ -4,7 +4,7 @@ namespace Harmony\Bundle\AdminBundle\Controller;
 
 use FOS\UserBundle\Doctrine\UserManager;
 use Harmony\Bundle\AdminBundle\Form\Type\ProfileType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,8 +14,21 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @package Harmony\Bundle\AdminBundle\Controller
  */
-class UserController extends Controller
+class UserController extends AbstractController
 {
+
+    /** @var UserManager $userManager */
+    protected $userManager;
+
+    /**
+     * UserController constructor.
+     *
+     * @param UserManager $userManager
+     */
+    public function __construct(UserManager $userManager)
+    {
+        $this->userManager = $userManager;
+    }
 
     /**
      * @Route("/profile", name="admin_profile")
@@ -30,9 +43,7 @@ class UserController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
-            /** @var UserManager $userManager */
-            $userManager = $this->get('fos_user.user_manager');
-            $userManager->updateUser($user);
+            $this->userManager->updateUser($user);
 
             $this->addFlash('success', 'flash.profile_success');
 

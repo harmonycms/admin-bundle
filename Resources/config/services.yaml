@@ -119,3 +119,9 @@ services:
   harmony_admin.property_accessor:
     alias: 'property_accessor'
     public: true
+
+  Harmony\Bundle\AdminBundle\Controller\UserController:
+    arguments: ['@fos_user.user_manager.default']
+    calls:
+      - [setContainer, ['@service_container']]
+    tags: ['controller.service_arguments']

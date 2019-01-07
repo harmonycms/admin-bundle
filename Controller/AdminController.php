@@ -9,7 +9,7 @@ use Harmony\Bundle\AdminBundle\Exception\EntityRemoveException;
 use Harmony\Bundle\AdminBundle\Exception\ForbiddenActionException;
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
 use Pagerfanta\Pagerfanta;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @package Harmony\Bundle\AdminBundle\Controller
  */
-class AdminController extends Controller
+class AdminController extends AbstractController
 {
 
     use InitializeTrait;

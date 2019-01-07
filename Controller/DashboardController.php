@@ -4,7 +4,7 @@ namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\AdminBundle\Exception\ForbiddenActionException;
 use Harmony\Bundle\CoreBundle\DependencyInjection\HarmonyCoreExtension;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @package Harmony\Bundle\AdminBundle\Controller
  */
-class DashboardController extends Controller
+class DashboardController extends AbstractController
 {
 
     use InitializeTrait;

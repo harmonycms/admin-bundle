@@ -19,6 +19,9 @@ harmony:
           - 'enabled'
           - { property: 'plainPassword', type: 'text', type_options: { required: false } }
           - { property: 'roles' }
+      Settings:
+        class: Harmony\Bundle\CoreBundle\Entity\Settings
+        label: 'Settings'
     # Design
     design:
       menu:
@@ -31,6 +34,9 @@ harmony:
         icon: 'fas fa-user-cog'
         children:
         - { label: 'Users', entity: 'User' }
+      - label: 'Settings'
+        entity: 'Settings'
+        icon: 'fas fa-cogs'
     # Dashboard
     dashboard:
       blocks:

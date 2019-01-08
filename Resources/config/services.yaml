@@ -127,7 +127,7 @@ services:
     tags: ['controller.service_arguments']
 
   Harmony\Bundle\AdminBundle\Manager\SettingsManager:
-    arguments: ['@fos_user.object_manager']
+    arguments: ['@fos_user.object_manager', '%harmony%']
 
   Harmony\Bundle\AdminBundle\Form\Type\SettingsType:
     arguments: ['%harmony%']

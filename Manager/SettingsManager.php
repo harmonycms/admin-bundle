@@ -4,8 +4,9 @@ namespace Harmony\Bundle\AdminBundle\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
+use FOS\UserBundle\Model\UserInterface;
 use Harmony\Bundle\CoreBundle\Entity\Settings;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Harmony\Bundle\CoreBundle\Manager\SettingsManagerInterface;
 
 /**
  * Class SettingsManager
@@ -69,8 +70,8 @@ class SettingsManager implements SettingsManagerInterface
             //Do not break here. Try to fetch the users settings
             case SettingsManagerInterface::SCOPE_USER:
                 if (null !== $user) {
-                    if ($this->userSettings[$user->getSettingIdentifier()][$name] !== null) {
-                        $value = $this->userSettings[$user->getSettingIdentifier()][$name];
+                    if ($this->userSettings[$user->getId()][$name] !== null) {
+                        $value = $this->userSettings[$user->getId()][$name];
                     }
                 }
                 break;
@@ -86,7 +87,7 @@ class SettingsManager implements SettingsManagerInterface
      *
      * @return array
      */
-    public function all(UserInterface $user = null)
+    public function all(UserInterface $user = null): array
     {
         $this->loadSettings($user);
 
@@ -94,7 +95,7 @@ class SettingsManager implements SettingsManagerInterface
             return $this->globalSettings;
         }
 
-        $settings = $this->userSettings[$user->getSettingIdentifier()];
+        $settings = $this->userSettings[$user->getId()];
 
         // If some user setting is not defined, please use the value from global
         foreach ($settings as $key => $value) {
@@ -116,7 +117,7 @@ class SettingsManager implements SettingsManagerInterface
      * @return SettingsManagerInterface
      * @throws \Exception
      */
-    public function set($name, $value, UserInterface $user = null)
+    public function set($name, $value, UserInterface $user = null): SettingsManagerInterface
     {
         $this->setWithoutFlush($name, $value, $user);
 
@@ -132,7 +133,7 @@ class SettingsManager implements SettingsManagerInterface
      * @return SettingsManagerInterface
      * @throws \Exception
      */
-    public function setMany(array $settings, UserInterface $user = null)
+    public function setMany(array $settings, UserInterface $user = null): SettingsManagerInterface
     {
         foreach ($settings as $name => $value) {
             $this->setWithoutFlush($name, $value, $user);
@@ -150,7 +151,7 @@ class SettingsManager implements SettingsManagerInterface
      * @return SettingsManagerInterface
      * @throws \Exception
      */
-    public function clear($name, UserInterface $user = null)
+    public function clear($name, UserInterface $user = null): SettingsManagerInterface
     {
         return $this->set($name, null, $user);
     }
@@ -165,7 +166,7 @@ class SettingsManager implements SettingsManagerInterface
      * @return SettingsManager
      * @throws \Exception
      */
-    private function setWithoutFlush($name, $value, UserInterface $user = null)
+    private function setWithoutFlush(string $name, $value, UserInterface $user = null): SettingsManager
     {
         $this->validateSetting($name, $user);
         $this->loadSettings($user);
@@ -173,7 +174,7 @@ class SettingsManager implements SettingsManagerInterface
         if ($user === null) {
             $this->globalSettings[$name] = $value;
         } else {
-            $this->userSettings[$user->getSettingIdentifier()][$name] = $value;
+            $this->userSettings[$user->getId()][$name] = $value;
         }
 
         return $this;
@@ -187,13 +188,13 @@ class SettingsManager implements SettingsManagerInterface
      *
      * @return SettingsManager
      */
-    private function flush($names, UserInterface $user = null)
+    private function flush($names, UserInterface $user = null): SettingsManager
     {
         $names = (array)$names;
 
         $settings = $this->repository->findBy([
             'name'    => $names,
-            'ownerId' => $user === null ? null : $user->getSettingIdentifier(),
+            'ownerId' => $user ?? $user->getId(),
         ]);
 
         // Assert: $settings might be a smaller set than $names
@@ -215,7 +216,7 @@ class SettingsManager implements SettingsManagerInterface
                 $setting = new Settings();
                 $setting->setName($name);
                 if ($user !== null) {
-                    $setting->setOwnerId($user->getSettingIdentifier());
+                    $setting->setOwnerId($user->getId());
                 }
                 $this->em->persist($setting);
             }
@@ -236,13 +237,15 @@ class SettingsManager implements SettingsManagerInterface
      *
      * @return Settings|null
      */
-    protected function findSettingByName($haystack, $needle)
+    protected function findSettingByName(array $haystack, string $needle): ?Settings
     {
         foreach ($haystack as $setting) {
             if ($setting->getName() === $needle) {
                 return $setting;
             }
         }
+
+        return null;
     }
 
     /**
@@ -254,7 +257,7 @@ class SettingsManager implements SettingsManagerInterface
      * @return SettingsManager
      * @throws \Exception
      */
-    private function validateSetting($name, UserInterface $user = null)
+    private function validateSetting(string $name, UserInterface $user = null)
     {
         // Name validation
         if (!is_string($name) || !array_key_exists($name, $this->settingsConfiguration)) {
@@ -280,7 +283,7 @@ class SettingsManager implements SettingsManagerInterface
      *
      * @return SettingsManager
      */
-    private function loadSettings(UserInterface $user = null)
+    private function loadSettings(UserInterface $user = null): SettingsManager
     {
         // Global settings
         if ($this->globalSettings === null) {
@@ -289,8 +292,8 @@ class SettingsManager implements SettingsManagerInterface
 
         // User settings
         if ($user !== null &&
-            ($this->userSettings === null || !array_key_exists($user->getSettingIdentifier(), $this->userSettings))) {
-            $this->userSettings[$user->getSettingIdentifier()] = $this->getSettingsFromRepository($user);
+            ($this->userSettings === null || !array_key_exists($user->getId(), $this->userSettings))) {
+            $this->userSettings[$user->getId()] = $this->getSettingsFromRepository($user);
         }
 
         return $this;
@@ -303,7 +306,7 @@ class SettingsManager implements SettingsManagerInterface
      *
      * @return array
      */
-    private function getSettingsFromRepository(UserInterface $user = null)
+    private function getSettingsFromRepository(UserInterface $user = null): array
     {
         $settings = [];
 
@@ -319,7 +322,7 @@ class SettingsManager implements SettingsManagerInterface
 
         /** @var Settings $setting */
         foreach ($this->repository->findBy([
-            'ownerId' => $user === null ? null : $user->getSettingIdentifier()
+            'ownerId' => $user === null ? null : $user->getId()
         ]) as $setting) {
             if (array_key_exists($setting->getName(), $settings)) {
                 $settings[$setting->getName()] = unserialize($setting->getValue());

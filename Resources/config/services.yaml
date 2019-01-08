@@ -127,10 +127,10 @@ services:
     tags: ['controller.service_arguments']
 
   Harmony\Bundle\AdminBundle\Manager\SettingsManager:
-    arguments: ['@fos_user.object_manager', '%harmony%']
+    arguments: ['@fos_user.object_manager', '%harmony.settings%']
 
   Harmony\Bundle\AdminBundle\Form\Type\SettingsType:
-    arguments: ['%harmony%']
+    arguments: ['%harmony.settings%']
     tags:
       - { name: form.type, alias: Harmony\Bundle\AdminBundle\Form\Type\SettingsType }
 

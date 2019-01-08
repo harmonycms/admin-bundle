@@ -2,13 +2,13 @@
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
+use FOS\UserBundle\Model\UserInterface;
 use Harmony\Bundle\AdminBundle\Form\Type\SettingsType;
-use Harmony\Bundle\AdminBundle\Manager\SettingsManagerInterface;
+use Harmony\Bundle\CoreBundle\Manager\SettingsManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Class SettingsController
@@ -58,7 +58,9 @@ class SettingsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->settingsManager->setMany($form->getData(), $user);
 
+            return $this->redirect($request->getUri());
         }
 
         return $this->render('@HarmonyAdmin\settings\index.html.twig', ['form' => $form->createView()]);

@@ -2,7 +2,6 @@
 
 namespace Harmony\Bundle\AdminBundle\Form\Type;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,17 +18,14 @@ class SettingsType extends AbstractType
     /** @var array $settingsConfiguration */
     protected $settingsConfiguration;
 
-    /** @var ParameterBagInterface $parameterBag */
-    protected $parameterBag;
-
     /**
      * SettingsType constructor.
      *
-     * @param ParameterBagInterface $parameterBag
+     * @param array $settingsConfiguration
      */
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(array $settingsConfiguration)
     {
-        $this->parameterBag = $parameterBag;
+        $this->settingsConfiguration = $settingsConfiguration;
     }
 
     /**

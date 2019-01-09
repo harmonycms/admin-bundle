@@ -194,7 +194,7 @@ class SettingsManager implements SettingsManagerInterface
 
         $settings = $this->repository->findBy([
             'name'    => $names,
-            'ownerId' => $user ?? $user->getId(),
+            'ownerId' => null === $user ? null : $user->getId()
         ]);
 
         // Assert: $settings might be a smaller set than $names

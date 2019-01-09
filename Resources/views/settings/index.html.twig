@@ -1,3 +1,5 @@
+{% form_theme form with harmony_admin_config('design.form_theme') %}
+
 {% extends '@HarmonyAdmin/default/layout.html.twig' %}
 
 {% trans_default_domain 'HarmonyAdminBundle' %}
@@ -8,3 +10,8 @@
   {% endspaceless %}
 {% endblock %}
 
+{% block main %}
+  {% block entity_form %}
+    {{ form(form, { 'attr': { 'class': 'card' } }) }}
+  {% endblock entity_form %}
+{% endblock %}

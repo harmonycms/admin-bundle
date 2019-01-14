@@ -126,16 +126,8 @@ services:
       - [setContainer, ['@service_container']]
     tags: ['controller.service_arguments']
 
-  Harmony\Bundle\AdminBundle\Manager\SettingsManager:
-    arguments: ['@fos_user.object_manager', '%harmony.settings%']
-
-  Harmony\Bundle\AdminBundle\Form\Type\SettingsType:
-    arguments: ['%harmony.settings%']
-    tags:
-      - { name: form.type, alias: Harmony\Bundle\AdminBundle\Form\Type\SettingsType }
-
   Harmony\Bundle\AdminBundle\Controller\SettingsController:
-    arguments: ['@Harmony\Bundle\AdminBundle\Manager\SettingsManager']
+    arguments: ['@Helis\SettingsManagerBundle\Settings\SettingsManager']
     calls:
       - [setContainer, ['@service_container']]
     tags: ['controller.service_arguments']

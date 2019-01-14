@@ -3,8 +3,8 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use FOS\UserBundle\Model\UserInterface;
-use Harmony\Bundle\AdminBundle\Form\Type\SettingsType;
-use Harmony\Bundle\CoreBundle\Manager\SettingsManagerInterface;
+use Helis\SettingsManagerBundle\Settings\SettingsManager;
+use Helis\SettingsManagerBundle\Validator\Constraints\SettingType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,15 +20,15 @@ class SettingsController extends AbstractController
 
     use InitializeTrait;
 
-    /** @var SettingsManagerInterface $settingsManager */
+    /** @var SettingsManager $settingsManager */
     protected $settingsManager;
 
     /**
      * SettingsController constructor.
      *
-     * @param SettingsManagerInterface $settingsManager
+     * @param SettingsManager $settingsManager
      */
-    public function __construct(SettingsManagerInterface $settingsManager)
+    public function __construct(SettingsManager $settingsManager)
     {
         $this->settingsManager = $settingsManager;
     }
@@ -54,7 +54,7 @@ class SettingsController extends AbstractController
      */
     protected function manage(Request $request, UserInterface $user = null): Response
     {
-        $form = $this->createForm(SettingsType::class, $this->settingsManager->all($user));
+        $form = $this->createForm(SettingType::class, $this->settingsManager->all($user));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

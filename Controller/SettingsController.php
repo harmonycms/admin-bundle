@@ -43,18 +43,21 @@ class SettingsController extends AbstractController
     public function index(Request $request): Response
     {
         $this->initialize($request);
-
         $settings = $this->settingsManager->getSettingsByDomain(['default']);
 
         $form = $this->createFormBuilder(['settings' => $settings]);
-        $form->add('settings', CollectionType::class, ['entry_type' => SettingFormType::class]);
+        $form->add('settings', CollectionType::class, [
+            'entry_type' => SettingFormType::class,
+        ]);
         $form->add('edit', SubmitType::class);
         $form = $form->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $setting = $form->getData();
-            $this->settingsManager->update($setting);
+            $data = $form->getData();
+            foreach ($data['settings'] as $key => $setting) {
+                $this->settingsManager->update($setting);
+            }
 
             return $this->redirectToRoute('settings');
         }

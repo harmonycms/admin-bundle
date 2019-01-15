@@ -13,8 +13,17 @@
     <div class="row">
       <div class="col-12">
         {{ form_start(form) }}
-        {{ form_widget(form.settings) }}
-        {{ form_end(form) }}
+        {{ form_widget(form._token) }}
+
+        {{ form_label(form.settings.site_name) }}
+        {{ form_widget(form.settings.site_name.data) }}
+
+        {{ form_label(form.settings.theme) }}
+        {{ form_widget(form.settings.theme.data) }}
+
+        {{ form_row(form.edit) }}
+
+        {{ form_end(form, {'render_rest': false}) }}
       </div>
     </div>
   </div>

@@ -2,10 +2,11 @@
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
-use FOS\UserBundle\Model\UserInterface;
+use Helis\SettingsManagerBundle\Form\SettingFormType;
 use Helis\SettingsManagerBundle\Settings\SettingsManager;
-use Helis\SettingsManagerBundle\Validator\Constraints\SettingType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,26 +44,23 @@ class SettingsController extends AbstractController
     {
         $this->initialize($request);
 
-        return $this->manage($request);
-    }
+        $settings = $this->settingsManager->getSettingsByDomain(['default']);
 
-    /**
-     * @param Request            $request
-     * @param UserInterface|null $user
-     *
-     * @return Response
-     */
-    protected function manage(Request $request, UserInterface $user = null): Response
-    {
-        $form = $this->createForm(SettingType::class, $this->settingsManager->all($user));
+        $form = $this->createFormBuilder(['settings' => $settings]);
+        $form->add('settings', CollectionType::class, ['entry_type' => SettingFormType::class]);
+        $form->add('edit', SubmitType::class);
+        $form = $form->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->settingsManager->setMany($form->getData(), $user);
+            $setting = $form->getData();
+            $this->settingsManager->update($setting);
 
-            return $this->redirect($request->getUri());
+            return $this->redirectToRoute('settings');
         }
 
-        return $this->render('@HarmonyAdmin\settings\index.html.twig', ['form' => $form->createView()]);
+        return $this->render('@HarmonyAdmin\settings\index.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }

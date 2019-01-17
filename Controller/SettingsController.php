@@ -2,11 +2,9 @@
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
-use Helis\SettingsManagerBundle\Form\SettingFormType;
+use Harmony\Bundle\CoreBundle\Form\Type\SettingsType;
 use Helis\SettingsManagerBundle\Settings\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,12 +43,7 @@ class SettingsController extends AbstractController
         $this->initialize($request);
         $settings = $this->settingsManager->getSettingsByDomain(['default']);
 
-        $form = $this->createFormBuilder(['settings' => $settings]);
-        $form->add('settings', CollectionType::class, [
-            'entry_type' => SettingFormType::class,
-        ]);
-        $form->add('edit', SubmitType::class);
-        $form = $form->getForm();
+        $form = $this->createForm(SettingsType::class, ['settings' => $settings]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

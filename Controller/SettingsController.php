@@ -33,15 +33,16 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * @Route("/settings", name="settings")
+     * @Route("/settings/{domainName}", name="settings", defaults={"domainName"="default"})
      * @param Request $request
+     * @param string  $domainName
      *
      * @return Response
      */
-    public function index(Request $request): Response
+    public function index(Request $request, string $domainName): Response
     {
         $this->initialize($request);
-        $settings = $this->settingsManager->getSettingsByDomain(['default']);
+        $settings = $this->settingsManager->getSettingsByDomain([$domainName]);
 
         $form = $this->createForm(SettingsType::class, ['settings' => $settings]);
         $form->handleRequest($request);

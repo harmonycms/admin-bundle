@@ -32,8 +32,9 @@ harmony:
         children:
         - { label: 'Users', entity: 'User' }
       - label: 'Settings'
-        route: 'settings'
         icon: 'fas fa-cogs'
+        children:
+          - { label: 'General', route: 'settings', params: { domainName: 'default' } }
     # Dashboard
     dashboard:
       blocks:

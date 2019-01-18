@@ -636,3 +636,12 @@
     {% endif %}
   </div>
 {% endblock harmony_admin_section_row %}
+
+{% block harmony_admin_settings_rest %}
+  {{- form_rest(form) -}}
+  <div class="card-footer text-right">
+    <button type="submit" class="btn btn-primary action-save">
+      <i class="fas fa-save"></i> {{ 'action.save'|trans(domain = 'HarmonyAdminBundle') }}
+    </button>
+  </div>
+{% endblock harmony_admin_settings_rest %}

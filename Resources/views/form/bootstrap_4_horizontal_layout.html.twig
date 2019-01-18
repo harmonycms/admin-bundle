@@ -42,9 +42,8 @@
 
         {{ form_errors(form) }}
 
-        {% if harmony_admin.field.help|default('') != '' %}
-          <span class="help-block"><i
-                class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.entity.translation_domain)|raw }}</span>
+        {% if form.vars.help ?? false %}
+          <span class="help-block"><i class="fas fa-info-circle"></i> {{ form.vars.help|raw }}</span>
         {% endif %}
       </div>
     </div>

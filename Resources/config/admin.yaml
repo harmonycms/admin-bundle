@@ -34,7 +34,8 @@ harmony:
       - label: 'Settings'
         icon: 'fas fa-cogs'
         children:
-          - { label: 'General', route: 'settings', params: { domainName: 'default' } }
+          - { label: 'General', route: 'settings', params: { domainName: 'default', tagName: 'general' } }
+          - { label: 'SEO', route: 'settings', params: { domainName: 'default', tagName: 'seo' } }
     # Dashboard
     dashboard:
       blocks:

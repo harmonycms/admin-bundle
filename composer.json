@@ -15,7 +15,7 @@
   "require": {
     "php": "^7.1.3",
     "ext-mbstring": "*",
-    "harmony/core-bundle": "^1.0-dev",
+    "harmony/core-bundle": "dev-master",
     "pagerfanta/pagerfanta": "^2.0",
     "twig/extensions": "^1.5"
   },
@@ -28,9 +28,6 @@
     "sort-packages": true
   },
   "extra": {
-    "branch-alias": {
-      "dev-master": "1.0-dev"
-    },
     "symfony": {
       "id": "01CS5PHN5K43EKABBMNE3R6YSM"
     }

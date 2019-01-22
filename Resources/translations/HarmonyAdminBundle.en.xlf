@@ -240,7 +240,7 @@
         <source>__name__label__</source>
         <target>__name__label__</target>
       </trans-unit>
-      
+
       <!-- security -->
       <trans-unit id="form.username">
         <source>form.username</source>
@@ -273,6 +273,14 @@
       <trans-unit id="settings.title">
         <source>settings.title</source>
         <target>Settings</target>
+      </trans-unit>
+      <trans-unit id="general_settings.title">
+        <source>general_settings.title</source>
+        <target>General settings</target>
+      </trans-unit>
+      <trans-unit id="seo_settings.title">
+        <source>seo_settings.title</source>
+        <target>SEO settings</target>
       </trans-unit>
 
     </body>

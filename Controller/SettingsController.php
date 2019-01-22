@@ -59,6 +59,8 @@ class SettingsController extends AbstractController
                 }
             }
 
+            $this->addFlash('success', 'Settings has been updated successfully.');
+
             return $this->redirectToRoute('settings', array_merge([
                 'domainName' => $domainName,
                 'tagName'    => $tagName
@@ -66,7 +68,8 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('@HarmonyAdmin\settings\index.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'tag'  => $tagName
         ]);
     }
 }

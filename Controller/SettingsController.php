@@ -3,6 +3,7 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\CoreBundle\Form\Type\SettingsType;
+use Helis\SettingsManagerBundle\Model\SettingModel;
 use Helis\SettingsManagerBundle\Settings\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,11 +52,17 @@ class SettingsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            foreach ($data['settings'] as $key => $setting) {
-                $this->settingsManager->update($setting);
+            /** @var SettingModel $setting */
+            foreach ($data['settings'] as $setting) {
+                if (null !== $setting->getData()) {
+                    $this->settingsManager->save($setting);
+                }
             }
 
-            return $this->redirectToRoute('settings');
+            return $this->redirectToRoute('settings', array_merge([
+                'domainName' => $domainName,
+                'tagName'    => $tagName
+            ], $request->query->all()));
         }
 
         return $this->render('@HarmonyAdmin\settings\index.html.twig', [

@@ -24,9 +24,7 @@ harmony:
       menu:
       - label: 'Dashboard'
         icon: 'fa fa-th-large'
-        children:
-        - { label: 'Home', route: 'admin', icon: '' }
-        - { label: 'Updates', url: '#', icon: '' }
+        route: 'admin'
       - label: 'User management'
         icon: 'fas fa-user-cog'
         children:
@@ -34,8 +32,11 @@ harmony:
       - label: 'Settings'
         icon: 'fas fa-cogs'
         children:
-          - { label: 'General', route: 'settings', params: { domainName: 'default', tagName: 'general' } }
-          - { label: 'SEO', route: 'settings', params: { domainName: 'default', tagName: 'seo' } }
+          - { label: 'General', route: 'admin_settings_index', params: { domainName: 'default', tagName: 'general' } }
+          - { label: 'SEO', route: 'admin_settings_index', params: { domainName: 'default', tagName: 'seo' } }
+      - label: 'Themes'
+        icon: 'fas fa-palette'
+        route: 'admin_theme_index'
     # Dashboard
     dashboard:
       blocks:

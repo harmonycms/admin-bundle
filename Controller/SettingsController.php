@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class SettingsController
+ * @Route("/settings", name="admin_settings_")
  *
  * @package Harmony\Bundle\AdminBundle\Controller
  */
@@ -34,7 +35,7 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * @Route("/settings/{domainName}/{tagName}", name="settings", defaults={"domainName"="default",
+     * @Route("/{domainName}/{tagName}", name="index", defaults={"domainName"="default",
      *     "tagName"="general"})
      * @param Request $request
      * @param string  $domainName

@@ -31,9 +31,13 @@ class ThemeController extends AbstractController
 
     /**
      * @Route("/", name="index")
+     * @return Response
+     * @throws \Harmony\Bundle\ThemeBundle\Json\JsonValidationException
+     * @throws \Seld\JsonLint\ParsingException
      */
     public function index(): Response
     {
-        return $this->render('@HarmonyAdmin\theme\index.html.twig', ['themes' => $this->themeLocator->getThemeData()]);
+        return $this->render('@HarmonyAdmin\theme\index.html.twig',
+            ['themes' => $this->themeLocator->discoverThemes()]);
     }
 }

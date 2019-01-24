@@ -131,3 +131,9 @@ services:
     calls:
       - [setContainer, ['@service_container']]
     tags: ['controller.service_arguments']
+
+  Harmony\Bundle\AdminBundle\Controller\ThemeController:
+    arguments: ['@harmony.theme.theme_locator']
+    calls:
+      - [setContainer, ['@service_container']]
+    tags: ['controller.service_arguments']

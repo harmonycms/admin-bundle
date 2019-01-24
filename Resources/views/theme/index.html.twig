@@ -9,28 +9,25 @@
 {% endblock %}
 
 {% block main %}
-  <div class="card">
-    <div class="card-body">
-      <table class="table">
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Dir</th>
-          <th>Path</th>
-        </tr>
-        </thead>
-        <tbody>
+  <div class="row">
+    <div class="col-md-9">
+      <div class="card-columns">
         {% for theme in themes %}
-          <tr>
-            <td>{{ theme.name }}</td>
-            <td>{{ theme.description }}</td>
-            <td>{{ theme.dir }}</td>
-            <td>{{ theme.path }}</td>
-          </tr>
+          <div class="card">
+            <img class="card-img-top" src="http://davidsanchez.me/wp/wp-content/themes/twentyfifteen/screenshot.png">
+            <div class="card-body">
+              <h4 class="card-title">{{ theme.name }}</h4>
+              <div class="text-muted card-subtitle">By
+                <a href="{{ theme.authors.0.homepage }}" target="_blank">{{ theme.authors.0.name }}</a></div>
+              <div>{{ theme.description }}</div>
+            </div>
+            <div class="card-footer">
+              <a class="text-info">Select</a>
+              <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
+            </div>
+          </div>
         {% endfor %}
-        </tbody>
-      </table>
+      </div>
     </div>
   </div>
 {% endblock %}

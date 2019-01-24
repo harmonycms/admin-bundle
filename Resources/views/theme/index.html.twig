@@ -21,7 +21,7 @@
                 <a href="{{ theme.authors.0.homepage }}" target="_blank">{{ theme.authors.0.name }}</a></div>
               <div>{{ theme.description }}</div>
             </div>
-            <div class="card-footer">
+            <div class="align-items-center card-footer d-flex justify-content-between">
               {% if null == setting_get('theme') %}
                 <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.dir }) }}">Activate</a>
               {% else %}

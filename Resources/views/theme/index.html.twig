@@ -1,0 +1,36 @@
+{% extends '@HarmonyAdmin/default/layout.html.twig' %}
+
+{% trans_default_domain 'HarmonyAdminBundle' %}
+
+{% block content_title %}
+  {% spaceless %}
+    {{ 'themes.title'|trans|raw }}
+  {% endspaceless %}
+{% endblock %}
+
+{% block main %}
+  <div class="card">
+    <div class="card-body">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Dir</th>
+          <th>Path</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for theme in themes %}
+          <tr>
+            <td>{{ theme.name }}</td>
+            <td>{{ theme.description }}</td>
+            <td>{{ theme.dir }}</td>
+            <td>{{ theme.path }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

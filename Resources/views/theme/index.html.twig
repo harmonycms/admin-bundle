@@ -22,7 +22,11 @@
               <div>{{ theme.description }}</div>
             </div>
             <div class="card-footer">
-              <a class="text-info">Select</a>
+              {% if null == setting_get('theme') %}
+                <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.dir }) }}">Activate</a>
+              {% else %}
+                <a class="btn btn-default" href="{{ path('admin_theme_deactivate', { 'name': theme.dir }) }}">Deselect</a>
+              {% endif %}
               <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
             </div>
           </div>

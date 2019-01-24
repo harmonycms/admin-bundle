@@ -127,13 +127,13 @@ services:
     tags: ['controller.service_arguments']
 
   Harmony\Bundle\AdminBundle\Controller\SettingsController:
-    arguments: ['@Helis\SettingsManagerBundle\Settings\SettingsManager']
+    arguments: ['@Harmony\Bundle\CoreBundle\Manager\SettingsManager']
     calls:
       - [setContainer, ['@service_container']]
     tags: ['controller.service_arguments']
 
   Harmony\Bundle\AdminBundle\Controller\ThemeController:
-    arguments: ['@harmony.theme.theme_locator']
+    arguments: ['@harmony.theme.theme_locator', '@Harmony\Bundle\CoreBundle\Manager\SettingsManager']
     calls:
       - [setContainer, ['@service_container']]
     tags: ['controller.service_arguments']

@@ -283,6 +283,12 @@
         <target>SEO settings</target>
       </trans-unit>
 
+      <!-- themes -->
+      <trans-unit id="themes.title">
+        <source>themes.title</source>
+        <target>Themes</target>
+      </trans-unit>
+
     </body>
   </file>
 </xliff>

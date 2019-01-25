@@ -22,7 +22,7 @@
               <div>{{ theme.description }}</div>
             </div>
             <div class="align-items-center card-footer d-flex justify-content-between">
-              {% if null == setting_get('theme') %}
+              {% if null == setting_get('theme') or setting_get('theme') != theme.dir %}
                 <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.dir }) }}">Activate</a>
               {% else %}
                 <a class="btn btn-default" href="{{ path('admin_theme_deactivate', { 'name': theme.dir }) }}">Deselect</a>

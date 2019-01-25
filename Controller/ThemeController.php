@@ -57,7 +57,11 @@ class ThemeController extends AbstractController
     {
         $themeSetting = $this->settingsManager->getSetting('theme');
         $themeSetting->setData($name);
-        $this->settingsManager->save($themeSetting);
+        if (true === $this->settingsManager->save($themeSetting)) {
+            $this->addFlash('success', 'Theme ' . $name . ' successfully activated');
+        } else {
+            $this->addFlash('danger', 'Oups!!! Something went wrong');
+        }
 
         return $this->redirectToRoute('admin_theme_index');
     }
@@ -72,7 +76,11 @@ class ThemeController extends AbstractController
     {
         $themeSetting = $this->settingsManager->getSetting('theme');
         $themeSetting->setData($name);
-        $this->settingsManager->delete($themeSetting);
+        if (true === $this->settingsManager->delete($themeSetting)) {
+            $this->addFlash('success', 'Theme ' . $name . ' successfully deactivated');
+        } else {
+            $this->addFlash('danger', 'Oups!!! Something went wrong');
+        }
 
         return $this->redirectToRoute('admin_theme_index');
     }

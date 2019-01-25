@@ -62,7 +62,7 @@ class SettingsController extends AbstractController
 
             $this->addFlash('success', 'Settings has been updated successfully.');
 
-            return $this->redirectToRoute('settings', array_merge([
+            return $this->redirectToRoute('admin_settings_index', array_merge([
                 'domainName' => $domainName,
                 'tagName'    => $tagName
             ], $request->query->all()));

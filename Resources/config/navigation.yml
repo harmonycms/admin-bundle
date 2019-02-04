@@ -1,0 +1,22 @@
+admin_menu:
+  childrenAttributes: { class: 'side-menu metismenu', data-widget: 'tree', data-animation-speed: 250 }
+  tree:
+    dashboard:
+      label: 'Dashboard'
+      extras: { icon: 'fa fa-th-large' }
+      route: 'admin'
+    user_management:
+      label: 'User management'
+      extras: { icon: 'fas fa-user-cog' }
+      children:
+        - { label: 'Users', route: 'admin_entity', routeParameters: { entity: 'User' } }
+    settings:
+      label: 'Settings'
+      extras: { icon: 'fas fa-cogs' }
+      children:
+        - { label: 'General', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'general' } }
+        - { label: 'SEO', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'seo' } }
+    themes:
+      label: 'Themes'
+      extras: { icon: 'fas fa-palette' }
+      route: 'admin_theme_index'

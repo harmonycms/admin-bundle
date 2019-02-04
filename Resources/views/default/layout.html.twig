@@ -141,11 +141,7 @@
                 </div>
               {% endif %}
               {% block main_menu_wrapper %}
-                {{ include([
-                  _entity_config is defined ? _entity_config.templates.menu,
-                  harmony_admin_config('design.templates.menu'),
-                  '@HarmonyAdmin/default/menu.html.twig'
-                ]) }}
+                {{ knp_menu_render('admin_menu', { template: '@HarmonyAdmin/default/menu.html.twig' } ) }}
               {% endblock main_menu_wrapper %}
             </div>
           {% endblock sidebar %}

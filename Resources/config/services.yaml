@@ -71,12 +71,6 @@ services:
       - { name: harmony_admin.config_pass, priority: 80 }
     arguments: ['@service_container', '%kernel.debug%', '%kernel.default_locale%']
 
-  harmony_admin.configuration.menu_config_pass:
-    class: Harmony\Bundle\AdminBundle\Configuration\MenuConfigPass
-    public: false
-    tags:
-      - { name: harmony_admin.config_pass, priority: 70 }
-
   harmony_admin.configuration.action_config_pass:
     class: Harmony\Bundle\AdminBundle\Configuration\ActionConfigPass
     public: false

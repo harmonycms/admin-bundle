@@ -19,24 +19,6 @@ harmony:
           - 'enabled'
           - { property: 'plainPassword', type: 'text', type_options: { required: false } }
           - { property: 'roles' }
-    # Design
-    design:
-      menu:
-      - label: 'Dashboard'
-        icon: 'fa fa-th-large'
-        route: 'admin'
-      - label: 'User management'
-        icon: 'fas fa-user-cog'
-        children:
-        - { label: 'Users', entity: 'User' }
-      - label: 'Settings'
-        icon: 'fas fa-cogs'
-        children:
-          - { label: 'General', route: 'admin_settings_index', params: { domainName: 'default', tagName: 'general' } }
-          - { label: 'SEO', route: 'admin_settings_index', params: { domainName: 'default', tagName: 'seo' } }
-      - label: 'Themes'
-        icon: 'fas fa-palette'
-        route: 'admin_theme_index'
     # Dashboard
     dashboard:
       blocks:

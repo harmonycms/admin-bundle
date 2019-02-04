@@ -353,12 +353,6 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('label_undefined')->info('Used when any kind of error or exception happens when trying to access the value of the field to render')->end()
                     ->end()
                 ->end()
-                ->arrayNode('menu')
-                    ->normalizeKeys(false)
-                    ->defaultValue([])
-                    ->info('The items to display in the main menu.')
-                    ->prototype('variable')
-                ->end()
             ->end()
         ;
 

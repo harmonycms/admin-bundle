@@ -19,4 +19,5 @@ admin_menu:
     themes:
       label: 'Themes'
       extras: { icon: 'fas fa-palette' }
-      route: 'admin_theme_index'
+      children:
+        - { label: 'View all', route: 'admin_theme_index' }

@@ -1,7 +1,13 @@
 services:
-  harmony_admin.data_collector:
-    class: Harmony\Bundle\AdminBundle\DataCollector\AdminCollector
-    arguments: ['@service_container']
+  _defaults:
+    public: false
+    autowire: true
+    autoconfigure: true
+
+    bind:
+      FOS\UserBundle\Doctrine\UserManager: '@fos_user.user_manager.default'
+
+  Harmony\Bundle\AdminBundle\DataCollector\AdminCollector:
     tags: ['harmony.data_collector']
 
   harmony_admin.config.manager:
@@ -114,20 +120,12 @@ services:
     alias: 'property_accessor'
     public: true
 
-  Harmony\Bundle\AdminBundle\Controller\UserController:
-    arguments: ['@fos_user.user_manager.default']
+  Harmony\Bundle\AdminBundle\Controller\:
+    resource: '../../Controller'
     calls:
       - [setContainer, ['@service_container']]
     tags: ['controller.service_arguments']
 
-  Harmony\Bundle\AdminBundle\Controller\SettingsController:
-    arguments: ['@Harmony\Bundle\CoreBundle\Manager\SettingsManager']
-    calls:
-      - [setContainer, ['@service_container']]
-    tags: ['controller.service_arguments']
-
-  Harmony\Bundle\AdminBundle\Controller\ThemeController:
-    arguments: ['@harmony.theme.theme_locator', '@Harmony\Bundle\CoreBundle\Manager\SettingsManager']
-    calls:
-      - [setContainer, ['@service_container']]
-    tags: ['controller.service_arguments']
+  Harmony\Bundle\AdminBundle\EventListener\MenuListener:
+    tags:
+      - { name: kernel.event_listener, event: harmony_menu_configure, method: onMenuConfigure }

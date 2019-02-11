@@ -14,18 +14,18 @@
       <div class="card-columns">
         {% for theme in themes %}
           <div class="card">
-            <img class="card-img-top" src="{{ (theme.extra and theme.extra.preview) ? theme.extra.preview : theme.preview }}">
+            <img class="card-img-top" src="{{ theme.preview }}">
             <div class="card-body">
-              <h4 class="card-title">{{ (theme.extra and theme.extra.name) ? theme.extra.name : theme.name }}</h4>
+              <h4 class="card-title">{{ theme.name }}</h4>
               <div class="text-muted card-subtitle">By
                 <a href="{{ theme.authors.0.homepage }}" target="_blank">{{ theme.authors.0.name }}</a></div>
-              <div>{{ (theme.extra and theme.extra.description) ? theme.extra.description : theme.description }}</div>
+              <div>{{ theme.description }}</div>
             </div>
             <div class="align-items-center card-footer d-flex justify-content-between">
-              {% if null == setting_get('theme') or setting_get('theme') != theme.dir %}
-                <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.dir }) }}">Activate</a>
+              {% if null == setting_get('theme') or setting_get('theme') != theme.name %}
+                <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.name }) }}">Activate</a>
               {% else %}
-                <a class="btn btn-default" href="{{ path('admin_theme_deactivate', { 'name': theme.dir }) }}">Deselect</a>
+                <a class="btn btn-default" href="{{ path('admin_theme_deactivate', { 'name': theme.name }) }}">Deselect</a>
               {% endif %}
               <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
             </div>

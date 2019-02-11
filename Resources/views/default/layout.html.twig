@@ -72,7 +72,7 @@
               {% block header_custom_menu %}
                 {% set _logout_path = harmony_admin_logout_path() %}
                 <ul class="nav navbar-toolbar">
-                  <li><a href="#" title="Visit site"><i class="fa fa-home"></i></a></li>
+                  <li><a href="{{ path('index') }}" title="Visit site"><i class="fa fa-home"></i></a></li>
                   <li class="dropdown dropdown-user">
                     {% block user_menu %}
                       <span class="sr-only">{{ 'user.logged_in_as'|trans }}</span>

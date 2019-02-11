@@ -22,10 +22,10 @@
               <div>{{ theme.description }}</div>
             </div>
             <div class="align-items-center card-footer d-flex justify-content-between">
-              {% if null == setting_get('theme') or setting_get('theme') != theme.name %}
-                <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.name }) }}">Activate</a>
+              {% if null == setting_get('theme') or setting_get('theme') != theme.identifier %}
+                <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.identifier }) }}">Activate</a>
               {% else %}
-                <a class="btn btn-default" href="{{ path('admin_theme_deactivate', { 'name': theme.name }) }}">Deselect</a>
+                <a class="btn btn-default" href="{{ path('admin_theme_deactivate', { 'name': theme.identifier }) }}">Deselect</a>
               {% endif %}
               <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
             </div>

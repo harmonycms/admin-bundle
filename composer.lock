@@ -113,16 +113,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "1.8.3",
+            "version": "1.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "a6a3b44581398b7135c7baa0557b7c5b10808b47"
+                "reference": "bc364c2480c17941e2135cfc568fa41794392534"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/a6a3b44581398b7135c7baa0557b7c5b10808b47",
-                "reference": "a6a3b44581398b7135c7baa0557b7c5b10808b47",
+                "url": "https://api.github.com/repos/composer/composer/zipball/bc364c2480c17941e2135cfc568fa41794392534",
+                "reference": "bc364c2480c17941e2135cfc568fa41794392534",
                 "shasum": ""
             },
             "require": {
@@ -189,7 +189,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2019-01-30T07:31:34+00:00"
+            "time": "2019-02-11T09:52:10+00:00"
         },
         {
             "name": "composer/semver",
@@ -1314,12 +1314,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/harmonycms/core-bundle.git",
-                "reference": "170fad62e4423a4ce1fe4981e1945ccf81e92ff2"
+                "reference": "45eeffda8c9c8926b3ca1f9251e2d33386c4daac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harmonycms/core-bundle/zipball/170fad62e4423a4ce1fe4981e1945ccf81e92ff2",
-                "reference": "170fad62e4423a4ce1fe4981e1945ccf81e92ff2",
+                "url": "https://api.github.com/repos/harmonycms/core-bundle/zipball/45eeffda8c9c8926b3ca1f9251e2d33386c4daac",
+                "reference": "45eeffda8c9c8926b3ca1f9251e2d33386c4daac",
                 "shasum": ""
             },
             "require": {
@@ -1358,7 +1358,7 @@
             ],
             "description": "HarmonyCMS core bundle",
             "homepage": "https://harmonycms.net",
-            "time": "2019-02-04T18:26:16+00:00"
+            "time": "2019-02-11T02:00:25+00:00"
         },
         {
             "name": "harmony/theme-bundle",
@@ -1366,12 +1366,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/harmonycms/theme-bundle.git",
-                "reference": "0a37b93cd514b9c3f58df6febe73cd0857b16be9"
+                "reference": "f03d0cfb158bdbb6f3811756c68353dadb790614"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harmonycms/theme-bundle/zipball/0a37b93cd514b9c3f58df6febe73cd0857b16be9",
-                "reference": "0a37b93cd514b9c3f58df6febe73cd0857b16be9",
+                "url": "https://api.github.com/repos/harmonycms/theme-bundle/zipball/f03d0cfb158bdbb6f3811756c68353dadb790614",
+                "reference": "f03d0cfb158bdbb6f3811756c68353dadb790614",
                 "shasum": ""
             },
             "require": {
@@ -1411,7 +1411,7 @@
             ],
             "description": "HarmonyCMS theme bundle",
             "homepage": "https://harmonycms.net",
-            "time": "2019-01-30T21:55:09+00:00"
+            "time": "2019-02-11T14:49:40+00:00"
         },
         {
             "name": "helis/settings-manager-bundle",

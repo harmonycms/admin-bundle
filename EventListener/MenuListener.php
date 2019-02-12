@@ -2,10 +2,12 @@
 
 namespace Harmony\Bundle\AdminBundle\EventListener;
 
+use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
 use Harmony\Bundle\CoreBundle\Event\ConfigureMenuEvent;
+use Harmony\Sdk\Theme\ThemeInterface;
 use Helis\SettingsManagerBundle\Settings\SettingsRouter;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class MenuListener
@@ -18,25 +20,24 @@ class MenuListener
     /** @var SettingsRouter $settingsRouter */
     protected $settingsRouter;
 
-    /** @var ParameterBagInterface $parameterBag */
-    protected $parameterBag;
-
     /** @var Filesystem $filesystem */
     protected $filesystem;
+
+    /** @var KernelInterface $kernel */
+    protected $kernel;
 
     /**
      * MenuListener constructor.
      *
-     * @param SettingsRouter        $settingsRouter
-     * @param ParameterBagInterface $parameterBag
-     * @param Filesystem            $filesystem
+     * @param SettingsRouter                 $settingsRouter
+     * @param KernelInterface|AbstractKernel $kernel
+     * @param Filesystem                     $filesystem
      */
-    public function __construct(SettingsRouter $settingsRouter, ParameterBagInterface $parameterBag,
-                                Filesystem $filesystem)
+    public function __construct(SettingsRouter $settingsRouter, KernelInterface $kernel, Filesystem $filesystem)
     {
         $this->settingsRouter = $settingsRouter;
-        $this->parameterBag   = $parameterBag;
         $this->filesystem     = $filesystem;
+        $this->kernel         = $kernel;
     }
 
     /**
@@ -44,13 +45,19 @@ class MenuListener
      */
     public function onMenuConfigure(ConfigureMenuEvent $event)
     {
-        $themeDir     = $this->parameterBag->get('kernel.theme_dir');
+        $themes       = $this->kernel->getThemes();
         $currentTheme = $this->settingsRouter->get('theme');
-        if (false !== $currentTheme &&
-            true === $this->filesystem->exists(sprintf('%s/%s/settings.yaml', $themeDir, $currentTheme))) {
-            $menu = $event->getMenu();
-            if ('admin_menu' === $menu->getName()) {
-                $menu->getChild('themes')->addChild('Configure');
+        if (isset($themes[$currentTheme])) {
+            /** @var ThemeInterface $theme */
+            $theme = $themes[$currentTheme];
+            if (true === $theme->hasSettings()) {
+                $menu = $event->getMenu();
+                if ('admin_menu' === $menu->getName()) {
+                    $menu->getChild('themes')->addChild('Configure', [
+                        'route'           => 'admin_settings_index',
+                        'routeParameters' => ['domainName' => 'theme', 'tagName' => $currentTheme]
+                    ]);
+                }
             }
         }
     }

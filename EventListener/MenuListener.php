@@ -3,7 +3,7 @@
 namespace Harmony\Bundle\AdminBundle\EventListener;
 
 use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
-use Harmony\Bundle\CoreBundle\Event\ConfigureMenuEvent;
+use Harmony\Bundle\MenuBundle\Event\ConfigureMenuEvent;
 use Harmony\Sdk\Theme\ThemeInterface;
 use Helis\SettingsManagerBundle\Settings\SettingsRouter;
 use Symfony\Component\Filesystem\Filesystem;

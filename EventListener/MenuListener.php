@@ -4,6 +4,7 @@ namespace Harmony\Bundle\AdminBundle\EventListener;
 
 use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
 use Harmony\Bundle\MenuBundle\Event\ConfigureMenuEvent;
+use Harmony\Bundle\MenuBundle\Menu\MenuDomain;
 use Harmony\Sdk\Theme\ThemeInterface;
 use Helis\SettingsManagerBundle\Settings\SettingsRouter;
 use Symfony\Component\Filesystem\Filesystem;
@@ -45,13 +46,17 @@ class MenuListener
      */
     public function onMenuConfigure(ConfigureMenuEvent $event)
     {
+        $menu = $event->getMenu();
+        if ('admin_menu' === $menu->getName()) {
+            $menu->setDomain(new MenuDomain('admin'));
+        }
+
         $themes       = $this->kernel->getThemes();
         $currentTheme = $this->settingsRouter->get('theme');
         if (isset($themes[$currentTheme])) {
             /** @var ThemeInterface $theme */
             $theme = $themes[$currentTheme];
             if (true === $theme->hasSettings()) {
-                $menu = $event->getMenu();
                 if ('admin_menu' === $menu->getName()) {
                     $menu->getChild('themes')->addChild('Configure', [
                         'route'           => 'admin_settings_index',

@@ -42,12 +42,7 @@ class ThemeController extends AbstractController
      */
     public function index(): Response
     {
-        $themes = [];
-        foreach ($this->kernel->getThemes() as $name => $theme) {
-            $themes[$name] = $theme;
-        }
-
-        return $this->render('@HarmonyAdmin\theme\index.html.twig', ['themes' => $themes]);
+        return $this->render('@HarmonyAdmin\theme\index.html.twig', ['themes' => $this->kernel->getThemes()]);
     }
 
     /**

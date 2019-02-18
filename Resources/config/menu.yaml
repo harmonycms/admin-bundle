@@ -21,3 +21,8 @@ admin_menu:
       extras: { icon: 'fas fa-palette' }
       children:
         - { label: 'View all', route: 'admin_theme_index' }
+    extensions:
+      label: 'Extensions'
+      extras: { icon: 'fas fa-puzzle-piece' }
+      children:
+        - { label: 'Modules', route: 'admin_extension_modules' }

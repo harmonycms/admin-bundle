@@ -289,6 +289,12 @@
         <target>Themes</target>
       </trans-unit>
 
+      <!-- extensions -->
+      <trans-unit id="modules.title">
+        <source>modules.title</source>
+        <target>Modules</target>
+      </trans-unit>
+
     </body>
   </file>
 </xliff>

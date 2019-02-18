@@ -1,0 +1,41 @@
+{% extends '@HarmonyAdmin/default/layout.html.twig' %}
+
+{% trans_default_domain 'HarmonyAdminBundle' %}
+
+{% block content_title %}
+  {% spaceless %}
+    {{ 'modules.title'|trans|raw }}
+  {% endspaceless %}
+{% endblock %}
+
+{% block main %}
+  <div class="row">
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-body">
+          <table class="table">
+            <thead class="thead-default">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Author</th>
+              <th>Version</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for module in modules %}
+              <tr>
+                <td>{{ module.name }}</td>
+                <td>{{ module.description }}</td>
+                <td>{{ module.authors.0.name }}</td>
+                <td>{{ module.version }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

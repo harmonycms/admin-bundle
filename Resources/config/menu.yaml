@@ -5,7 +5,7 @@ admin_menu:
       label: 'Dashboard'
       extras: { icon: 'fa fa-th-large' }
       route: 'admin'
-    features:
+    _features:
       label: 'FEATURES'
       extras: { separator: true }
     user_management:
@@ -29,3 +29,6 @@ admin_menu:
       extras: { icon: 'fas fa-puzzle-piece' }
       children:
         - { label: 'Modules', route: 'admin_extension_modules' }
+    _extensions:
+      label: 'EXTENSIONS'
+      extras: { separator: true }

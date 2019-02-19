@@ -5,6 +5,9 @@ admin_menu:
       label: 'Dashboard'
       extras: { icon: 'fa fa-th-large' }
       route: 'admin'
+    features:
+      label: 'FEATURES'
+      extras: { separator: true }
     user_management:
       label: 'User management'
       extras: { icon: 'fas fa-user-cog' }

@@ -16,20 +16,30 @@
           <table class="table">
             <thead class="thead-default">
             <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Author</th>
-              <th>Version</th>
-              <th>Actions</th>
+              <th>Information</th>
+              <th>Developer</th>
+              <th>Documentation</th>
+              <th>Status</th>
             </tr>
             </thead>
             <tbody>
             {% for module in modules %}
               <tr>
-                <td>{{ module.name }}</td>
-                <td>{{ module.description }}</td>
-                <td>{{ module.authors.0.name }}</td>
-                <td>{{ module.version }}</td>
+                <td>
+                  <div class="row">
+                    <div class="col-auto">
+                      <img src="https://ps.w.org/wp-map-route-planner/assets/icon-128x128.jpg?rev=1710085" width="48">
+                    </div>
+                    <div class="col">
+                      <strong>{{ module.name }}</strong> <span class="text-muted">{{ module.version }}</span><br>
+                      {{ module.description }}
+                    </div>
+                  </div>
+                </td>
+                <td><a href="{{ module.authors.0.homepage }}" target="_blank">{{ module.authors.0.name }}</a></td>
+                <td>Visit documentation</td>
+                <td>Not installed</td>
+                <td><a href="#" class="btn btn-secondary">Install</a></td>
               </tr>
             {% endfor %}
             </tbody>

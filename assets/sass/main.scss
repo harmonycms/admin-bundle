@@ -4,7 +4,12 @@
 @import 'components/components';
 @import 'utilities/utilities';
 @import 'layout/layout';
-@import 'vendors/vendors'; // Vendors styles reset
+
+//
+// VENDORS + OVERRIDE
+//
+@import 'vendors/vendors';
+
 @import 'ad-banner';
 
 

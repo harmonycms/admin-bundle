@@ -1,0 +1,3 @@
+webpack_encore:
+  builds:
+    harmonyadmin: '%kernel.project_dir%/public/bundles/harmonyadmin'

@@ -64,10 +64,15 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         // get all bundles
         $bundles = $container->getParameter('kernel.bundles');
 
+        $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
+
         // determine if HarmonyAdminBundle is registered before loading configuration
         if (isset($bundles['HarmonyCoreBundle'])) {
-            $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
             $loader->load('admin.yaml');
+        }
+
+        if (isset($bundles['WebpackEncoreBundle'])) {
+            $loader->load('webpack_encore.yaml');
         }
 
         // process the configuration

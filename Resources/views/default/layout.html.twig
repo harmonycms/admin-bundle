@@ -11,7 +11,7 @@
   <title>{% block page_title %}{{ block('content_title')|striptags|raw|trim }} | {{ harmony_admin_config('site_name') }}{% endblock %}</title>
 
   {% block head_stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/main.css') }}">
+    {{ encore_entry_link_tags('main', null, 'harmonyadmin') }}
   {% endblock %}
 
   {% for css_asset in harmony_admin_config('design.assets.css') %}
@@ -158,7 +158,7 @@
     </div>
 
     {% block body_javascript %}
-      <script src="{{ asset('bundles/harmonyadmin/main.js') }}"></script>
+      {{ encore_entry_script_tags('main', null, 'harmonyadmin') }}
     {% endblock body_javascript %}
 
     {% for js_asset in harmony_admin_config('design.assets.js') %}

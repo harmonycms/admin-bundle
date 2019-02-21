@@ -1,0 +1,21 @@
+{
+  "bundles/harmonyadmin/main.css": "./bundles/harmonyadmin/main.css",
+  "bundles/harmonyadmin/main.js": "./bundles/harmonyadmin/main.js",
+  "bundles/harmonyadmin/fonts/fa-brands-400.woff2": "./bundles/harmonyadmin/fonts/fa-brands-400.4b115e11.woff2",
+  "bundles/harmonyadmin/fonts/fa-brands-400.woff": "./bundles/harmonyadmin/fonts/fa-brands-400.b90365bc.woff",
+  "bundles/harmonyadmin/fonts/fa-brands-400.ttf": "./bundles/harmonyadmin/fonts/fa-brands-400.c39278f7.ttf",
+  "bundles/harmonyadmin/fonts/fa-brands-400.eot": "./bundles/harmonyadmin/fonts/fa-brands-400.d9d17590.eot",
+  "bundles/harmonyadmin/fonts/fa-regular-400.eot": "./bundles/harmonyadmin/fonts/fa-regular-400.414ff5da.eot",
+  "bundles/harmonyadmin/fonts/fa-regular-400.woff": "./bundles/harmonyadmin/fonts/fa-regular-400.5dd3976c.woff",
+  "bundles/harmonyadmin/fonts/fa-regular-400.woff2": "./bundles/harmonyadmin/fonts/fa-regular-400.65779ebc.woff2",
+  "bundles/harmonyadmin/fonts/fa-regular-400.ttf": "./bundles/harmonyadmin/fonts/fa-regular-400.f6c6f6c8.ttf",
+  "bundles/harmonyadmin/fonts/fa-solid-900.woff2": "./bundles/harmonyadmin/fonts/fa-solid-900.46280631.woff2",
+  "bundles/harmonyadmin/fonts/fa-solid-900.woff": "./bundles/harmonyadmin/fonts/fa-solid-900.61969d43.woff",
+  "bundles/harmonyadmin/fonts/fa-solid-900.eot": "./bundles/harmonyadmin/fonts/fa-solid-900.b5596f4d.eot",
+  "bundles/harmonyadmin/fonts/fa-solid-900.ttf": "./bundles/harmonyadmin/fonts/fa-solid-900.b70cea03.ttf",
+  "bundles/harmonyadmin/images/admin-avatar.svg": "./bundles/harmonyadmin/images/admin-avatar.svg",
+  "bundles/harmonyadmin/images/fa-brands-400.svg": "./bundles/harmonyadmin/images/fa-brands-400.80533988.svg",
+  "bundles/harmonyadmin/images/fa-regular-400.svg": "./bundles/harmonyadmin/images/fa-regular-400.e7e957c8.svg",
+  "bundles/harmonyadmin/images/fa-solid-900.svg": "./bundles/harmonyadmin/images/fa-solid-900.82905d8d.svg",
+  "bundles/harmonyadmin/images/user-avatar.svg": "./bundles/harmonyadmin/images/user-avatar.svg"
+}

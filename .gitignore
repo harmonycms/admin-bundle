@@ -15,4 +15,4 @@ composer.phar
 # Node
 
 # Dependency directories
-Resources/node_modules/
+node_modules/

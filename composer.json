@@ -19,6 +19,7 @@
     "harmony/theme-bundle": "dev-master",
     "helis/settings-manager-bundle": "dev-master",
     "pagerfanta/pagerfanta": "^2.0",
+    "symfony/webpack-encore-bundle": "^1.1",
     "twig/extensions": "^1.5"
   },
   "autoload": {

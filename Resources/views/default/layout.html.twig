@@ -11,20 +11,7 @@
   <title>{% block page_title %}{{ block('content_title')|striptags|raw|trim }} | {{ harmony_admin_config('site_name') }}{% endblock %}</title>
 
   {% block head_stylesheets %}
-    <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/bootstrap-toggle.min.css') }}">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
-          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheets/main.min.css') }}">
-    <!-- Google Font -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    {#<style>#}
-    {#{{ harmony_admin_config('_internal.custom_css')|raw }}#}
-    {#</style>#}
+    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/main.css') }}">
   {% endblock %}
 
   {% for css_asset in harmony_admin_config('design.assets.css') %}
@@ -35,11 +22,6 @@
     {% set favicon = harmony_admin_config('design.assets.favicon') %}
     <link rel="icon" type="{{ favicon.mime_type }}" href="{{ asset(favicon.path) }}"/>
   {% endblock %}
-
-  {% if harmony_admin_config('design.rtl') %}
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/bootstrap-rtl.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('bundles/harmonyadmin/stylesheet/adminlte-rtl.min.css') }}">
-  {% endif %}
 </head>
 
 {% block body %}
@@ -176,13 +158,7 @@
     </div>
 
     {% block body_javascript %}
-      <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.min.js') }}"></script>
-      <script src="{{ asset('bundles/harmonyadmin/javascript/popper.min.js') }}"></script>
-      <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap.bundle.min.js') }}"></script>
-      <script src="{{ asset('bundles/harmonyadmin/javascript/bootstrap-toggle.min.js') }}"></script>
-      <script src="{{ asset('bundles/harmonyadmin/javascript/metisMenu.min.js') }}"></script>
-      <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.slimscroll.min.js') }}"></script>
-      <script src="{{ asset('bundles/harmonyadmin/javascript/app.min.js') }}"></script>
+      <script src="{{ asset('bundles/harmonyadmin/main.js') }}"></script>
     {% endblock body_javascript %}
 
     {% for js_asset in harmony_admin_config('design.assets.js') %}

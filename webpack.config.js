@@ -3,7 +3,7 @@ let Encore = require('@symfony/webpack-encore');
 
 Encore
   .setOutputPath('./Resources/public/')
-  .setPublicPath('./')
+  .setPublicPath('./bundles/harmonyadmin')
   .setManifestKeyPrefix('bundles/harmonyadmin')
 
   .cleanupOutputBeforeBuild()

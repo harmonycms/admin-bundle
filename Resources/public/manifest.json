@@ -17,5 +17,10 @@
   "bundles/harmonyadmin/images/fa-brands-400.svg": "/bundles/harmonyadmin/images/fa-brands-400.80533988.svg",
   "bundles/harmonyadmin/images/fa-regular-400.svg": "/bundles/harmonyadmin/images/fa-regular-400.e7e957c8.svg",
   "bundles/harmonyadmin/images/fa-solid-900.svg": "/bundles/harmonyadmin/images/fa-solid-900.82905d8d.svg",
+  "bundles/harmonyadmin/images/sort_asc.png": "/bundles/harmonyadmin/images/sort_asc.9326ad44.png",
+  "bundles/harmonyadmin/images/sort_asc_disabled.png": "/bundles/harmonyadmin/images/sort_asc_disabled.d7dc10c7.png",
+  "bundles/harmonyadmin/images/sort_both.png": "/bundles/harmonyadmin/images/sort_both.9a648608.png",
+  "bundles/harmonyadmin/images/sort_desc.png": "/bundles/harmonyadmin/images/sort_desc.1fc418e3.png",
+  "bundles/harmonyadmin/images/sort_desc_disabled.png": "/bundles/harmonyadmin/images/sort_desc_disabled.bda51e15.png",
   "bundles/harmonyadmin/images/user-avatar.svg": "/bundles/harmonyadmin/images/user-avatar.svg"
 }

@@ -17,8 +17,8 @@
             <thead class="thead-default">
             <tr>
               <th>Information</th>
-              <th>Developer</th>
-              <th>Documentation</th>
+              <th>Authors</th>
+              <th>Link</th>
               <th>Status</th>
             </tr>
             </thead>
@@ -36,10 +36,27 @@
                     </div>
                   </div>
                 </td>
-                <td><a href="{{ module.authors.0.homepage }}" target="_blank">{{ module.authors.0.name }}</a></td>
-                <td>Visit documentation</td>
-                <td>Not installed</td>
-                <td><a href="#" class="btn btn-secondary">Install</a></td>
+                <td>
+                  <ul class="p-0 mb-0 list-unstyled">
+                    {% for author in module.authors %}
+                      <li>
+                        {% if author.homepage is defined %}
+                          <a href="{{ author.homepage }}" target="_blank">
+                            <i class="fas fa-link"></i> {{ author.name }}</a>
+                        {% elseif author.email is defined %}
+                          <a href="mailto:{{ author.email }}"><i class="fas fa-at"></i> {{ author.name }}</a>
+                        {% else %}
+                          <i class="fas fa-user"></i> {{ author.name }}
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </td>
+                <td>
+                  {% if '' != module.homepage %}
+                    <a href="{{ module.homepage }}" target="_blank">Homepage</a>
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
             </tbody>

@@ -1,0 +1,12 @@
+{
+  "entrypoints": {
+    "main": {
+      "css": [
+        "/bundles/harmonyadmin/main.css"
+      ],
+      "js": [
+        "/bundles/harmonyadmin/main.js"
+      ]
+    }
+  }
+}

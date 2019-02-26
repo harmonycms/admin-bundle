@@ -3,8 +3,11 @@
     "@fortawesome/fontawesome-free": "^5.7.2",
     "@symfony/webpack-encore": "^0.23.0",
     "bootstrap": "^4.3.1",
+    "datatables": "^1.10.18",
     "jquery": "^3.3.1",
+    "metismenu": "^3.0.3",
     "node-sass": "^4.11.0",
+    "popper.js": "^1.14.7",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.0.1",
     "select2": "^4.0.6-rc.1"

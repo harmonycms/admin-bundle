@@ -1,16 +1,8 @@
-
 @import 'vars';
 @import 'mixins/mixins';
+
+@import 'vendors/vendors';
+
 @import 'components/components';
 @import 'utilities/utilities';
 @import 'layout/layout';
-
-//
-// VENDORS + OVERRIDE
-//
-@import 'vendors/vendors';
-
-@import 'ad-banner';
-
-
-

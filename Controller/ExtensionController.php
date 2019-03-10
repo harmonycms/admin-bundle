@@ -46,4 +46,20 @@ class ExtensionController extends AbstractController
 
         return $this->render('@HarmonyAdmin\extension\modules.html.twig', ['modules' => $modules]);
     }
+
+    /**
+     * @Route("/plugins", name="plugins")
+     * @return Response
+     */
+    public function plugins(): Response
+    {
+        $plugins = [];
+        foreach ($this->kernel->getExtensions() as $name => $extension) {
+            if (AbstractExtension::PLUGIN === $extension->getExtensionType()) {
+                $plugins[$name] = $extension;
+            }
+        }
+
+        return $this->render('@HarmonyAdmin\extension\plugins.html.twig', ['plugins' => $plugins]);
+    }
 }

@@ -294,6 +294,10 @@
         <source>modules.title</source>
         <target>Modules</target>
       </trans-unit>
+      <trans-unit id="plugins.title">
+        <source>plugins.title</source>
+        <target>Plugins</target>
+      </trans-unit>
 
     </body>
   </file>

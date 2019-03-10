@@ -29,6 +29,7 @@ admin_menu:
       extras: { icon: 'fas fa-puzzle-piece' }
       children:
         - { label: 'Modules', route: 'admin_extension_modules' }
+        - { label: 'Plugins', route: 'admin_extension_plugins' }
     _extensions:
       label: 'EXTENSIONS'
       extras: { separator: true }

@@ -1,0 +1,67 @@
+{% extends '@HarmonyAdmin/default/layout.html.twig' %}
+
+{% trans_default_domain 'HarmonyAdminBundle' %}
+
+{% block content_title %}
+  {% spaceless %}
+    {{ 'plugins.title'|trans|raw }}
+  {% endspaceless %}
+{% endblock %}
+
+{% block main %}
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <table class="table">
+            <thead class="thead-default">
+            <tr>
+              <th>Information</th>
+              <th>Authors</th>
+              <th>Link</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for plugin in plugins %}
+              <tr>
+                <td>
+                  <div class="row">
+                    <div class="col-auto">
+                      <img src="https://ps.w.org/wp-map-route-planner/assets/icon-128x128.jpg?rev=1710085" width="48">
+                    </div>
+                    <div class="col">
+                      <strong>{{ plugin.name }}</strong> <span class="text-muted">{{ plugin.version }}</span><br>
+                      {{ plugin.description }}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <ul class="p-0 mb-0 list-unstyled">
+                    {% for author in plugin.authors %}
+                      <li>
+                        {% if author.homepage is defined %}
+                          <a href="{{ author.homepage }}" target="_blank">
+                            <i class="fas fa-link"></i> {{ author.name }}</a>
+                        {% elseif author.email is defined %}
+                          <a href="mailto:{{ author.email }}"><i class="fas fa-at"></i> {{ author.name }}</a>
+                        {% else %}
+                          <i class="fas fa-user"></i> {{ author.name }}
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </td>
+                <td>
+                  {% if '' != plugin.homepage %}
+                    <a href="{{ plugin.homepage }}" target="_blank">Homepage</a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -4,9 +4,6 @@ services:
     autowire: true
     autoconfigure: true
 
-    bind:
-      FOS\UserBundle\Doctrine\UserManager: '@fos_user.user_manager.default'
-
   Harmony\Bundle\AdminBundle\DataCollector\AdminCollector:
     tags: ['harmony.data_collector']
 

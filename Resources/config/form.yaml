@@ -82,6 +82,6 @@ services:
 
   harmony_admin.form_type.profile_type:
     class: Harmony\Bundle\AdminBundle\Form\Type\ProfileType
-    arguments: ['%fos_user.model.user.class%']
+    arguments: ['%harmony_user.user_class%']
     tags:
     - { name: form.type, alias: harmony_admin.profile }

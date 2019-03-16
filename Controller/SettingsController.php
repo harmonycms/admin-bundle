@@ -2,9 +2,9 @@
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
-use Harmony\Bundle\CoreBundle\Form\Type\SettingsType;
-use Harmony\Bundle\CoreBundle\Manager\SettingsManager;
-use Helis\SettingsManagerBundle\Model\SettingModel;
+use Harmony\Bundle\SettingsManagerBundle\Form\Type\SettingsType;
+use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsManager;
+use Harmony\Bundle\SettingsManagerBundle\Model\SettingModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

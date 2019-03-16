@@ -2,8 +2,8 @@
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
-use FOS\UserBundle\Doctrine\UserManager;
 use Harmony\Bundle\AdminBundle\Form\Type\ProfileType;
+use Harmony\Bundle\UserBundle\Model\UserManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

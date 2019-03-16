@@ -3,7 +3,7 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
-use Harmony\Bundle\CoreBundle\Manager\SettingsManager;
+use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;

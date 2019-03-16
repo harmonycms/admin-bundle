@@ -14,7 +14,7 @@
       <div class="card-columns">
         {% for theme in themes %}
           <div class="card">
-            <img class="card-img-top" src="{{ theme.preview }}">
+            <img class="card-img-top" src="{{ theme.preview }}" alt="{{ theme.name }}">
             <div class="card-body">
               <h4 class="card-title">{{ theme.name }}</h4>
               <div class="text-muted card-subtitle">By
@@ -25,7 +25,8 @@
               {% if null == setting_get('theme') or setting_get('theme') != theme.identifier %}
                 <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.identifier }) }}">Activate</a>
               {% else %}
-                <a class="btn btn-default" href="{{ path('admin_theme_deactivate', { 'name': theme.identifier }) }}">Disable</a>
+                <a class="btn btn-default {%- if 'config' ==setting.providerName %} disabled{%- endif %}"
+                   href="{{ path('admin_theme_deactivate', { 'name': theme.identifier }) }}">Disable</a>
               {% endif %}
               <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
             </div>

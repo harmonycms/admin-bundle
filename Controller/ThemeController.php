@@ -42,7 +42,10 @@ class ThemeController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('@HarmonyAdmin\theme\index.html.twig', ['themes' => $this->kernel->getThemes()]);
+        return $this->render('@HarmonyAdmin\theme\index.html.twig', [
+            'themes'  => $this->kernel->getThemes(),
+            'setting' => $this->settingsManager->getSetting('theme')
+        ]);
     }
 
     /**

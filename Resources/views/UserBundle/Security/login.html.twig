@@ -1,0 +1,46 @@
+{% extends '@HarmonyAdmin/default/layout.html.twig' %}
+
+{% trans_default_domain 'UserBundle' %}
+
+{% block body %}
+  <body class="bg-silver-300">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto mt-5">
+          <div class="text-center">
+            <h1 class="font-bold">HarmonyAdmin</h1>
+          </div>
+          <div class="card my-5">
+            <div class="card-body">
+              {{ form_start(form, { method: 'POST', action: path('harmony_user_login') }) }}
+              <h2 class="card-title text-center">Log in</h2>
+              <div class="form-group">
+                <div class="input-group-icon right">
+                  <div class="input-icon"><i class="fa fa-envelope"></i></div>
+                  {{ form_widget(form._username, { 'attr': { 'class': 'form-control' } }) }}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-group-icon right">
+                  <div class="input-icon"><i class="fa fa-lock font-16"></i></div>
+                  {{ form_widget(form._password, { 'attr': { 'class': 'form-control' } }) }}
+                </div>
+              </div>
+              <div class="form-group text-right">
+                <a href="{{ path('harmony_user_password_request') }}">{{ 'login.request_password'|trans }}</a>
+              </div>
+              <div class="form-group">
+                {{ form_widget(form._token) }}
+                <button class="btn btn-info btn-block" type="submit">{{ 'login.submit.button'|trans }}</button>
+              </div>
+              <div class="text-center">Not a member?
+                <a class="color-blue" href="{{ path('harmony_user_register') }}">{{ 'login.register'|trans }}</a>
+              </div>
+              {{ form_end(form) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+{% endblock body %}

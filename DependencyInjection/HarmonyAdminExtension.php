@@ -84,6 +84,11 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         foreach ($config as $key => $value) {
             $container->setParameter(HarmonyCoreExtension::ALIAS . '.' . $key, $value);
         }
+
+        // allow twig override of HarmonyUserBundle
+        $container->loadFromExtension('twig', [
+            'paths' => [dirname(__DIR__) . '/Resources/views/UserBundle' => 'HarmonyUser']
+        ]);
     }
 
     /**

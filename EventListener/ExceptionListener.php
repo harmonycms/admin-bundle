@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\EventListener\ExceptionListener as BaseExceptionListener;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * This listener allows to display customized error pages in the production
@@ -19,7 +23,8 @@ use Symfony\Component\HttpKernel\EventListener\ExceptionListener as BaseExceptio
  */
 class ExceptionListener extends BaseExceptionListener
 {
-    /** @var \Twig_Environment */
+
+    /** @var Environment */
     private $twig;
 
     /** @var array */
@@ -27,9 +32,10 @@ class ExceptionListener extends BaseExceptionListener
 
     private $currentEntityName;
 
-    public function __construct(\Twig_Environment $twig, array $harmonyAdminConfig, $controller, LoggerInterface $logger = null)
+    public function __construct(Environment $twig, array $harmonyAdminConfig, $controller,
+                                LoggerInterface $logger = null)
     {
-        $this->twig = $twig;
+        $this->twig               = $twig;
         $this->harmonyAdminConfig = $harmonyAdminConfig;
 
         parent::__construct($controller, $logger);
@@ -37,10 +43,12 @@ class ExceptionListener extends BaseExceptionListener
 
     /**
      * @param GetResponseForExceptionEvent $event
+     *
+     * @throws \Exception
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $exception = $event->getException();
+        $exception               = $event->getException();
         $this->currentEntityName = $event->getRequest()->query->get('entity');
 
         if (!$exception instanceof BaseException) {
@@ -54,18 +62,19 @@ class ExceptionListener extends BaseExceptionListener
      * @param FlattenException $exception
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function showExceptionPageAction(FlattenException $exception)
     {
-        $entityConfig = $this->harmonyAdminConfig['entities'][$this->currentEntityName] ?? null;
-        $exceptionTemplatePath = $entityConfig['templates']['exception']
-            ?? $this->harmonyAdminConfig['design']['templates']['exception']
-            ?? '@HarmonyAdmin/default/exception.html.twig';
+        $entityConfig          = $this->harmonyAdminConfig['entities'][$this->currentEntityName] ?? null;
+        $exceptionTemplatePath = $entityConfig['templates']['exception'] ??
+            $this->harmonyAdminConfig['design']['templates']['exception'] ??
+            '@HarmonyAdmin/default/exception.html.twig';
 
-        return Response::create($this->twig->render(
-            $exceptionTemplatePath,
-            ['exception' => $exception]
-        ), $exception->getStatusCode());
+        return Response::create($this->twig->render($exceptionTemplatePath, ['exception' => $exception]),
+            $exception->getStatusCode());
     }
 
     /**

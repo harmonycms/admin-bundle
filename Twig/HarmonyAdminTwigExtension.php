@@ -7,6 +7,7 @@ use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Router\HarmonyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Security\Http\Logout\LogoutUrlGenerator;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -130,16 +131,16 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
-     * @param \Twig_Environment $twig
-     * @param string            $view          The view in which the item is being rendered
-     * @param string            $entityName    The name of the entity associated with the item
-     * @param object            $item          The item which is being rendered
-     * @param array             $fieldMetadata The metadata of the actual field being rendered
+     * @param Environment $twig
+     * @param string      $view          The view in which the item is being rendered
+     * @param string      $entityName    The name of the entity associated with the item
+     * @param object      $item          The item which is being rendered
+     * @param array       $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
      * @throws \Exception
      */
-    public function renderEntityField(\Twig_Environment $twig, $view, $entityName, $item, array $fieldMetadata)
+    public function renderEntityField(Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
         $entityConfiguration = $this->configManager->getEntityConfig($entityName);
         $hasCustomTemplate   = 0 !== strpos($fieldMetadata['template'], '@HarmonyAdmin/');
@@ -398,7 +399,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      * author: Henrik Bjornskov <hb@peytz.dk>
      * copyright holder: (c) 2009 Fabien Potencier
      *
-     * @param \Twig_Environment $env
+     * @param Environment       $env
      * @param                   $value
      * @param int               $length
      * @param bool              $preserve
@@ -406,8 +407,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      *
      * @return string
      */
-    public function truncateText(\Twig_Environment $env, $value, $length = 64, $preserve = false,
-                                 $separator = '...'): string
+    public function truncateText(Environment $env, $value, $length = 64, $preserve = false, $separator = '...'): string
     {
         try {
             $value = (string)$value;

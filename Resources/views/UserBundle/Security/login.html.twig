@@ -1,7 +1,5 @@
 {% extends '@HarmonyAdmin/default/layout.html.twig' %}
 
-{% trans_default_domain 'UserBundle' %}
-
 {% block body %}
   <body class="bg-silver-300">
     <div class="container">
@@ -27,14 +25,16 @@
                 </div>
               </div>
               <div class="form-group text-right">
-                <a href="{{ path('harmony_user_password_request') }}">{{ 'login.request_password'|trans }}</a>
+                <a href="{{ path('harmony_user_password_request') }}">{{ 'login.request_password'|trans({}, 'UserBundle') }}</a>
               </div>
               <div class="form-group">
                 {{ form_widget(form._token) }}
-                <button class="btn btn-info btn-block" type="submit">{{ 'login.submit.button'|trans }}</button>
+                <button class="btn btn-info btn-block" type="submit">
+                  {{ 'login.submit.button'|trans({}, 'UserBundle') }}</button>
               </div>
               <div class="text-center">Not a member?
-                <a class="color-blue" href="{{ path('harmony_user_register') }}">{{ 'login.register'|trans }}</a>
+                <a class="color-blue"
+                   href="{{ path('harmony_user_register') }}">{{ 'login.register'|trans({}, 'UserBundle') }}</a>
               </div>
               {{ form_end(form) }}
             </div>

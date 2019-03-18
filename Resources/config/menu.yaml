@@ -18,7 +18,6 @@ admin_menu:
       extras: { icon: 'fas fa-cogs' }
       children:
         - { label: 'General', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'general' } }
-        - { label: 'SEO', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'seo' } }
     themes:
       label: 'Themes'
       extras: { icon: 'fas fa-palette' }

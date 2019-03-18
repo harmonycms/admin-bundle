@@ -4,7 +4,7 @@ namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\SettingsManagerBundle\Form\Type\SettingsType;
 use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsManager;
-use Harmony\Bundle\SettingsManagerBundle\Model\SettingModel;
+use Harmony\Bundle\SettingsManagerBundle\Model\Setting;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SettingsController extends AbstractController
 {
-
-    use InitializeTrait;
 
     /** @var SettingsManager $settingsManager */
     protected $settingsManager;
@@ -45,7 +43,6 @@ class SettingsController extends AbstractController
      */
     public function index(Request $request, string $domainName, string $tagName): Response
     {
-        $this->initialize($request);
         $settings = $this->settingsManager->getEnabledSettingsByTag([$domainName], $tagName);
 
         $form = $this->createForm(SettingsType::class, ['settings' => $settings]);
@@ -53,7 +50,7 @@ class SettingsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            /** @var SettingModel $setting */
+            /** @var Setting $setting */
             foreach ($data['settings'] as $setting) {
                 if (null !== $setting->getData()) {
                     $this->settingsManager->save($setting);

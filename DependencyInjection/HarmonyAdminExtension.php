@@ -44,7 +44,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         }
         if ($container->hasParameter('locale')) {
             $container->getDefinition('harmony_admin.configuration.design_config_pass')
-                ->replaceArgument(2, $container->getParameter('locale'));
+                ->replaceArgument('$locale', $container->getParameter('locale'));
         }
 
         $routeImporter = new RouteImporter($container);

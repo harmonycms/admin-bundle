@@ -3,9 +3,11 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
+use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
 use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,6 +33,24 @@ trait InitializeTrait
     /** @var EntityManager $em The Doctrine entity manager for the current entity */
     protected $em;
 
+    /** @var EventDispatcherInterface $dispatcher */
+    protected $dispatcher;
+
+    /** @var ConfigManager $configManager */
+    protected $configManager;
+
+    /**
+     * InitializeTrait constructor.
+     *
+     * @param EventDispatcherInterface $dispatcher
+     * @param ConfigManager            $configManager
+     */
+    public function __construct(EventDispatcherInterface $dispatcher, ConfigManager $configManager)
+    {
+        $this->dispatcher    = $dispatcher;
+        $this->configManager = $configManager;
+    }
+
     /**
      * Utility method which initializes the configuration of the entity on which
      * the user is performing the action.
@@ -42,9 +62,7 @@ trait InitializeTrait
     {
         $this->dispatch(HarmonyAdminEvents::PRE_INITIALIZE);
 
-        $configManager = $this->get('harmony_admin.config.manager');
-
-        $this->config = $configManager->getBackendConfig();
+        $this->config = $this->configManager->getBackendConfig();
 
         // this condition happens when accessing the backend homepage and before
         // redirecting to the default page set as the homepage
@@ -56,7 +74,7 @@ trait InitializeTrait
             throw new UndefinedEntityException(['entity_name' => $entityName]);
         }
 
-        $this->entity = $configManager->getEntityConfig($entityName);
+        $this->entity = $this->configManager->getEntityConfig($entityName);
 
         $action = $request->query->get('action', 'list');
         if (!$request->query->has('sortField')) {
@@ -90,7 +108,7 @@ trait InitializeTrait
         ], $arguments);
         $subject   = $arguments['paginator'] ?? $arguments['entity'];
         $event     = new GenericEvent($subject, $arguments);
-        $this->get('event_dispatcher')->dispatch($eventName, $event);
+        $this->dispatcher->dispatch($eventName, $event);
     }
 
     /**

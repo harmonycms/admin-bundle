@@ -2,7 +2,7 @@
 
 namespace Harmony\Bundle\AdminBundle\Search;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
@@ -12,10 +12,16 @@ use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
  */
 class QueryBuilder
 {
-    /** @var Registry */
+
+    /** @var ManagerRegistry */
     private $doctrine;
 
-    public function __construct(Registry $doctrine)
+    /**
+     * QueryBuilder constructor.
+     *
+     * @param ManagerRegistry $doctrine
+     */
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
@@ -31,22 +37,20 @@ class QueryBuilder
      *
      * @return DoctrineQueryBuilder
      */
-    public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null, $dqlFilter = null)
+    public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null,
+                                           $dqlFilter = null)
     {
         /* @var EntityManager $em */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
         /* @var ClassMetadata $classMetadata */
         $classMetadata = $em->getClassMetadata($entityConfig['class']);
         /* @var DoctrineQueryBuilder $queryBuilder */
-        $queryBuilder = $em->createQueryBuilder()
-            ->select('entity')
-            ->from($entityConfig['class'], 'entity')
-        ;
+        $queryBuilder = $em->createQueryBuilder()->select('entity')->from($entityConfig['class'], 'entity');
 
         $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
-            $queryBuilder->leftJoin('entity.'.$sortFieldParts[0], $sortFieldParts[0]);
+            $queryBuilder->leftJoin('entity.' . $sortFieldParts[0], $sortFieldParts[0]);
         }
 
         if (!empty($dqlFilter)) {
@@ -54,7 +58,8 @@ class QueryBuilder
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField), $sortDirection);
+            $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
+                $sortDirection);
         }
 
         return $queryBuilder;
@@ -72,51 +77,49 @@ class QueryBuilder
      *
      * @return DoctrineQueryBuilder
      */
-    public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null, $sortDirection = null, $dqlFilter = null)
+    public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null,
+                                             $sortDirection = null, $dqlFilter = null)
     {
         /* @var EntityManager $em */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
         /* @var ClassMetadata $classMetadata */
         $classMetadata = $em->getClassMetadata($entityConfig['class']);
         /* @var DoctrineQueryBuilder $queryBuilder */
-        $queryBuilder = $em->createQueryBuilder()
-            ->select('entity')
-            ->from($entityConfig['class'], 'entity')
-        ;
+        $queryBuilder = $em->createQueryBuilder()->select('entity')->from($entityConfig['class'], 'entity');
 
-        $isSearchQueryNumeric = is_numeric($searchQuery);
-        $isSearchQuerySmallInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -32768 && $searchQuery <= 32767;
-        $isSearchQueryInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= -2147483648 && $searchQuery <= 2147483647;
-        $isSearchQueryUuid = 1 === preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
-        $lowerSearchQuery = mb_strtolower($searchQuery);
+        $isSearchQueryNumeric      = is_numeric($searchQuery);
+        $isSearchQuerySmallInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= - 32768 &&
+            $searchQuery <= 32767;
+        $isSearchQueryInteger      = (\is_int($searchQuery) || ctype_digit($searchQuery)) &&
+            $searchQuery >= - 2147483648 && $searchQuery <= 2147483647;
+        $isSearchQueryUuid         = 1 ===
+            preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
+        $lowerSearchQuery          = mb_strtolower($searchQuery);
 
-        $queryParameters = [];
+        $queryParameters       = [];
         $entitiesAlreadyJoined = [];
         foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
                 [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);
                 if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
-                    $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
+                    $queryBuilder->leftJoin('entity.' . $associatedEntityName, $associatedEntityName);
                     $entitiesAlreadyJoined[] = $associatedEntityName;
                 }
 
                 $entityName = $associatedEntityName;
-                $fieldName = $associatedFieldName;
+                $fieldName  = $associatedFieldName;
             }
 
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
-            $isIntegerField = 'integer' === $metadata['dataType'];
-            $isNumericField = \in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
-            $isTextField = \in_array($metadata['dataType'], ['string', 'text']);
-            $isGuidField = 'guid' === $metadata['dataType'];
+            $isIntegerField      = 'integer' === $metadata['dataType'];
+            $isNumericField      = \in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
+            $isTextField         = \in_array($metadata['dataType'], ['string', 'text']);
+            $isGuidField         = 'guid' === $metadata['dataType'];
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
-            if (
-                ($isSmallIntegerField && $isSearchQuerySmallInteger) ||
-                ($isIntegerField && $isSearchQueryInteger) ||
-                ($isNumericField && $isSearchQueryNumeric)
-            ) {
+            if (($isSmallIntegerField && $isSearchQuerySmallInteger) || ($isIntegerField && $isSearchQueryInteger) ||
+                ($isNumericField && $isSearchQueryNumeric)) {
                 $queryBuilder->orWhere(sprintf('%s.%s = :numeric_query', $entityName, $fieldName));
                 // adding '0' turns the string into a numeric value
                 $queryParameters['numeric_query'] = 0 + $searchQuery;
@@ -125,7 +128,7 @@ class QueryBuilder
                 $queryParameters['uuid_query'] = $searchQuery;
             } elseif ($isTextField) {
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) LIKE :fuzzy_query', $entityName, $fieldName));
-                $queryParameters['fuzzy_query'] = '%'.$lowerSearchQuery.'%';
+                $queryParameters['fuzzy_query'] = '%' . $lowerSearchQuery . '%';
 
                 $queryBuilder->orWhere(sprintf('LOWER(%s.%s) IN (:words_query)', $entityName, $fieldName));
                 $queryParameters['words_query'] = explode(' ', $lowerSearchQuery);
@@ -144,13 +147,14 @@ class QueryBuilder
         if ($isSortedByDoctrineAssociation) {
             $associatedEntityName = explode('.', $sortField)[0];
             if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
-                $queryBuilder->leftJoin('entity.'.$associatedEntityName, $associatedEntityName);
+                $queryBuilder->leftJoin('entity.' . $associatedEntityName, $associatedEntityName);
                 $entitiesAlreadyJoined[] = $associatedEntityName;
             }
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField), $sortDirection ?: 'DESC');
+            $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
+                $sortDirection ?: 'DESC');
         }
 
         return $queryBuilder;
@@ -174,6 +178,7 @@ class QueryBuilder
 
         $fieldNameParts = explode('.', $fieldName);
 
-        return false !== strpos($fieldName, '.') && !array_key_exists($fieldNameParts[0], $classMetadata->embeddedClasses);
+        return false !== strpos($fieldName, '.') &&
+            !array_key_exists($fieldNameParts[0], $classMetadata->embeddedClasses);
     }
 }

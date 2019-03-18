@@ -2,7 +2,7 @@
 
 namespace Harmony\Bundle\AdminBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Harmony\Bundle\AdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -15,19 +15,20 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class RequestPostInitializeListener
 {
+
     /** @var RequestStack|null */
     private $requestStack;
 
-    /** @var Registry */
+    /** @var ManagerRegistry */
     private $doctrine;
 
     /**
-     * @param Registry          $doctrine
+     * @param ManagerRegistry   $doctrine
      * @param RequestStack|null $requestStack
      */
-    public function __construct(Registry $doctrine, RequestStack $requestStack = null)
+    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack = null)
     {
-        $this->doctrine = $doctrine;
+        $this->doctrine     = $doctrine;
         $this->requestStack = $requestStack;
     }
 
@@ -50,8 +51,8 @@ class RequestPostInitializeListener
 
         $request->attributes->set('harmony_admin', [
             'entity' => $entity = $event->getArgument('entity'),
-            'view' => $request->query->get('action', 'list'),
-            'item' => ($id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
+            'view'   => $request->query->get('action', 'list'),
+            'item'   => ($id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
         ]);
     }
 
@@ -62,18 +63,22 @@ class RequestPostInitializeListener
      * @param mixed $itemId
      *
      * @return object The entity
-     *
      * @throws EntityNotFoundException
      * @throws \RuntimeException
      */
     private function findCurrentItem(array $entityConfig, $itemId)
     {
         if (null === $manager = $this->doctrine->getManagerForClass($entityConfig['class'])) {
-            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class', $entityConfig['class']));
+            throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class',
+                $entityConfig['class']));
         }
 
         if (null === $entity = $manager->getRepository($entityConfig['class'])->find($itemId)) {
-            throw new EntityNotFoundException(['entity_name' => $entityConfig['name'], 'entity_id_name' => $entityConfig['primary_key_field_name'], 'entity_id_value' => $itemId]);
+            throw new EntityNotFoundException([
+                'entity_name'     => $entityConfig['name'],
+                'entity_id_name'  => $entityConfig['primary_key_field_name'],
+                'entity_id_value' => $itemId
+            ]);
         }
 
         return $entity;

@@ -12,23 +12,26 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DesignConfigPass implements ConfigPassInterface
 {
+
     /** @var ContainerInterface */
     private $container;
+
     /** @var bool */
     private $kernelDebug;
+
     /** @var string */
     private $locale;
 
     /**
      * @var ContainerInterface to prevent ServiceCircularReferenceException
-     * @var bool               $kernelDebug
-     * @var string             $locale
+     * @var bool   $debug
+     * @var string $locale
      */
-    public function __construct(ContainerInterface $container, $kernelDebug, $locale)
+    public function __construct(ContainerInterface $container, $debug, $locale)
     {
-        $this->container = $container;
-        $this->kernelDebug = $kernelDebug;
-        $this->locale = $locale;
+        $this->container   = $container;
+        $this->kernelDebug = $debug;
+        $this->locale      = $locale;
     }
 
     public function process(array $backendConfig)
@@ -56,12 +59,12 @@ class DesignConfigPass implements ConfigPassInterface
     private function processCustomCss(array $backendConfig)
     {
         $customCssContent = $this->container->get('twig')->render('@HarmonyAdmin/css/harmony_admin.css.twig', [
-            'brand_color' => $backendConfig['design']['brand_color'],
+            'brand_color'  => $backendConfig['design']['brand_color'],
             'color_scheme' => $backendConfig['design']['color_scheme'],
             'kernel_debug' => $this->kernelDebug,
         ]);
 
-        $minifiedCss = preg_replace(['/\n/', '/\s{2,}/'], ' ', $customCssContent);
+        $minifiedCss                              = preg_replace(['/\n/', '/\s{2,}/'], ' ', $customCssContent);
         $backendConfig['_internal']['custom_css'] = $minifiedCss;
 
         return $backendConfig;

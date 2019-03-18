@@ -6,6 +6,7 @@ use Harmony\Bundle\AdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Form\FormTypeGuesserChain;
 
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
@@ -31,12 +32,13 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
      */
     private function configureTypeGuesserChain(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('harmony_admin.form.type_guesser_chain');
         $guesserIds = array_keys($container->findTaggedServiceIds('form.type_guesser'));
         $guessers   = array_map(function ($id) {
             return new Reference($id);
         }, $guesserIds);
-        $definition->replaceArgument(0, $guessers);
+        $container->autowire('harmony_admin.form.type_guesser_chain', FormTypeGuesserChain::class)
+            ->setArgument('$guessers', $guessers)
+            ->setPublic(true);
     }
 
     /**
@@ -71,6 +73,7 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition('harmony_admin.form.type')->replaceArgument(1, iterator_to_array($configurators));
+        $container->getDefinition('harmony_admin.form.type')
+            ->setArgument('$configurators', iterator_to_array($configurators));
     }
 }

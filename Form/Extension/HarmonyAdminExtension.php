@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * render the form.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
+ * @method iterable getExtendedTypes()
  */
 class HarmonyAdminExtension extends AbstractTypeExtension
 {
@@ -72,5 +73,10 @@ class HarmonyAdminExtension extends AbstractTypeExtension
     public function getExtendedType()
     {
         return FormTypeHelper::getTypeClass('form');
+    }
+
+    public function __call($name, $arguments)
+    {
+        // TODO: Implement @method iterable getExtendedTypes()
     }
 }

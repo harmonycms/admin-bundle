@@ -4,21 +4,20 @@ harmony:
     # Models
     models:
       User:
-        class: App\Entity\User
+        class: Harmony\Bundle\UserBundle\Security\UserInterface
         label: 'Users'
         list:
           fields:
             - 'username'
             - 'email'
-            - 'enabled'
-            - 'lastLogin'
+            - 'roles'
+            - 'isLocked'
         form:
           fields:
-          - 'username'
-          - 'email'
-          - 'enabled'
-          - { property: 'plainPassword', type: 'text', type_options: { required: false } }
-          - { property: 'roles' }
+            - 'username'
+            - 'email'
+            - { property: 'plainPassword', type: 'text', type_options: { required: false } }
+            - { property: 'roles' }
     # Dashboard
     dashboard:
       blocks:

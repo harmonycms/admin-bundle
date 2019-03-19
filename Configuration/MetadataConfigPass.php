@@ -16,17 +16,17 @@ use function property_exists;
 class MetadataConfigPass implements ConfigPassInterface
 {
 
-    /** @var ManagerRegistry */
-    private $doctrine;
+    /** @var ManagerRegistry $registry */
+    private $registry;
 
     /**
      * MetadataConfigPass constructor.
      *
-     * @param ManagerRegistry $doctrine
+     * @param ManagerRegistry $registry
      */
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->doctrine = $doctrine;
+        $this->registry = $registry;
     }
 
     /**
@@ -38,19 +38,20 @@ class MetadataConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             try {
-                $em = $this->doctrine->getManagerForClass($modelConfig['class']);
+                $modelConfig['class'] = $this->getObjectClass($modelConfig['class']);
+                $objectManager        = $this->registry->getManagerForClass($modelConfig['class']);
             }
             catch (\ReflectionException $e) {
                 throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.models.%s" does not exist. Did you forget to create the model class or to define its namespace?',
                     $modelConfig['class'], $modelName));
             }
 
-            if (null === $em) {
+            if (null === $objectManager) {
                 throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.models.%s" is no mapped model.',
                     $modelConfig['class'], $modelName));
             }
             /** @var ClassMetadata $classMetadata */
-            $classMetadata = $em->getMetadataFactory()->getMetadataFor($modelConfig['class']);
+            $classMetadata = $objectManager->getMetadataFactory()->getMetadataFor($modelConfig['class']);
 
             if (!isset($classMetadata->getIdentifierFieldNames()[0])) {
                 throw new \RuntimeException('No ID defined for model ' . $modelConfig['class']);
@@ -58,7 +59,7 @@ class MetadataConfigPass implements ConfigPassInterface
 
             $modelConfig['primary_key_field_name'] = $classMetadata->getIdentifierFieldNames()[0];
 
-            $modelConfig['properties'] = $this->processEntityPropertiesMetadata($classMetadata);
+            $modelConfig['properties'] = $this->processModelPropertiesMetadata($classMetadata);
 
             $backendConfig['models'][$modelName] = $modelConfig;
         }
@@ -75,13 +76,13 @@ class MetadataConfigPass implements ConfigPassInterface
      * @return array The properties metadata provided by Doctrine
      * @throws \RuntimeException
      */
-    private function processEntityPropertiesMetadata(ClassMetadata $classMetadata)
+    private function processModelPropertiesMetadata(ClassMetadata $classMetadata)
     {
         $PropertiesMetadata = [];
 
         if (property_exists($classMetadata, 'isIdentifierComposite') &&
             false === $classMetadata->isIdentifierComposite) {
-            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it contains a composite primary key.",
+            throw new \RuntimeException(sprintf("The '%s' model isn't valid because it contains a composite primary key.",
                 $classMetadata->name));
         }
 
@@ -104,5 +105,48 @@ class MetadataConfigPass implements ConfigPassInterface
         }
 
         return $PropertiesMetadata;
+    }
+
+    /**
+     * Returns the first entity or document founded, that is not a mapped superclass
+     *
+     * @param string $objectName
+     *
+     * @return string
+     */
+    private function getObjectClass(string $objectName)
+    {
+        $objectManager = $this->registry->getManager();
+        foreach ($this->objectGuesser($objectName) as $class) {
+            $classMetadata = $objectManager->getMetadataFactory()->getMetadataFor($class);
+            if (false === $classMetadata->isMappedSuperclass) {
+                return $classMetadata->getName();
+            }
+        }
+
+        return $objectName;
+    }
+
+    /**
+     * Returns a list of possible object classes to be a valid entity or document.
+     *
+     * @param string $objectName
+     *
+     * @return array
+     */
+    private function objectGuesser(string $objectName): array
+    {
+        if (interface_exists($objectName)) {
+            return array_filter(get_declared_classes(), function ($className) use ($objectName) {
+                return in_array($objectName, class_implements($className));
+            });
+        } elseif (class_exists($objectName) &&
+            ($classes = array_filter(get_declared_classes(), function ($className) use ($objectName) {
+                return is_subclass_of($className, $objectName);
+            }))) {
+            return $classes;
+        }
+
+        return [$objectName];
     }
 }

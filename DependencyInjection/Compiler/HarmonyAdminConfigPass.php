@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\DependencyInjection\Compiler;
 
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;

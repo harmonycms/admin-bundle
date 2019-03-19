@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Type as DoctrineDBALType;
 use Harmony\Bundle\AdminBundle\Form\Guesser\MissingDoctrineOdmTypeGuesser;
 use Harmony\Bundle\AdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser;
 use Harmony\Bundle\AdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
+use Harmony\Bundle\AdminBundle\Form\Type\FormType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -91,7 +92,6 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
             }
         }
 
-        $container->getDefinition('harmony_admin.form.type')
-            ->setArgument('$configurators', iterator_to_array($configurators));
+        $container->getDefinition(FormType::class)->setArgument('$configurators', iterator_to_array($configurators));
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
 use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
@@ -12,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
+use function array_key_exists;
 
 /**
  * Trait InitializeTrait
@@ -26,14 +29,14 @@ trait InitializeTrait
     /** @var array $config The full configuration of the entire backend */
     protected $config;
 
-    /** @var array $entity The full configuration of the current entity */
-    protected $entity = [];
+    /** @var array $model The full configuration of the current entity */
+    protected $model = [];
 
     /** @var Request $request The instance of the current Symfony request */
     protected $request;
 
-    /** @var EntityManager $em The Doctrine entity manager for the current entity */
-    protected $em;
+    /** @var ObjectManager $objectManager The Doctrine entity manager for the current entity */
+    protected $objectManager;
 
     /** @var EventDispatcherInterface $dispatcher */
     protected $dispatcher;
@@ -69,9 +72,9 @@ trait InitializeTrait
      * the user is performing the action.
      *
      * @param Request     $request
-     * @param null|string $entityName
+     * @param null|string $modelName
      */
-    protected function initialize(Request $request, ?string $entityName = null)
+    protected function initialize(Request $request, ?string $modelName = null)
     {
         $this->dispatch(HarmonyAdminEvents::PRE_INITIALIZE);
 
@@ -79,30 +82,30 @@ trait InitializeTrait
 
         // this condition happens when accessing the backend homepage and before
         // redirecting to the default page set as the homepage
-        if (null === $entityName) {
+        if (null === $modelName) {
             return;
         }
 
-        if (!array_key_exists($entityName, $this->config['models'])) {
-            throw new UndefinedEntityException(['entity_name' => $entityName]);
+        if (!array_key_exists($modelName, $this->config['models'])) {
+            throw new UndefinedEntityException(['entity_name' => $modelName]);
         }
 
-        $this->entity = $this->configManager->getEntityConfig($entityName);
+        $this->model = $this->configManager->getEntityConfig($modelName);
 
         $action = $request->query->get('action', 'list');
         if (!$request->query->has('sortField')) {
-            $sortField = isset($this->entity[$action]['sort']['field']) ? $this->entity[$action]['sort']['field'] :
-                $this->entity['primary_key_field_name'];
+            $sortField = isset($this->model[$action]['sort']['field']) ? $this->model[$action]['sort']['field'] :
+                $this->model['primary_key_field_name'];
             $request->query->set('sortField', $sortField);
         }
         if (!$request->query->has('sortDirection')) {
-            $sortDirection = isset($this->entity[$action]['sort']['direction']) ?
-                $this->entity[$action]['sort']['direction'] : 'DESC';
+            $sortDirection = isset($this->model[$action]['sort']['direction']) ?
+                $this->model[$action]['sort']['direction'] : 'DESC';
             $request->query->set('sortDirection', $sortDirection);
         }
 
-        $this->em      = $this->getDoctrine()->getManagerForClass($this->entity['class']);
-        $this->request = $request;
+        $this->objectManager = $this->getDoctrine()->getManagerForClass($this->model['class']);
+        $this->request       = $request;
 
         $this->dispatch(HarmonyAdminEvents::POST_INITIALIZE);
     }
@@ -115,11 +118,11 @@ trait InitializeTrait
     {
         $arguments = array_replace([
             'config'  => $this->config,
-            'em'      => $this->em,
-            'entity'  => $this->entity,
+            'em'      => $this->objectManager,
+            'model'   => $this->model,
             'request' => $this->request,
         ], $arguments);
-        $subject   = $arguments['paginator'] ?? $arguments['entity'];
+        $subject   = $arguments['paginator'] ?? $arguments['model'];
         $event     = new GenericEvent($subject, $arguments);
         $this->dispatcher->dispatch($eventName, $event);
     }
@@ -145,11 +148,11 @@ trait InitializeTrait
      */
     protected function getBlockCount($class, $dql_filter)
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManagerForClass($class);
-        $qb = $em->createQueryBuilder('entity');
+        /** @var ObjectManager $objectManager */
+        $objectManager = $this->getDoctrine()->getManagerForClass($class);
+        $qb            = $objectManager->createQueryBuilder('model');
         $qb->select('count(entity.id)');
-        $qb->from($class, 'entity');
+        $qb->from($class, 'model');
         if ($dql_filter) {
             $qb->where($dql_filter);
         }

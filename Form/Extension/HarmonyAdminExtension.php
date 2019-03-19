@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Form\Extension;
 
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
@@ -30,7 +32,15 @@ class HarmonyAdminExtension extends AbstractTypeExtension
     }
 
     /**
-     * {@inheritdoc}
+     * Finishes the view.
+     * This method is called after the extended type has finished the view to
+     * further modify it.
+     *
+     * @see FormTypeInterface::finishView()
+     *
+     * @param FormView      $view
+     * @param FormInterface $form
+     * @param array         $options
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
@@ -45,11 +55,11 @@ class HarmonyAdminExtension extends AbstractTypeExtension
 
         if ($request->attributes->has('harmony_admin')) {
             $harmonyAdmin                = $request->attributes->get('harmony_admin');
-            $entity                      = $harmonyAdmin['entity'];
+            $entity                      = $harmonyAdmin['model'];
             $action                      = $harmonyAdmin['view'];
             $fields                      = $entity[$action]['fields'] ?? [];
             $view->vars['harmony_admin'] = [
-                'entity'     => $entity,
+                'model'      => $entity,
                 'view'       => $action,
                 'item'       => $harmonyAdmin['item'],
                 'field'      => null,

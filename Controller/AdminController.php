@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
@@ -58,25 +60,7 @@ class AdminController extends AbstractController
     {
         $this->initialize($request, $model);
         if (!$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
-        }
-
-        return $this->executeDynamicMethod($action . '<EntityName>');
-    }
-
-    /**
-     * @Route("/entity/{entity}/{action}", name="admin_entity")
-     * @param Request $request
-     * @param string  $entity
-     * @param string  $action
-     *
-     * @return mixed
-     */
-    public function entity(Request $request, string $entity, string $action = 'list')
-    {
-        $this->initialize($request, $entity);
-        if (!$this->isActionAllowed($action)) {
-            throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
+            throw new ForbiddenActionException(['action' => $action, 'model_name' => $this->model['name']]);
         }
 
         return $this->executeDynamicMethod($action . '<EntityName>');
@@ -91,7 +75,7 @@ class AdminController extends AbstractController
     protected function autocomplete(): JsonResponse
     {
         $results = $this->get('harmony_admin.autocomplete')
-            ->find($this->request->query->get('entity'), $this->request->query->get('query'),
+            ->find($this->request->query->get('model'), $this->request->query->get('query'),
                 $this->request->query->get('page', 1));
 
         return new JsonResponse($results);
@@ -105,19 +89,19 @@ class AdminController extends AbstractController
     protected function list(): Response
     {
         $this->dispatch(HarmonyAdminEvents::PRE_LIST);
-        $fields    = $this->entity['list']['fields'];
-        $paginator = $this->findAll($this->entity['class'], $this->request->query->get('page', 1),
-            $this->entity['list']['max_results'], $this->request->query->get('sortField'),
-            $this->request->query->get('sortDirection'), $this->entity['list']['dql_filter']);
+        $fields    = $this->model['list']['fields'];
+        $paginator = $this->findAll($this->model['class'], $this->request->query->get('page', 1),
+            $this->model['list']['max_results'], $this->request->query->get('sortField'),
+            $this->request->query->get('sortDirection'), $this->model['list']['dql_filter']);
         $this->dispatch(HarmonyAdminEvents::POST_LIST, ['paginator' => $paginator]);
         $parameters = [
             'paginator'            => $paginator,
             'fields'               => $fields,
-            'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
+            'delete_form_template' => $this->createDeleteForm($this->model['name'], '__id__')->createView(),
         ];
 
         return $this->executeDynamicMethod('render<EntityName>Template',
-            ['list', $this->entity['templates']['list'], $parameters]);
+            ['list', $this->model['templates']['list'], $parameters]);
     }
 
     /**
@@ -135,7 +119,7 @@ class AdminController extends AbstractController
         $entity       = $harmonyAdmin['item'];
         if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
             $newValue       = 'true' === mb_strtolower($this->request->query->get('newValue'));
-            $fieldsMetadata = $this->entity['list']['fields'];
+            $fieldsMetadata = $this->model['list']['fields'];
             if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
                 throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
             }
@@ -144,14 +128,14 @@ class AdminController extends AbstractController
             // cast to integer instead of string to avoid sending empty responses for 'false'
             return new Response((int)$newValue);
         }
-        $fields     = $this->entity['edit']['fields'];
+        $fields     = $this->model['edit']['fields'];
         $editForm   = $this->executeDynamicMethod('create<EntityName>EditForm', [$entity, $fields]);
-        $deleteForm = $this->createDeleteForm($this->entity['name'], $id);
+        $deleteForm = $this->createDeleteForm($this->model['name'], $id);
         $editForm->handleRequest($this->request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['entity' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['model' => $entity]);
             $this->executeDynamicMethod('update<EntityName>Entity', [$entity, $editForm]);
-            $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['entity' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['model' => $entity]);
 
             return $this->redirectToReferrer();
         }
@@ -159,12 +143,12 @@ class AdminController extends AbstractController
         $parameters = [
             'form'          => $editForm->createView(),
             'entity_fields' => $fields,
-            'entity'        => $entity,
+            'model'         => $entity,
             'delete_form'   => $deleteForm->createView(),
         ];
 
         return $this->executeDynamicMethod('render<EntityName>Template',
-            ['edit', $this->entity['templates']['edit'], $parameters]);
+            ['edit', $this->model['templates']['edit'], $parameters]);
     }
 
     /**
@@ -178,21 +162,21 @@ class AdminController extends AbstractController
         $id           = $this->request->query->get('id');
         $harmonyAdmin = $this->request->attributes->get('harmony_admin');
         $entity       = $harmonyAdmin['item'];
-        $fields       = $this->entity['show']['fields'];
-        $deleteForm   = $this->createDeleteForm($this->entity['name'], $id);
+        $fields       = $this->model['show']['fields'];
+        $deleteForm   = $this->createDeleteForm($this->model['name'], $id);
         $this->dispatch(HarmonyAdminEvents::POST_SHOW, [
             'deleteForm' => $deleteForm,
             'fields'     => $fields,
-            'entity'     => $entity,
+            'model'      => $entity,
         ]);
         $parameters = [
-            'entity'      => $entity,
+            'model'       => $entity,
             'fields'      => $fields,
             'delete_form' => $deleteForm->createView(),
         ];
 
         return $this->executeDynamicMethod('render<EntityName>Template',
-            ['show', $this->entity['templates']['show'], $parameters]);
+            ['show', $this->model['templates']['show'], $parameters]);
     }
 
     /**
@@ -208,29 +192,29 @@ class AdminController extends AbstractController
         $harmonyAdmin         = $this->request->attributes->get('harmony_admin');
         $harmonyAdmin['item'] = $entity;
         $this->request->attributes->set('harmony_admin', $harmonyAdmin);
-        $fields  = $this->entity['new']['fields'];
+        $fields  = $this->model['new']['fields'];
         $newForm = $this->executeDynamicMethod('create<EntityName>NewForm', [$entity, $fields]);
         $newForm->handleRequest($this->request);
         if ($newForm->isSubmitted() && $newForm->isValid()) {
-            $this->dispatch(HarmonyAdminEvents::PRE_PERSIST, ['entity' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::PRE_PERSIST, ['model' => $entity]);
             $this->executeDynamicMethod('persist<EntityName>Entity', [$entity, $newForm]);
-            $this->dispatch(HarmonyAdminEvents::POST_PERSIST, ['entity' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::POST_PERSIST, ['model' => $entity]);
 
             return $this->redirectToReferrer();
         }
         $this->dispatch(HarmonyAdminEvents::POST_NEW, [
             'entity_fields' => $fields,
             'form'          => $newForm,
-            'entity'        => $entity,
+            'model'         => $entity,
         ]);
         $parameters = [
             'form'          => $newForm->createView(),
             'entity_fields' => $fields,
-            'entity'        => $entity,
+            'model'         => $entity,
         ];
 
         return $this->executeDynamicMethod('render<EntityName>Template',
-            ['new', $this->entity['templates']['new'], $parameters]);
+            ['new', $this->model['templates']['new'], $parameters]);
     }
 
     /**
@@ -245,26 +229,25 @@ class AdminController extends AbstractController
     {
         $this->dispatch(HarmonyAdminEvents::PRE_DELETE);
         if ('DELETE' !== $this->request->getMethod()) {
-            return $this->redirect($this->generateUrl('admin',
-                ['action' => 'list', 'entity' => $this->entity['name']]));
+            return $this->redirect($this->generateUrl('admin', ['action' => 'list', 'model' => $this->model['name']]));
         }
         $id   = $this->request->query->get('id');
-        $form = $this->createDeleteForm($this->entity['name'], $id);
+        $form = $this->createDeleteForm($this->model['name'], $id);
         $form->handleRequest($this->request);
         if ($form->isSubmitted() && $form->isValid()) {
             $harmonyAdmin = $this->request->attributes->get('harmony_admin');
             $entity       = $harmonyAdmin['item'];
-            $this->dispatch(HarmonyAdminEvents::PRE_REMOVE, ['entity' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::PRE_REMOVE, ['model' => $entity]);
             try {
                 $this->executeDynamicMethod('remove<EntityName>Entity', [$entity, $form]);
             }
             catch (ForeignKeyConstraintViolationException $e) {
                 throw new EntityRemoveException([
-                    'entity_name' => $this->entity['name'],
+                    'entity_name' => $this->model['name'],
                     'message'     => $e->getMessage()
                 ]);
             }
-            $this->dispatch(HarmonyAdminEvents::POST_REMOVE, ['entity' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::POST_REMOVE, ['model' => $entity]);
         }
         $this->dispatch(HarmonyAdminEvents::POST_DELETE);
 
@@ -287,16 +270,16 @@ class AdminController extends AbstractController
 
             return $this->redirect($this->get('router')->generate('admin', $queryParameters));
         }
-        $searchableFields     = $this->entity['search']['fields'];
-        $defaultSortField     = isset($this->entity['search']['sort']['field']) ?
-            $this->entity['search']['sort']['field'] : null;
-        $defaultSortDirection = isset($this->entity['search']['sort']['direction']) ?
-            $this->entity['search']['sort']['direction'] : null;
-        $paginator            = $this->findBy($this->entity['class'], $query, $searchableFields,
-            $this->request->query->get('page', 1), $this->entity['list']['max_results'],
+        $searchableFields     = $this->model['search']['fields'];
+        $defaultSortField     = isset($this->model['search']['sort']['field']) ?
+            $this->model['search']['sort']['field'] : null;
+        $defaultSortDirection = isset($this->model['search']['sort']['direction']) ?
+            $this->model['search']['sort']['direction'] : null;
+        $paginator            = $this->findBy($this->model['class'], $query, $searchableFields,
+            $this->request->query->get('page', 1), $this->model['list']['max_results'],
             $this->request->query->get('sortField', $defaultSortField),
-            $this->request->query->get('sortDirection', $defaultSortDirection), $this->entity['search']['dql_filter']);
-        $fields               = $this->entity['list']['fields'];
+            $this->request->query->get('sortDirection', $defaultSortDirection), $this->model['search']['dql_filter']);
+        $fields               = $this->model['list']['fields'];
         $this->dispatch(HarmonyAdminEvents::POST_SEARCH, [
             'fields'    => $fields,
             'paginator' => $paginator,
@@ -304,11 +287,11 @@ class AdminController extends AbstractController
         $parameters = [
             'paginator'            => $paginator,
             'fields'               => $fields,
-            'delete_form_template' => $this->createDeleteForm($this->entity['name'], '__id__')->createView(),
+            'delete_form_template' => $this->createDeleteForm($this->model['name'], '__id__')->createView(),
         ];
 
         return $this->executeDynamicMethod('render<EntityName>Template',
-            ['search', $this->entity['templates']['list'], $parameters]);
+            ['search', $this->model['templates']['list'], $parameters]);
     }
 
     /**
@@ -322,15 +305,15 @@ class AdminController extends AbstractController
      */
     protected function updateEntityProperty($entity, $property, $value)
     {
-        $entityConfig = $this->entity;
+        $entityConfig = $this->model;
         if (!$this->get('harmony_admin.property_accessor')->isWritable($entity, $property)) {
             throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property,
                 $entityConfig['name']));
         }
         $this->get('harmony_admin.property_accessor')->setValue($entity, $property, $value);
-        $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['entity' => $entity, 'newValue' => $value]);
+        $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['model' => $entity, 'newValue' => $value]);
         $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
-        $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['entity' => $entity, 'newValue' => $value]);
+        $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['model' => $entity, 'newValue' => $value]);
         $this->dispatch(HarmonyAdminEvents::POST_EDIT);
     }
 
@@ -343,7 +326,7 @@ class AdminController extends AbstractController
      */
     protected function createNewEntity()
     {
-        $entityFullyQualifiedClassName = $this->entity['class'];
+        $entityFullyQualifiedClassName = $this->model['class'];
 
         return new $entityFullyQualifiedClassName();
     }
@@ -359,8 +342,8 @@ class AdminController extends AbstractController
      */
     protected function persistEntity($entity)
     {
-        $this->em->persist($entity);
-        $this->em->flush();
+        $this->objectManager->persist($entity);
+        $this->objectManager->flush();
     }
 
     /**
@@ -374,8 +357,8 @@ class AdminController extends AbstractController
      */
     protected function updateEntity($entity)
     {
-        $this->em->persist($entity);
-        $this->em->flush();
+        $this->objectManager->persist($entity);
+        $this->objectManager->flush();
     }
 
     /**
@@ -389,8 +372,8 @@ class AdminController extends AbstractController
      */
     protected function removeEntity($entity)
     {
-        $this->em->remove($entity);
-        $this->em->flush();
+        $this->objectManager->remove($entity);
+        $this->objectManager->flush();
     }
 
     /**
@@ -435,7 +418,7 @@ class AdminController extends AbstractController
      */
     protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null, $dqlFilter = null)
     {
-        return $this->searchQueryBuilder->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
+        return $this->searchQueryBuilder->createListQueryBuilder($this->model, $sortField, $sortDirection, $dqlFilter);
     }
 
     /**
@@ -486,7 +469,7 @@ class AdminController extends AbstractController
                                                 $sortDirection = null, $dqlFilter = null)
     {
         return $this->get('harmony_admin.query_builder')
-            ->createSearchQueryBuilder($this->entity, $searchQuery, $sortField, $sortDirection, $dqlFilter);
+            ->createSearchQueryBuilder($this->model, $searchQuery, $sortField, $sortDirection, $dqlFilter);
     }
 
     /**
@@ -530,7 +513,7 @@ class AdminController extends AbstractController
         $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', [$entity, $view]);
 
         return $this->get('form.factory')
-            ->createNamedBuilder(mb_strtolower($this->entity['name']), FormTypeHelper::getTypeClass('harmony_admin'),
+            ->createNamedBuilder(mb_strtolower($this->model['name']), FormTypeHelper::getTypeClass('harmony_admin'),
                 $entity, $formOptions);
     }
 
@@ -545,9 +528,9 @@ class AdminController extends AbstractController
      */
     protected function getEntityFormOptions($entity, $view)
     {
-        $formOptions           = $this->entity[$view]['form_options'];
-        $formOptions['entity'] = $this->entity['name'];
-        $formOptions['view']   = $view;
+        $formOptions          = $this->model[$view]['form_options'];
+        $formOptions['model'] = $this->model['name'];
+        $formOptions['view']  = $view;
 
         return $formOptions;
     }
@@ -564,7 +547,7 @@ class AdminController extends AbstractController
      */
     protected function createEntityForm($entity, array $entityProperties, $view)
     {
-        if (method_exists($this, $customMethodName = 'create' . $this->entity['name'] . 'EntityForm')) {
+        if (method_exists($this, $customMethodName = 'create' . $this->model['name'] . 'EntityForm')) {
             $form = $this->{$customMethodName}($entity, $entityProperties, $view);
             if (!$form instanceof FormInterface) {
                 throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormInterface, "%s" given.',
@@ -598,9 +581,9 @@ class AdminController extends AbstractController
         /** @var FormBuilder $formBuilder */
         $formBuilder = $this->get('form.factory')
             ->createNamedBuilder('delete_form')
-            ->setAction($this->generateUrl('admin_entity', [
+            ->setAction($this->generateUrl('admin_model', [
                 'action' => 'delete',
-                'entity' => $entityName,
+                'model'  => $entityName,
                 'id'     => $entityId
             ]))
             ->setMethod('DELETE');
@@ -622,7 +605,7 @@ class AdminController extends AbstractController
      */
     protected function isActionAllowed($actionName)
     {
-        return false === \in_array($actionName, $this->entity['disabled_actions'], true);
+        return false === \in_array($actionName, $this->model['disabled_actions'], true);
     }
 
     /**
@@ -641,7 +624,7 @@ class AdminController extends AbstractController
      */
     protected function executeDynamicMethod($methodNamePattern, array $arguments = [])
     {
-        $methodName = str_replace('<EntityName>', $this->entity['name'], $methodNamePattern);
+        $methodName = str_replace('<EntityName>', $this->model['name'], $methodNamePattern);
         if (!\is_callable([$this, $methodName])) {
             $methodName = str_replace('<EntityName>', '', $methodNamePattern);
         }
@@ -664,7 +647,7 @@ class AdminController extends AbstractController
 
             return $this->redirectToRoute('admin', [
                 'action'       => 'list',
-                'entity'       => $this->entity['name'],
+                'model'        => $this->model['name'],
                 'menuIndex'    => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
             ]);
@@ -673,19 +656,19 @@ class AdminController extends AbstractController
         if (\in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
             return $this->redirectToRoute('admin', [
                 'action'       => 'edit',
-                'entity'       => $this->entity['name'],
+                'model'        => $this->model['name'],
                 'menuIndex'    => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
                 'id'           => ('new' === $refererAction) ? PropertyAccess::createPropertyAccessor()
                     ->getValue($this->request->attributes->get('harmony_admin')['item'],
-                        $this->entity['primary_key_field_name']) : $this->request->query->get('id'),
+                        $this->model['primary_key_field_name']) : $this->request->query->get('id'),
             ]);
         }
         // 3. from new action, redirect to new if possible
         if ('new' === $refererAction && $this->isActionAllowed('new')) {
             return $this->redirectToRoute('admin', [
                 'action'       => 'new',
-                'entity'       => $this->entity['name'],
+                'model'        => $this->model['name'],
                 'menuIndex'    => $this->request->query->get('menuIndex'),
                 'submenuIndex' => $this->request->query->get('submenuIndex'),
             ]);

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\DependencyInjection;
 
+use Harmony\Bundle\AdminBundle\Configuration\DesignConfigPass;
 use Harmony\Bundle\CoreBundle\DependencyInjection\HarmonyCoreExtension;
 use Rollerworks\Bundle\RouteAutowiringBundle\RouteImporter;
 use Symfony\Component\Config\FileLocator;
@@ -9,6 +12,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use function dirname;
+use function array_key_exists;
+use function is_array;
+use function in_array;
+use function is_numeric;
+use function explode;
+use function end;
+use function preg_match;
 
 /**
  * Class HarmonyAdminExtension
@@ -43,7 +54,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
             $container->removeDefinition('harmony_admin.cache.config_warmer');
         }
         if ($container->hasParameter('locale')) {
-            $container->getDefinition('harmony_admin.configuration.design_config_pass')
+            $container->getDefinition(DesignConfigPass::class)
                 ->replaceArgument('$locale', $container->getParameter('locale'));
         }
 
@@ -151,7 +162,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
     private function normalizeEntityConfig($entityName, $entityConfig)
     {
         // normalize config formats #1 and #2 to use the 'class' option as config format #3
-        if (!\is_array($entityConfig)) {
+        if (!is_array($entityConfig)) {
             $entityConfig = ['class' => $entityConfig];
         }
         // if config format #3 is used, ensure that it defines the 'class' option
@@ -187,7 +198,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         }
         $i          = 2;
         $uniqueName = $entityName;
-        while (\in_array($uniqueName, $existingEntityNames)) {
+        while (in_array($uniqueName, $existingEntityNames)) {
             $uniqueName = $entityName . ($i ++);
         }
         $entityName = $uniqueName;

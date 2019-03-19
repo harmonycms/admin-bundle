@@ -6,7 +6,7 @@
 
 {% set _request_parameters = app.request.query.all|merge(_request_parameters|default({}))|merge({
   action: app.request.get('action'),
-  entity: _entity_config.name,
+  model: _entity_config.name,
   menuIndex: app.request.get('menuIndex'),
   submenuIndex: app.request.get('submenuIndex'),
   sortField: app.request.get('sortField', ''),
@@ -23,7 +23,7 @@
   }) %}
 {% endif %}
 
-{% set _request_parameters = _request_parameters|merge({ referer: path('admin_entity', _request_parameters)|url_encode }) %}
+{% set _request_parameters = _request_parameters|merge({ referer: path('admin_model', _request_parameters)|url_encode }) %}
 
 {% block body_id 'harmony_admin-list-' ~ _entity_config.name %}
 {% block body_class 'list list-' ~ _entity_config.name|lower %}
@@ -56,7 +56,7 @@
 
             {% block search_action %}
               <div class="col {{ _action.css_class|default('') }}">
-                <form method="get" action="{{ path('admin_entity', { entity: _request_parameters.entity, action: 'search' }) }}">
+                <form method="get" action="{{ path('admin_model', { model: _request_parameters.model, action: 'search' }) }}">
                   {% block search_form %}
                     <input type="hidden" name="sortField"
                            value="{{ _entity_config.search.sort.field|default(_request_parameters.sortField) }}">
@@ -87,7 +87,7 @@
             {% block new_action %}
               <div>
                 <a class="{{ _action.css_class|default('') }}"
-                   href="{{ path('admin_entity', _request_parameters|merge({ action: _action.name })) }}"
+                   href="{{ path('admin_model', _request_parameters|merge({ action: _action.name })) }}"
                    target="{{ _action.target }}">
                   {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
                   {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
@@ -120,7 +120,7 @@
                 <th data-property-name="{{ metadata.property }}"
                     class="{{ isSortingField ? 'sorted' }} {{ metadata.virtual ? 'virtual' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
                   {% if metadata.sortable %}
-                    <a href="{{ path('admin_entity', _request_parameters|merge({ page: 1, sortField: metadata.property, sortDirection: nextSortDirection })) }}">
+                    <a href="{{ path('admin_model', _request_parameters|merge({ page: 1, sortField: metadata.property, sortDirection: nextSortDirection })) }}">
                       <i class="fa {{ _column_icon }}"></i>
                       {{ _column_label|raw }}
                     </a>
@@ -191,7 +191,7 @@
 
   {% block delete_form %}
     {% set referer = paginator.currentPage == paginator.nbPages and 1 != paginator.currentPage and 1 == paginator.currentPageResults|length
-      ? path('admin_entity', app.request.query|merge({ page: app.request.query.get('page') - 1 }))
+      ? path('admin_model', app.request.query|merge({ page: app.request.query.get('page') - 1 }))
       : app.request.requestUri %}
 
     {{ include('@HarmonyAdmin/default/includes/_delete_form.html.twig', {
@@ -218,7 +218,7 @@
         var columnIndex = $(this).closest('td').index() + 1;
         var propertyName = $('table th.toggle:nth-child(' + columnIndex + ')').data('property-name');
 
-        var toggleUrl = "{{ path('admin_entity', { action: 'edit', entity: _entity_config.name, view: 'list' })|raw }}"
+        var toggleUrl = "{{ path('admin_model', { action: 'edit', model: _entity_config.name, view: 'list' })|raw }}"
           + "&id=" + $(this).closest('tr').data('id')
           + "&property=" + propertyName
           + "&newValue=" + newValue.toString();

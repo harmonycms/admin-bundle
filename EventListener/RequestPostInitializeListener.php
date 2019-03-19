@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\EventListener;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Harmony\Bundle\AdminBundle\Exception\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
+use function sprintf;
 
 /**
  * Adds some custom attributes to the request object to store information
@@ -50,9 +53,9 @@ class RequestPostInitializeListener
         }
 
         $request->attributes->set('harmony_admin', [
-            'entity' => $entity = $event->getArgument('entity'),
-            'view'   => $request->query->get('action', 'list'),
-            'item'   => ($id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
+            'model' => $entity = $event->getArgument('model'),
+            'view'  => $request->query->get('action', 'list'),
+            'item'  => ($id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
         ]);
     }
 

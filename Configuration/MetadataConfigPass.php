@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Configuration;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -38,8 +40,7 @@ class MetadataConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             try {
-                $modelConfig['class'] = $this->getObjectClass($modelConfig['class']);
-                $objectManager        = $this->registry->getManagerForClass($modelConfig['class']);
+                $objectManager = $this->registry->getManagerForClass($modelConfig['class']);
             }
             catch (\ReflectionException $e) {
                 throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.models.%s" does not exist. Did you forget to create the model class or to define its namespace?',
@@ -105,48 +106,5 @@ class MetadataConfigPass implements ConfigPassInterface
         }
 
         return $PropertiesMetadata;
-    }
-
-    /**
-     * Returns the first entity or document founded, that is not a mapped superclass
-     *
-     * @param string $objectName
-     *
-     * @return string
-     */
-    private function getObjectClass(string $objectName)
-    {
-        $objectManager = $this->registry->getManager();
-        foreach ($this->objectGuesser($objectName) as $class) {
-            $classMetadata = $objectManager->getMetadataFactory()->getMetadataFor($class);
-            if (false === $classMetadata->isMappedSuperclass) {
-                return $classMetadata->getName();
-            }
-        }
-
-        return $objectName;
-    }
-
-    /**
-     * Returns a list of possible object classes to be a valid entity or document.
-     *
-     * @param string $objectName
-     *
-     * @return array
-     */
-    private function objectGuesser(string $objectName): array
-    {
-        if (interface_exists($objectName)) {
-            return array_filter(get_declared_classes(), function ($className) use ($objectName) {
-                return in_array($objectName, class_implements($className));
-            });
-        } elseif (class_exists($objectName) &&
-            ($classes = array_filter(get_declared_classes(), function ($className) use ($objectName) {
-                return is_subclass_of($className, $objectName);
-            }))) {
-            return $classes;
-        }
-
-        return [$objectName];
     }
 }

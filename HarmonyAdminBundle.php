@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle;
 
 use Harmony\Bundle\AdminBundle\DependencyInjection\Compiler\HarmonyAdminConfigPass;

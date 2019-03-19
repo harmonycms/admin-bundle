@@ -1,12 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\DependencyInjection\Compiler;
 
+use Doctrine\Bundle\MongoDBBundle\Form\DoctrineMongoDBTypeGuesser;
+use Doctrine\DBAL\Types\Type as DoctrineDBALType;
+use Harmony\Bundle\AdminBundle\Form\Guesser\MissingDoctrineOdmTypeGuesser;
+use Harmony\Bundle\AdminBundle\Form\Guesser\MissingDoctrineOrmTypeGuesser;
 use Harmony\Bundle\AdminBundle\Form\Type\Configurator\TypeConfiguratorInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Form\FormTypeGuesserChain;
+use function sprintf;
+use function iterator_to_array;
+use function array_keys;
+use function array_map;
+use function class_exists;
 
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
@@ -36,9 +47,16 @@ class HarmonyAdminFormTypePass implements CompilerPassInterface
         $guessers   = array_map(function ($id) {
             return new Reference($id);
         }, $guesserIds);
-        $container->autowire('harmony_admin.form.type_guesser_chain', FormTypeGuesserChain::class)
-            ->setArgument('$guessers', $guessers)
-            ->setPublic(true);
+
+        if (class_exists(DoctrineDBALType::class)) {
+            $guessers[] = new Reference(MissingDoctrineOrmTypeGuesser::class);
+        }
+        if (class_exists(DoctrineMongoDBTypeGuesser::class)) {
+            $guessers[] = new Reference(MissingDoctrineOdmTypeGuesser::class);
+        }
+
+        $container->autowire(FormTypeGuesserChain::class, FormTypeGuesserChain::class)
+            ->setArgument('$guessers', $guessers);
     }
 
     /**

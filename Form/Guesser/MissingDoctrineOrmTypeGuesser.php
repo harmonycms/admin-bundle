@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Form\Guesser;
 
 use Doctrine\DBAL\Types\Type;
@@ -14,10 +16,21 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 
+/**
+ * Class MissingDoctrineOrmTypeGuesser
+ *
+ * @package Harmony\Bundle\AdminBundle\Form\Guesser
+ */
 class MissingDoctrineOrmTypeGuesser extends DoctrineOrmTypeGuesser
 {
+
     /**
-     * {@inheritdoc}
+     * Returns a field guess for a property name of a class.
+     *
+     * @param string $class    The fully qualified class name
+     * @param string $property The name of the property to guess for
+     *
+     * @return \Symfony\Component\Form\Guess\TypeGuess|null A guess for the field's type and options
      */
     public function guessType($class, $property)
     {

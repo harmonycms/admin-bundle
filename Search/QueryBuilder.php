@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\MongoDB\Query\Builder as DoctrineOdmQueryBuilder;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\QueryBuilder as DoctrineOrmQueryBuilder;
 use function explode;
 use function sprintf;
@@ -44,22 +45,28 @@ class QueryBuilder
      * Creates the query builder used to get all the records displayed by the
      * "list" view.
      *
-     * @param array       $entityConfig
+     * @param array       $objectConfig
      * @param string|null $sortField
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
      *
      * @return DoctrineOrmQueryBuilder|DoctrineOdmQueryBuilder
      */
-    public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null,
+    public function createListQueryBuilder(array $objectConfig, $sortField = null, $sortDirection = null,
                                            $dqlFilter = null)
     {
-        /* @var ObjectManager|\Doctrine\ODM\MongoDB\DocumentManager|\Doctrine\ORM\EntityManager $em */
-        $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /* @var ObjectManager|DocumentManager|\Doctrine\ORM\EntityManager $objectManager */
+        $objectManager = $this->doctrine->getManagerForClass($objectConfig['class']);
         /* @var ClassMetadata $classMetadata */
-        $classMetadata = $em->getClassMetadata($entityConfig['class']);
-        /* @var DoctrineOrmQueryBuilder|DoctrineOdmQueryBuilder $queryBuilder */
-        $queryBuilder = $em->createQueryBuilder()->select('entity');
+        $classMetadata = $objectManager->getClassMetadata($objectConfig['class']);
+
+        if ($objectManager instanceof DocumentManager) {
+            /** @var DoctrineOdmQueryBuilder $queryBuilder */
+            $queryBuilder = $objectManager->createQueryBuilder($objectConfig['class']);
+        } else {
+            /** @var DoctrineOrmQueryBuilder $queryBuilder */
+            $queryBuilder = $objectManager->createQueryBuilder()->select('entity');
+        }
 
         $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {

@@ -47,6 +47,24 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/model/{model}/{action}", name="admin_model")
+     * @param Request $request
+     * @param string  $model
+     * @param string  $action
+     *
+     * @return Response
+     */
+    public function model(Request $request, string $model, string $action = 'list'): Response
+    {
+        $this->initialize($request, $model);
+        if (!$this->isActionAllowed($action)) {
+            throw new ForbiddenActionException(['action' => $action, 'entity_name' => $this->entity['name']]);
+        }
+
+        return $this->executeDynamicMethod($action . '<EntityName>');
+    }
+
+    /**
      * @Route("/entity/{entity}/{action}", name="admin_entity")
      * @param Request $request
      * @param string  $entity
@@ -402,7 +420,7 @@ class AdminController extends AbstractController
             'sort_direction' => $sortDirection,
         ]);
 
-        return $this->searchPaginator->createOrmPaginator($queryBuilder, $page, $maxPerPage);
+        return $this->searchPaginator->createPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**
@@ -449,7 +467,7 @@ class AdminController extends AbstractController
             'searchable_fields' => $searchableFields,
         ]);
 
-        return $this->get('harmony_admin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
+        return $this->searchPaginator->createPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**

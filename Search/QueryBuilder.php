@@ -1,12 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Search;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\MongoDB\Query\Builder as OdmQueryBuilder;
-use Doctrine\ORM\QueryBuilder as OrmQueryBuilder;
+use Doctrine\MongoDB\Query\Builder as DoctrineOdmQueryBuilder;
+use Doctrine\ORM\QueryBuilder as DoctrineOrmQueryBuilder;
+use function explode;
+use function sprintf;
+use function is_numeric;
+use function is_int;
+use function preg_match;
+use function ctype_digit;
+use function mb_strtolower;
+use function in_array;
+use function count;
+use function array_key_exists;
+use function strpos;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -36,7 +49,7 @@ class QueryBuilder
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
      *
-     * @return OrmQueryBuilder|OdmQueryBuilder
+     * @return DoctrineOrmQueryBuilder|DoctrineOdmQueryBuilder
      */
     public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null,
                                            $dqlFilter = null)
@@ -45,7 +58,7 @@ class QueryBuilder
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
         /* @var ClassMetadata $classMetadata */
         $classMetadata = $em->getClassMetadata($entityConfig['class']);
-        /* @var OrmQueryBuilder|OdmQueryBuilder $queryBuilder */
+        /* @var DoctrineOrmQueryBuilder|DoctrineOdmQueryBuilder $queryBuilder */
         $queryBuilder = $em->createQueryBuilder()->select('entity');
 
         $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
@@ -59,10 +72,10 @@ class QueryBuilder
         }
 
         if (null !== $sortField) {
-            if ($queryBuilder instanceof OrmQueryBuilder) {
+            if ($queryBuilder instanceof DoctrineOrmQueryBuilder) {
                 $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
                     $sortDirection);
-            } elseif ($queryBuilder instanceof OdmQueryBuilder) {
+            } elseif ($queryBuilder instanceof DoctrineOdmQueryBuilder) {
                 $queryBuilder->sort(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
                     $sortDirection);
             }
@@ -94,9 +107,9 @@ class QueryBuilder
         $queryBuilder = $em->createQueryBuilder()->select('entity')->from($entityConfig['class'], 'entity');
 
         $isSearchQueryNumeric      = is_numeric($searchQuery);
-        $isSearchQuerySmallInteger = (\is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= - 32768 &&
+        $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= - 32768 &&
             $searchQuery <= 32767;
-        $isSearchQueryInteger      = (\is_int($searchQuery) || ctype_digit($searchQuery)) &&
+        $isSearchQueryInteger      = (is_int($searchQuery) || ctype_digit($searchQuery)) &&
             $searchQuery >= - 2147483648 && $searchQuery <= 2147483647;
         $isSearchQueryUuid         = 1 ===
             preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $searchQuery);
@@ -108,7 +121,7 @@ class QueryBuilder
             $entityName = 'entity';
             if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
                 [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);
-                if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+                if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.' . $associatedEntityName, $associatedEntityName);
                     $entitiesAlreadyJoined[] = $associatedEntityName;
                 }
@@ -119,8 +132,8 @@ class QueryBuilder
 
             $isSmallIntegerField = 'smallint' === $metadata['dataType'];
             $isIntegerField      = 'integer' === $metadata['dataType'];
-            $isNumericField      = \in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
-            $isTextField         = \in_array($metadata['dataType'], ['string', 'text']);
+            $isNumericField      = in_array($metadata['dataType'], ['number', 'bigint', 'decimal', 'float']);
+            $isTextField         = in_array($metadata['dataType'], ['string', 'text']);
             $isGuidField         = 'guid' === $metadata['dataType'];
 
             // this complex condition is needed to avoid issues on PostgreSQL databases
@@ -141,7 +154,7 @@ class QueryBuilder
             }
         }
 
-        if (0 !== \count($queryParameters)) {
+        if (0 !== count($queryParameters)) {
             $queryBuilder->setParameters($queryParameters);
         }
 
@@ -152,7 +165,7 @@ class QueryBuilder
         $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             $associatedEntityName = explode('.', $sortField)[0];
-            if (!\in_array($associatedEntityName, $entitiesAlreadyJoined)) {
+            if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                 $queryBuilder->leftJoin('entity.' . $associatedEntityName, $associatedEntityName);
                 $entitiesAlreadyJoined[] = $associatedEntityName;
             }

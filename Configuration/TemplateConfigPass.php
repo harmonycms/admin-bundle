@@ -109,12 +109,12 @@ class TemplateConfigPass implements ConfigPassInterface
     private function processEntityTemplates(array $backendConfig)
     {
         // first, resolve the general template overriding mechanism
-        // 1st level priority: harmony_admin.entities.<entityName>.templates.<templateName> config option
+        // 1st level priority: harmony_admin.models.<entityName>.templates.<templateName> config option
         // 2nd level priority: harmony_admin.design.templates.<templateName> config option
         // 3rd level priority: app/Resources/views/harmony_admin/<entityName>/<templateName>.html.twig
         // 4th level priority: app/Resources/views/harmony_admin/<templateName>.html.twig
         // 5th level priority: @HarmonyAdmin/default/<templateName>.html.twig
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 $candidateTemplates = [
                     isset($entityConfig['templates'][$templateName]) ? $entityConfig['templates'][$templateName] : null,
@@ -133,11 +133,11 @@ class TemplateConfigPass implements ConfigPassInterface
                 $entityConfig['templates'][$templateName] = $templatePath;
             }
 
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['models'][$entityName] = $entityConfig;
         }
 
         // second, walk through all entity fields to determine their specific template
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach (['list', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     // if the field defines its own template, resolve its location
@@ -163,7 +163,7 @@ class TemplateConfigPass implements ConfigPassInterface
                 }
             }
 
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['models'][$entityName] = $entityConfig;
         }
 
         return $backendConfig;
@@ -215,7 +215,7 @@ class TemplateConfigPass implements ConfigPassInterface
      */
     private function processFieldTemplates(array $backendConfig): array
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach (['list', 'show'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     if (null !== $fieldMetadata['template']) {
@@ -244,7 +244,7 @@ class TemplateConfigPass implements ConfigPassInterface
                 }
             }
 
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['models'][$entityName] = $entityConfig;
         }
 
         return $backendConfig;

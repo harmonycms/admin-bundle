@@ -5,7 +5,7 @@ namespace Harmony\Bundle\AdminBundle\Configuration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Normalizes the different configuration formats available for entities, views,
+ * Normalizes the different configuration formats available for models, views,
  * actions and properties.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -66,7 +66,7 @@ class NormalizerConfigPass implements ConfigPassInterface
      * By default the entity name is used as its label (showed in buttons, the
      * main menu, etc.) unless the entity config defines the 'label' option:.
      * harmony_admin:
-     *     entities:
+     *     models:
      *         User:
      *             class: AppBundle\Entity\User
      *             label: 'Clients'
@@ -77,9 +77,9 @@ class NormalizerConfigPass implements ConfigPassInterface
      */
     private function normalizeEntityConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             if (!isset($entityConfig['label'])) {
-                $backendConfig['entities'][$entityName]['label'] = $entityName;
+                $backendConfig['models'][$entityName]['label'] = $entityName;
             }
         }
 
@@ -96,7 +96,7 @@ class NormalizerConfigPass implements ConfigPassInterface
      */
     private function normalizeFormConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             if (isset($entityConfig['form'])) {
                 $entityConfig['new']  = isset($entityConfig['new']) ?
                     $this->mergeFormConfig($entityConfig['form'], $entityConfig['new']) : $entityConfig['form'];
@@ -104,7 +104,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     $this->mergeFormConfig($entityConfig['form'], $entityConfig['edit']) : $entityConfig['form'];
             }
 
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['models'][$entityName] = $entityConfig;
         }
 
         return $backendConfig;
@@ -120,7 +120,7 @@ class NormalizerConfigPass implements ConfigPassInterface
      */
     private function normalizeViewConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             // if the original 'search' config doesn't define its own DQL filter, use the one form 'list'
             if (!isset($entityConfig['search']) || !array_key_exists('dql_filter', $entityConfig['search'])) {
                 $entityConfig['search']['dql_filter'] = $entityConfig['list']['dql_filter'] ?? null;
@@ -131,7 +131,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     $entityConfig[$view] ?? []);
             }
 
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['models'][$entityName] = $entityConfig;
         }
 
         return $backendConfig;
@@ -161,7 +161,7 @@ class NormalizerConfigPass implements ConfigPassInterface
      */
     private function normalizePropertyConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             $designElementIndex = 0;
             foreach (['form', 'edit', 'list', 'new', 'search', 'show'] as $view) {
                 $fields = [];
@@ -208,7 +208,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     ++ $designElementIndex;
                 }
 
-                $backendConfig['entities'][$entityName][$view]['fields'] = $fields;
+                $backendConfig['models'][$entityName][$view]['fields'] = $fields;
             }
         }
 
@@ -228,7 +228,7 @@ class NormalizerConfigPass implements ConfigPassInterface
         // edge case: if the first 'group' type is not the first form field,
         // all the previous form fields are "ungrouped". To avoid design issues,
         // insert an empty 'group' type (no label, no icon) as the first form element.
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach (['form', 'edit', 'new'] as $view) {
                 $fieldNumber = 0;
 
@@ -238,9 +238,9 @@ class NormalizerConfigPass implements ConfigPassInterface
 
                     if ($isFormDesignElement && 'tab' === $fieldConfig['type']) {
                         if ($fieldNumber > 1) {
-                            $backendConfig['entities'][$entityName][$view]['fields']
+                            $backendConfig['models'][$entityName][$view]['fields']
                                 = array_merge(['_harmony_admin_form_design_element_forced_first_tab' => ['type' => 'tab']],
-                                $backendConfig['entities'][$entityName][$view]['fields']);
+                                $backendConfig['models'][$entityName][$view]['fields']);
                         }
                         break;
                     }
@@ -260,18 +260,18 @@ class NormalizerConfigPass implements ConfigPassInterface
                     } elseif ($isFormDesignElement && 'group' === $fieldConfig['type']) {
                         if ($isTheFirstGroupElement && - 1 === $previousTabFieldNumber && $fieldNumber > 1) {
                             // if no tab is used, insert the group at the beginning of the array
-                            $backendConfig['entities'][$entityName][$view]['fields']
+                            $backendConfig['models'][$entityName][$view]['fields']
                                 = array_merge(['_harmony_admin_form_design_element_forced_first_group' => ['type' => 'group']],
-                                $backendConfig['entities'][$entityName][$view]['fields']);
+                                $backendConfig['models'][$entityName][$view]['fields']);
                             break;
                         } elseif ($isTheFirstGroupElement && $previousTabFieldNumber >= 0 &&
                             $fieldNumber > $previousTabFieldNumber + 1) {
                             // if tabs are used, we insert the group after the previous tab field into the array
-                            $backendConfig['entities'][$entityName][$view]['fields']
-                                = array_merge(\array_slice($backendConfig['entities'][$entityName][$view]['fields'], 0,
+                            $backendConfig['models'][$entityName][$view]['fields']
+                                = array_merge(\array_slice($backendConfig['models'][$entityName][$view]['fields'], 0,
                                 $previousTabFieldNumber, true), [
                                 '_harmony_admin_form_design_element_forced_group_' . $fieldNumber => ['type' => 'group']
-                            ], \array_slice($backendConfig['entities'][$entityName][$view]['fields'],
+                            ], \array_slice($backendConfig['models'][$entityName][$view]['fields'],
                                 $previousTabFieldNumber, null, true));
                         }
 
@@ -281,7 +281,7 @@ class NormalizerConfigPass implements ConfigPassInterface
             }
         }
 
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach (['form', 'edit', 'new'] as $view) {
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     // this is a form design element instead of a regular property
@@ -300,7 +300,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                         $fieldConfig['type'] = 'harmony_admin_' . $fieldConfig['type'];
                     }
 
-                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
+                    $backendConfig['models'][$entityName][$view]['fields'][$fieldName] = $fieldConfig;
                 }
             }
         }
@@ -321,13 +321,13 @@ class NormalizerConfigPass implements ConfigPassInterface
             // view is an array because it's done by the Configuration definition
         }
 
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach ($views as $view) {
                 if (!isset($entityConfig[$view]['actions'])) {
-                    $backendConfig['entities'][$entityName][$view]['actions'] = [];
+                    $backendConfig['models'][$entityName][$view]['actions'] = [];
                 }
 
-                if (!\is_array($backendConfig['entities'][$entityName][$view]['actions'])) {
+                if (!\is_array($backendConfig['models'][$entityName][$view]['actions'])) {
                     throw new \InvalidArgumentException(sprintf('The "actions" configuration for the "%s" view of the "%s" entity must be an array (a string was provided).',
                         $view, $entityName));
                 }
@@ -349,7 +349,7 @@ class NormalizerConfigPass implements ConfigPassInterface
      */
     private function normalizeControllerConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             if (isset($entityConfig['controller'])) {
                 $controller = trim($entityConfig['controller']);
 
@@ -358,7 +358,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                         $controller, $entityName));
                 }
 
-                $backendConfig['entities'][$entityName]['controller'] = $controller;
+                $backendConfig['models'][$entityName]['controller'] = $controller;
             }
         }
 
@@ -367,7 +367,7 @@ class NormalizerConfigPass implements ConfigPassInterface
 
     private function normalizeTranslationConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             if (!isset($entityConfig['translation_domain'])) {
                 $entityConfig['translation_domain'] = $backendConfig['translation_domain'];
             }
@@ -377,7 +377,7 @@ class NormalizerConfigPass implements ConfigPassInterface
                     $entityName));
             }
 
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['models'][$entityName] = $entityConfig;
         }
 
         return $backendConfig;

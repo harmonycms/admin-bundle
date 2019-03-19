@@ -86,7 +86,7 @@ class PropertyConfigPass implements ConfigPassInterface
      */
     private function processMetadataConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             $properties = [];
             foreach ($entityConfig['properties'] as $propertyName => $propertyMetadata) {
                 $typeGuess = $this->getFormTypeGuessOfProperty($entityConfig['class'], $propertyName);
@@ -122,7 +122,7 @@ class PropertyConfigPass implements ConfigPassInterface
                 }
             }
 
-            $backendConfig['entities'][$entityName]['properties'] = $properties;
+            $backendConfig['models'][$entityName]['properties'] = $properties;
         }
 
         return $backendConfig;
@@ -138,9 +138,9 @@ class PropertyConfigPass implements ConfigPassInterface
      */
     private function processFieldConfig(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach (['edit', 'list', 'new', 'search', 'show'] as $view) {
-                $originalViewConfig = $backendConfig['entities'][$entityName][$view];
+                $originalViewConfig = $backendConfig['models'][$entityName][$view];
                 foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldConfig) {
                     $originalFieldConfig = isset($originalViewConfig['fields'][$fieldName]) ? $originalViewConfig['fields'][$fieldName] : null;
 
@@ -205,7 +205,7 @@ class PropertyConfigPass implements ConfigPassInterface
                         $normalizedConfig['format'] = $this->getFieldFormat($normalizedConfig['type'], $backendConfig);
                     }
 
-                    $backendConfig['entities'][$entityName][$view]['fields'][$fieldName] = $normalizedConfig;
+                    $backendConfig['models'][$entityName][$view]['fields'][$fieldName] = $normalizedConfig;
                 }
             }
         }

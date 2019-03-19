@@ -65,17 +65,17 @@ final class ConfigManager
     public function getEntityConfig(string $entityName): array
     {
         $backendConfig = $this->getBackendConfig();
-        if (!isset($backendConfig['entities'][$entityName])) {
+        if (!isset($backendConfig['models'][$entityName])) {
             throw new UndefinedEntityException(['entity_name' => $entityName]);
         }
 
-        return $backendConfig['entities'][$entityName];
+        return $backendConfig['models'][$entityName];
     }
 
     public function getEntityConfigByClass(string $fqcn): ?array
     {
         $backendConfig = $this->getBackendConfig();
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             if ($entityConfig['class'] === $fqcn) {
                 return $entityConfig;
             }

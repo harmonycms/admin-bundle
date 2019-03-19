@@ -8,15 +8,11 @@ services:
     class: Harmony\Bundle\AdminBundle\Form\Type\FormType
     tags:
       - { name: form.type, alias: harmony_admin }
-    arguments:
-      $configManager: '@harmony_admin.config.manager'
 
   harmony_admin.form.type.autocomplete:
     class: Harmony\Bundle\AdminBundle\Form\Type\AutocompleteType
     tags:
       - { name: form.type, alias: harmony_admin_autocomplete }
-    arguments:
-      $configManager: '@harmony_admin.config.manager'
 
   harmony_admin.form.type.divider:
     class: Harmony\Bundle\AdminBundle\Form\Type\DividerType
@@ -59,8 +55,6 @@ services:
     class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\TypeConfigurator
     tags:
       - { name: harmony_admin.form.type.configurator, priority: 0 }
-    arguments:
-      $configManager: '@harmony_admin.config.manager'
 
   harmony_admin.form.type.configurator.entity:
     class: Harmony\Bundle\AdminBundle\Form\Type\Configurator\EntityTypeConfigurator

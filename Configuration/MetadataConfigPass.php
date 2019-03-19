@@ -3,86 +3,106 @@
 namespace Harmony\Bundle\AdminBundle\Configuration;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+use function property_exists;
 
 /**
- * Introspects the metadata of the Doctrine entities to complete the
+ * Introspects the metadata of the Doctrine models to complete the
  * configuration of the properties.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
 class MetadataConfigPass implements ConfigPassInterface
 {
+
     /** @var ManagerRegistry */
     private $doctrine;
 
+    /**
+     * MetadataConfigPass constructor.
+     *
+     * @param ManagerRegistry $doctrine
+     */
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
 
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     */
     public function process(array $backendConfig)
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             try {
-                $em = $this->doctrine->getManagerForClass($entityConfig['class']);
-            } catch (\ReflectionException $e) {
-                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.entities.%s" does not exist. Did you forget to create the entity class or to define its namespace?', $entityConfig['class'], $entityName));
+                $em = $this->doctrine->getManagerForClass($modelConfig['class']);
+            }
+            catch (\ReflectionException $e) {
+                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.models.%s" does not exist. Did you forget to create the model class or to define its namespace?',
+                    $modelConfig['class'], $modelName));
             }
 
             if (null === $em) {
-                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.entities.%s" is no mapped entity.', $entityConfig['class'], $entityName));
+                throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.models.%s" is no mapped model.',
+                    $modelConfig['class'], $modelName));
+            }
+            /** @var ClassMetadata $classMetadata */
+            $classMetadata = $em->getMetadataFactory()->getMetadataFor($modelConfig['class']);
+
+            if (!isset($classMetadata->getIdentifierFieldNames()[0])) {
+                throw new \RuntimeException('No ID defined for model ' . $modelConfig['class']);
             }
 
-            $entityMetadata = $em->getMetadataFactory()->getMetadataFor($entityConfig['class']);
+            $modelConfig['primary_key_field_name'] = $classMetadata->getIdentifierFieldNames()[0];
 
-            $entityConfig['primary_key_field_name'] = $entityMetadata->getSingleIdentifierFieldName();
+            $modelConfig['properties'] = $this->processEntityPropertiesMetadata($classMetadata);
 
-            $entityConfig['properties'] = $this->processEntityPropertiesMetadata($entityMetadata);
-
-            $backendConfig['entities'][$entityName] = $entityConfig;
+            $backendConfig['models'][$modelName] = $modelConfig;
         }
 
         return $backendConfig;
     }
 
     /**
-     * Takes the entity metadata introspected via Doctrine and completes its
+     * Takes the class metadata introspected via Doctrine and completes its
      * contents to simplify data processing for the rest of the application.
      *
-     * @param ClassMetadata $entityMetadata The entity metadata introspected via Doctrine
+     * @param ClassMetadata $classMetadata The class metadata introspected via Doctrine
      *
-     * @return array The entity properties metadata provided by Doctrine
-     *
+     * @return array The properties metadata provided by Doctrine
      * @throws \RuntimeException
      */
-    private function processEntityPropertiesMetadata(ClassMetadata $entityMetadata)
+    private function processEntityPropertiesMetadata(ClassMetadata $classMetadata)
     {
-        $entityPropertiesMetadata = [];
+        $PropertiesMetadata = [];
 
-        if ($entityMetadata->isIdentifierComposite) {
-            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it contains a composite primary key.", $entityMetadata->name));
+        if (property_exists($classMetadata, 'isIdentifierComposite') &&
+            false === $classMetadata->isIdentifierComposite) {
+            throw new \RuntimeException(sprintf("The '%s' entity isn't valid because it contains a composite primary key.",
+                $classMetadata->name));
         }
 
-        // introspect regular entity fields
-        foreach ($entityMetadata->fieldMappings as $fieldName => $fieldMetadata) {
-            $entityPropertiesMetadata[$fieldName] = $fieldMetadata;
+        // introspect regular fields
+        foreach ($classMetadata->fieldMappings as $fieldName => $fieldMetadata) {
+            $PropertiesMetadata[$fieldName] = $fieldMetadata;
         }
 
-        // introspect fields for entity associations
-        foreach ($entityMetadata->associationMappings as $fieldName => $associationMetadata) {
-            $entityPropertiesMetadata[$fieldName] = array_merge($associationMetadata, [
-                'type' => 'association',
+        // introspect fields for associations
+        foreach ($classMetadata->associationMappings as $fieldName => $associationMetadata) {
+            $PropertiesMetadata[$fieldName] = array_merge($associationMetadata, [
+                'type'            => 'association',
                 'associationType' => $associationMetadata['type'],
             ]);
 
             // associations different from *-to-one cannot be sorted
-            if ($associationMetadata['type'] & ClassMetadata::TO_MANY) {
-                $entityPropertiesMetadata[$fieldName]['sortable'] = false;
+            if ($associationMetadata['type'] & 12 || 'many' === $associationMetadata['type']) {
+                $PropertiesMetadata[$fieldName]['sortable'] = false;
             }
         }
 
-        return $entityPropertiesMetadata;
+        return $PropertiesMetadata;
     }
 }

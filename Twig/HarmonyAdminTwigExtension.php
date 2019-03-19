@@ -109,7 +109,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      */
     public function getEntityConfiguration($entityName)
     {
-        return null !== $this->getBackendConfiguration('entities.' . $entityName) ?
+        return null !== $this->getBackendConfiguration('models.' . $entityName) ?
             $this->configManager->getEntityConfig($entityName) : null;
     }
 
@@ -309,7 +309,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
                 $templateParameters['link_parameters'] = [
                     'action' => 'show',
                     'entity' => $targetEntityConfig['name'],
-                    // casting to string is needed because entities can use objects as primary keys
+                    // casting to string is needed because models can use objects as primary keys
                     'id'     => (string)$primaryKeyValue,
                 ];
             }

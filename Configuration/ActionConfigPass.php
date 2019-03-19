@@ -56,12 +56,12 @@ class ActionConfigPass implements ConfigPassInterface
     private function processDisabledActions(array $backendConfig): array
     {
         $actionsDisabledByBackend = $backendConfig['disabled_actions'];
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             $actionsDisabledByEntity = isset($entityConfig['disabled_actions']) ? $entityConfig['disabled_actions'] :
                 [];
             $disabledActions         = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByEntity));
 
-            $backendConfig['entities'][$entityName]['disabled_actions'] = $disabledActions;
+            $backendConfig['models'][$entityName]['disabled_actions'] = $disabledActions;
         }
 
         return $backendConfig;
@@ -72,13 +72,13 @@ class ActionConfigPass implements ConfigPassInterface
      * and expanded format. These are the two simple formats allowed:.
      * # Config format #1: no custom option
      * harmony_admin:
-     *     entities:
+     *     models:
      *         User:
      *             list:
      *                 actions: ['search', 'show', 'grantAccess']
      * # Config format #2: one or more actions define any of their options
      * harmony_admin:
-     *     entities:
+     *     models:
      *         User:
      *             list:
      *                 actions: ['search', { name: 'show', label: 'Show', 'icon': 'user' }, 'grantAccess']
@@ -100,14 +100,14 @@ class ActionConfigPass implements ConfigPassInterface
         }
 
         // second, normalize actions defined for each entity
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
                 $actionsConfig = $entityConfig[$view]['actions'];
                 $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig,
                     sprintf('the "%s" view of the "%s" entity', $view, $entityName));
                 $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
 
-                $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
+                $backendConfig['models'][$entityName][$view]['actions'] = $actionsConfig;
             }
         }
 
@@ -185,7 +185,7 @@ class ActionConfigPass implements ConfigPassInterface
 
     /**
      * Actions can be added/removed globally in the edit/list/new/show views of
-     * the backend and locally in each of the configured entities. Local config always
+     * the backend and locally in each of the configured models. Local config always
      * wins over the global config (e.g. if backend removes 'delete' action in the
      * 'list' view but some action explicitly adds 'delete' in its 'list' view,
      * then that entity shows the 'delete' action and the others don't).
@@ -196,7 +196,7 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function resolveActionInheritance(array $backendConfig): array
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
                 $defaultActions = $this->getDefaultActions($view);
                 $backendActions = $backendConfig[$view]['actions'];
@@ -237,7 +237,7 @@ class ActionConfigPass implements ConfigPassInterface
                     $actionsConfig = $this->reorderArrayItems($actionsConfig, array_keys($backendActions));
                 }
 
-                $backendConfig['entities'][$entityName][$view]['actions'] = $actionsConfig;
+                $backendConfig['models'][$entityName][$view]['actions'] = $actionsConfig;
             }
         }
 
@@ -251,7 +251,7 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function processActionsConfig(array $backendConfig): array
     {
-        foreach ($backendConfig['entities'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
             foreach ($this->views as $view) {
                 foreach ($entityConfig[$view]['actions'] as $actionName => $actionConfig) {
                     // 'name' value is used as the class method name or the Symfony route name
@@ -268,7 +268,7 @@ class ActionConfigPass implements ConfigPassInterface
                     // Add default classes ("action-{actionName}") to each action configuration
                     $actionConfig['css_class'] .= ' action-' . $actionName;
 
-                    $backendConfig['entities'][$entityName][$view]['actions'][$actionName] = $actionConfig;
+                    $backendConfig['models'][$entityName][$view]['actions'][$actionName] = $actionConfig;
                 }
             }
         }

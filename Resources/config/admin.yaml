@@ -1,8 +1,8 @@
 harmony:
   admin:
     site_name: 'HarmonyCMS'
-    # Entities
-    entities:
+    # Models
+    models:
       User:
         class: App\Entity\User
         label: 'Users'

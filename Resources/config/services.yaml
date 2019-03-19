@@ -5,20 +5,20 @@ services:
     autoconfigure: true
     bind:
       $debug: '%kernel.debug%'
-      $configManager: '@harmony_admin.config.manager'
+      $configManager: '@Harmony\Bundle\AdminBundle\Configuration\ConfigManager'
+
+  Harmony\Bundle\AdminBundle\Controller\:
+    resource: '../../Controller'
+    tags: ['controller.service_arguments']
 
   Harmony\Bundle\AdminBundle\DataCollector\AdminCollector:
     tags: ['harmony.data_collector']
 
-  harmony_admin.config.manager:
-    class: Harmony\Bundle\AdminBundle\Configuration\ConfigManager
+  Harmony\Bundle\AdminBundle\Configuration\ConfigManager:
     arguments:
       $originalBackendConfig: '%harmony_admin.config%'
-    public: true
 
-  harmony_admin.query_builder:
-    class: Harmony\Bundle\AdminBundle\Search\QueryBuilder
-    public: true
+  Harmony\Bundle\AdminBundle\Search\QueryBuilder: ~
 
   harmony_admin.finder:
     class: Harmony\Bundle\AdminBundle\Search\Finder
@@ -26,9 +26,7 @@ services:
   harmony_admin.autocomplete:
     class: Harmony\Bundle\AdminBundle\Search\Autocomplete
 
-  harmony_admin.paginator:
-    class: Harmony\Bundle\AdminBundle\Search\Paginator
-    public: true
+  Harmony\Bundle\AdminBundle\Search\Paginator: ~
 
   harmony_admin.router:
     class: Harmony\Bundle\AdminBundle\Router\HarmonyAdminRouter
@@ -113,10 +111,6 @@ services:
   harmony_admin.property_accessor:
     alias: 'property_accessor'
     public: true
-
-  Harmony\Bundle\AdminBundle\Controller\:
-    resource: '../../Controller'
-    tags: ['controller.service_arguments']
 
   Harmony\Bundle\AdminBundle\EventListener\MenuListener:
     tags:

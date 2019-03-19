@@ -107,7 +107,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
 
                         ->variableNode('disabled_actions')
-                            ->info('The names of the actions disabled for all backend entities.')
+                            ->info('The names of the actions disabled for all backend models.')
                             ->defaultValue([])
                             ->validate()
                                 ->ifTrue(function ($v) {
@@ -125,13 +125,13 @@ class Configuration implements ConfigurationInterface
                                 ->thenInvalid('The translation_domain option cannot be an empty string (use false to disable translations).')
                             ->end()
                             ->defaultValue('HarmonyAdminBundle')
-                            ->info('The translation domain used to translate the labels, titles and help messages of all entities.')
+                            ->info('The translation domain used to translate the labels, titles and help messages of all models.')
                         ->end()
                     ->end()
                     ->append($this->addDashboard())
                     ->append($this->addFormats())
                     ->append($this->addDesignSection())
-                    ->append($this->addEntitiesSection())
+                    ->append($this->addModelsSection())
                 ->end()
             ->end()
         ;
@@ -318,9 +318,9 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('layout')->info('Used to decorate the main templates (list, edit, new and show)')->end()
                         ->scalarNode('menu')->info('Used to render the main menu')->end()
-                        ->scalarNode('edit')->info('Used to render the page where entities are edited')->end()
+                        ->scalarNode('edit')->info('Used to render the page where models are edited')->end()
                         ->scalarNode('list')->info('Used to render the listing page and the search results page')->end()
-                        ->scalarNode('new')->info('Used to render the page where new entities are created')->end()
+                        ->scalarNode('new')->info('Used to render the page where new models are created')->end()
                         ->scalarNode('show')->info('Used to render the contents stored by a given entity')->end()
                         ->scalarNode('exception')->info('Used to render the error page when some exception happens')->end()
                         ->scalarNode('flash_messages')->info('Used to render the notification area were flash messages are displayed')->end()
@@ -362,14 +362,14 @@ class Configuration implements ConfigurationInterface
     /**
      * @return ArrayNodeDefinition|NodeDefinition
      */
-    private function addEntitiesSection()
+    private function addModelsSection()
     {
-        $node = (new TreeBuilder('entities'))->getRoot();
+        $node = (new TreeBuilder('models'))->getRoot();
         $node
             ->normalizeKeys(false)
             ->useAttributeAsKey('name', false)
             ->defaultValue([])
-            ->info('The list of entities to manage in the administration zone.')
+            ->info('The list of models to manage in the administration zone.')
             ->prototype('variable')
         ;
 

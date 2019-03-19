@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
 use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
+use Harmony\Bundle\AdminBundle\Search\Paginator as SearchPaginator;
+use Harmony\Bundle\AdminBundle\Search\QueryBuilder as SearchQueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -39,16 +41,27 @@ trait InitializeTrait
     /** @var ConfigManager $configManager */
     protected $configManager;
 
+    /** @var SearchQueryBuilder $searchQueryBuilder */
+    protected $searchQueryBuilder;
+
+    /** @var SearchPaginator $searchPaginator */
+    protected $searchPaginator;
+
     /**
      * InitializeTrait constructor.
      *
      * @param EventDispatcherInterface $dispatcher
      * @param ConfigManager            $configManager
+     * @param SearchQueryBuilder       $searchQueryBuilder
+     * @param SearchPaginator          $searchPaginator
      */
-    public function __construct(EventDispatcherInterface $dispatcher, ConfigManager $configManager)
+    public function __construct(EventDispatcherInterface $dispatcher, ConfigManager $configManager,
+                                SearchQueryBuilder $searchQueryBuilder, SearchPaginator $searchPaginator)
     {
-        $this->dispatcher    = $dispatcher;
-        $this->configManager = $configManager;
+        $this->dispatcher         = $dispatcher;
+        $this->configManager      = $configManager;
+        $this->searchQueryBuilder = $searchQueryBuilder;
+        $this->searchPaginator    = $searchPaginator;
     }
 
     /**
@@ -70,7 +83,7 @@ trait InitializeTrait
             return;
         }
 
-        if (!array_key_exists($entityName, $this->config['entities'])) {
+        if (!array_key_exists($entityName, $this->config['models'])) {
             throw new UndefinedEntityException(['entity_name' => $entityName]);
         }
 

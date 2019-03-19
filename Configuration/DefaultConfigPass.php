@@ -30,7 +30,7 @@ class DefaultConfigPass implements ConfigPassInterface
      */
     private function processDefaultEntity(array $backendConfig)
     {
-        $entityNames                          = array_keys($backendConfig['entities']);
+        $entityNames                          = array_keys($backendConfig['models']);
         $firstEntityName                      = isset($entityNames[0]) ? $entityNames[0] : null;
         $backendConfig['default_entity_name'] = $firstEntityName;
 

@@ -32,6 +32,21 @@ class AdminController extends AbstractController
     use InitializeTrait;
 
     /**
+     * @Route("/model/{model}/{action}", name="admin_model")
+     * @param Request $request
+     * @param string  $model
+     * @param string  $action
+     *
+     * @return Response
+     */
+    public function index(Request $request, string $model, string $action = 'list'): Response
+    {
+        $this->initialize($request, $model);
+
+        return $this->executeDynamicMethod($action . '<EntityName>');
+    }
+
+    /**
      * @Route("/entity/{entity}/{action}", name="admin_entity")
      * @param Request $request
      * @param string  $entity
@@ -387,7 +402,7 @@ class AdminController extends AbstractController
             'sort_direction' => $sortDirection,
         ]);
 
-        return $this->get('harmony_admin.paginator')->createOrmPaginator($queryBuilder, $page, $maxPerPage);
+        return $this->searchPaginator->createOrmPaginator($queryBuilder, $page, $maxPerPage);
     }
 
     /**
@@ -402,8 +417,7 @@ class AdminController extends AbstractController
      */
     protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null, $dqlFilter = null)
     {
-        return $this->get('harmony_admin.query_builder')
-            ->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
+        return $this->searchQueryBuilder->createListQueryBuilder($this->entity, $sortField, $sortDirection, $dqlFilter);
     }
 
     /**

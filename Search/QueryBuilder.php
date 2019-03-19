@@ -3,9 +3,10 @@
 namespace Harmony\Bundle\AdminBundle\Search;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\MongoDB\Query\Builder as OdmQueryBuilder;
+use Doctrine\ORM\QueryBuilder as OrmQueryBuilder;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -35,17 +36,17 @@ class QueryBuilder
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
      *
-     * @return DoctrineQueryBuilder
+     * @return OrmQueryBuilder|OdmQueryBuilder
      */
     public function createListQueryBuilder(array $entityConfig, $sortField = null, $sortDirection = null,
                                            $dqlFilter = null)
     {
-        /* @var EntityManager $em */
+        /* @var ObjectManager|\Doctrine\ODM\MongoDB\DocumentManager|\Doctrine\ORM\EntityManager $em */
         $em = $this->doctrine->getManagerForClass($entityConfig['class']);
         /* @var ClassMetadata $classMetadata */
         $classMetadata = $em->getClassMetadata($entityConfig['class']);
-        /* @var DoctrineQueryBuilder $queryBuilder */
-        $queryBuilder = $em->createQueryBuilder()->select('entity')->from($entityConfig['class'], 'entity');
+        /* @var OrmQueryBuilder|OdmQueryBuilder $queryBuilder */
+        $queryBuilder = $em->createQueryBuilder()->select('entity');
 
         $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
@@ -58,8 +59,13 @@ class QueryBuilder
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
-                $sortDirection);
+            if ($queryBuilder instanceof OrmQueryBuilder) {
+                $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
+                    $sortDirection);
+            } elseif ($queryBuilder instanceof OdmQueryBuilder) {
+                $queryBuilder->sort(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
+                    $sortDirection);
+            }
         }
 
         return $queryBuilder;

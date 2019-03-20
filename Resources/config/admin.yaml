@@ -4,7 +4,7 @@ harmony:
     # Models
     models:
       User:
-        class: Harmony\Bundle\UserBundle\Security\UserInterface
+        class: App\Document\User
         label: 'Users'
         list:
           fields:

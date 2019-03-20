@@ -136,10 +136,10 @@
                 <h1 class="page-title">{% block content_title %}{% endblock %}</h1>
               {% endblock content_header %}
               {% block content_help %}
-                {% if _entity_config is defined and _entity_config[app.request.query.get('action')]['help']|default(false) %}
-                  <div class="box box-widget help-entity">
+                {% if _model_config is defined and _model_config[app.request.query.get('action')]['help']|default(false) %}
+                  <div class="box box-widget help-model">
                     <div class="box-body">
-                      {{ _entity_config[app.request.query.get('action')]['help']|trans|raw }}
+                      {{ _model_config[app.request.query.get('action')]['help']|trans|raw }}
                     </div>
                   </div>
                 {% endif %}
@@ -148,7 +148,7 @@
 
             <section class="page-content">
               {% block flash_messages %}
-                {{ include(_entity_config is defined ? _entity_config.templates.flash_messages : '@HarmonyAdmin/default/flash_messages.html.twig') }}
+                {{ include(_model_config is defined ? _model_config.templates.flash_messages : '@HarmonyAdmin/default/flash_messages.html.twig') }}
               {% endblock flash_messages %}
               {% block main %}{% endblock %}
             </section>

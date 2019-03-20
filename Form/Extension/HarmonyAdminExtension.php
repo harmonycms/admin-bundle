@@ -55,11 +55,11 @@ class HarmonyAdminExtension extends AbstractTypeExtension
 
         if ($request->attributes->has('harmony_admin')) {
             $harmonyAdmin                = $request->attributes->get('harmony_admin');
-            $entity                      = $harmonyAdmin['model'];
+            $model                       = $harmonyAdmin['model'];
             $action                      = $harmonyAdmin['view'];
-            $fields                      = $entity[$action]['fields'] ?? [];
+            $fields                      = $model[$action]['fields'] ?? [];
             $view->vars['harmony_admin'] = [
-                'model'      => $entity,
+                'model'      => $model,
                 'view'       => $action,
                 'item'       => $harmonyAdmin['item'],
                 'field'      => null,

@@ -68,7 +68,7 @@
 
         {% if harmony_admin.field.help|default('') != '' %}
           <span class="help-block"><i
-                class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.entity.translation_domain)|raw }}</span>
+                class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.model.translation_domain)|raw }}</span>
         {% endif %}
       </div>
     </div>

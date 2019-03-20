@@ -1,25 +1,25 @@
 {% form_theme form with harmony_admin_config('design.form_theme') %}
 
-{% set _entity_config = harmony_admin_entity(app.request.get('model')) %}
-{% trans_default_domain _entity_config.translation_domain %}
-{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans } %}
+{% set _model_config = harmony_admin_model(app.request.get('model')) %}
+{% trans_default_domain _model_config.translation_domain %}
+{% set _trans_parameters = { '%model_name%': _model_config.name|trans, '%model_label%': _model_config.label|trans } %}
 
-{% extends _entity_config.templates.layout %}
+{% extends _model_config.templates.layout %}
 
-{% block body_id 'harmony_admin-new-' ~ _entity_config.name %}
-{% block body_class 'new new-' ~ _entity_config.name|lower %}
+{% block body_id 'harmony_admin-new-' ~ _model_config.name %}
+{% block body_class 'new new-' ~ _model_config.name|lower %}
 
 {% block content_title %}
   {% spaceless %}
     {% set _default_title = 'new.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
-    {{ _entity_config.new.title is defined ? _entity_config.new.title|trans(_trans_parameters) : _default_title }}
+    {{ _model_config.new.title is defined ? _model_config.new.title|trans(_trans_parameters) : _default_title }}
   {% endspaceless %}
 {% endblock %}
 
 {% block main %}
-  {% block entity_form %}
+  {% block model_form %}
     {{ form(form, { 'attr': { 'class': 'card' } }) }}
-  {% endblock entity_form %}
+  {% endblock model_form %}
 {% endblock %}
 
 {% block body_javascript %}

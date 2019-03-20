@@ -7,17 +7,21 @@ namespace Harmony\Bundle\AdminBundle\Exception;
  */
 class ExceptionContext
 {
+
     private $publicMessage;
+
     private $debugMessage;
+
     private $parameters;
+
     private $statusCode;
 
     public function __construct($publicMessage, $debugMessage = '', $parameters = [], $statusCode = 500)
     {
         $this->publicMessage = $publicMessage;
-        $this->debugMessage = $debugMessage;
-        $this->parameters = $parameters;
-        $this->statusCode = $statusCode;
+        $this->debugMessage  = $debugMessage;
+        $this->parameters    = $parameters;
+        $this->statusCode    = $statusCode;
     }
 
     public function getPublicMessage()
@@ -50,9 +54,9 @@ class ExceptionContext
         $placeholders = [];
         foreach ($parameters as $key => $value) {
             if ('%' !== $key[0]) {
-                $key = '%'.$key;
+                $key = '%' . $key;
             }
-            if ('%' !== $key[-1]) {
+            if ('%' !== $key[- 1]) {
                 $key .= '%';
             }
 

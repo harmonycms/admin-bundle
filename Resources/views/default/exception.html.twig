@@ -1,6 +1,6 @@
-{% set _entity_config = app.request.query.get('entity') ? harmony_admin_entity(app.request.query.get('entity')) %}
+{% set _model_config = app.request.query.get('model') ? harmony_admin_model(app.request.query.get('model')) %}
 {% extends [
-    _entity_config.templates.layout|default(''),
+    _model_config.templates.layout|default(''),
     harmony_admin_config('design.templates.layout'),
     '@HarmonyAdmin/default/layout.html.twig'
 ] %}

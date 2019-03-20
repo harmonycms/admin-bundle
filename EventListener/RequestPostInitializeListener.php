@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Harmony\Bundle\AdminBundle\EventListener;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Harmony\Bundle\AdminBundle\Exception\EntityNotFoundException;
+use Harmony\Bundle\AdminBundle\Exception\ModelNotFoundException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function sprintf;
@@ -19,25 +19,25 @@ use function sprintf;
 class RequestPostInitializeListener
 {
 
-    /** @var RequestStack|null */
+    /** @var RequestStack|null $requestStack */
     private $requestStack;
 
-    /** @var ManagerRegistry */
-    private $doctrine;
+    /** @var ManagerRegistry $registry */
+    private $registry;
 
     /**
-     * @param ManagerRegistry   $doctrine
+     * @param ManagerRegistry   $registry
      * @param RequestStack|null $requestStack
      */
-    public function __construct(ManagerRegistry $doctrine, RequestStack $requestStack = null)
+    public function __construct(ManagerRegistry $registry, RequestStack $requestStack = null)
     {
-        $this->doctrine     = $doctrine;
+        $this->registry     = $registry;
         $this->requestStack = $requestStack;
     }
 
     /**
      * Adds to the request some attributes with useful information, such as the
-     * current entity and the selected item, if any.
+     * current model and the selected item, if any.
      *
      * @param GenericEvent $event
      */
@@ -53,37 +53,37 @@ class RequestPostInitializeListener
         }
 
         $request->attributes->set('harmony_admin', [
-            'model' => $entity = $event->getArgument('model'),
+            'model' => $model = $event->getArgument('model'),
             'view'  => $request->query->get('action', 'list'),
-            'item'  => ($id = $request->query->get('id')) ? $this->findCurrentItem($entity, $id) : null,
+            'item'  => ($id = $request->query->get('id')) ? $this->findCurrentItem($model, $id) : null,
         ]);
     }
 
     /**
-     * Looks for the object that corresponds to the selected 'id' of the current entity.
+     * Looks for the object that corresponds to the selected 'id' of the current model.
      *
-     * @param array $entityConfig
+     * @param array $modelConfig
      * @param mixed $itemId
      *
-     * @return object The entity
-     * @throws EntityNotFoundException
+     * @return object The model
+     * @throws ModelNotFoundException
      * @throws \RuntimeException
      */
-    private function findCurrentItem(array $entityConfig, $itemId)
+    private function findCurrentItem(array $modelConfig, $itemId)
     {
-        if (null === $manager = $this->doctrine->getManagerForClass($entityConfig['class'])) {
+        if (null === $manager = $this->registry->getManagerForClass($modelConfig['class'])) {
             throw new \RuntimeException(sprintf('There is no Doctrine Entity Manager defined for the "%s" class',
-                $entityConfig['class']));
+                $modelConfig['class']));
         }
 
-        if (null === $entity = $manager->getRepository($entityConfig['class'])->find($itemId)) {
-            throw new EntityNotFoundException([
-                'entity_name'     => $entityConfig['name'],
-                'entity_id_name'  => $entityConfig['primary_key_field_name'],
-                'entity_id_value' => $itemId
+        if (null === $model = $manager->getRepository($modelConfig['class'])->find($itemId)) {
+            throw new ModelNotFoundException([
+                'model_name'     => $modelConfig['name'],
+                'model_id_name'  => $modelConfig['primary_key_field_name'],
+                'model_id_value' => $itemId
             ]);
         }
 
-        return $entity;
+        return $model;
     }
 }

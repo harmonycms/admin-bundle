@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Harmony\Bundle\AdminBundle\Twig;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Router\HarmonyAdminRouter;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -63,11 +62,11 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('harmony_admin_render_field_for_*_view', [$this, 'renderEntityField'],
+            new TwigFunction('harmony_admin_render_field_for_*_view', [$this, 'renderModelField'],
                 ['is_safe' => ['html'], 'needs_environment' => true]),
             new TwigFunction('harmony_admin_config', [$this, 'getBackendConfiguration']),
-            new TwigFunction('harmony_admin_entity', [$this, 'getEntityConfiguration']),
-            new TwigFunction('harmony_admin_path', [$this, 'getEntityPath']),
+            new TwigFunction('harmony_admin_model', [$this, 'getModelConfiguration']),
+            new TwigFunction('harmony_admin_path', [$this, 'getModelPath']),
             new TwigFunction('harmony_admin_action_is_enabled', [$this, 'isActionEnabled']),
             new TwigFunction('harmony_admin_action_is_enabled_for_*_view', [$this, 'isActionEnabled']),
             new TwigFunction('harmony_admin_get_action', [$this, 'getActionConfiguration']),
@@ -103,53 +102,53 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     }
 
     /**
-     * Returns the entire configuration of the given entity.
+     * Returns the entire configuration of the given model.
      *
-     * @param string $entityName
+     * @param string $modelName
      *
      * @return array|null
      */
-    public function getEntityConfiguration($entityName)
+    public function getModelConfiguration($modelName)
     {
-        return null !== $this->getBackendConfiguration('models.' . $entityName) ?
-            $this->configManager->getModelConfig($entityName) : null;
+        return null !== $this->getBackendConfiguration('models.' . $modelName) ?
+            $this->configManager->getModelConfig($modelName) : null;
     }
 
     /**
-     * @param object|string $entity
+     * @param object|string $model
      * @param string        $action
      * @param array         $parameters
      *
      * @return string
      */
-    public function getEntityPath($entity, $action, array $parameters = [])
+    public function getModelPath($model, $action, array $parameters = [])
     {
-        return $this->harmonyAdminRouter->generate($entity, $action, $parameters);
+        return $this->harmonyAdminRouter->generate($model, $action, $parameters);
     }
 
     /**
-     * Renders the value stored in a property/field of the given entity. This
+     * Renders the value stored in a property/field of the given model. This
      * function contains a lot of code protections to avoid errors when the
      * property doesn't exist or its value is not accessible. This ensures that
      * the function never generates a warning or error message when calling it.
      *
      * @param Environment $twig
      * @param string      $view          The view in which the item is being rendered
-     * @param string      $entityName    The name of the entity associated with the item
+     * @param string      $modelName     The name of the model associated with the item
      * @param object      $item          The item which is being rendered
      * @param array       $fieldMetadata The metadata of the actual field being rendered
      *
      * @return string
      * @throws \Exception
      */
-    public function renderEntityField(Environment $twig, $view, $entityName, $item, array $fieldMetadata)
+    public function renderModelField(Environment $twig, $view, $modelName, $item, array $fieldMetadata)
     {
-        $entityConfiguration = $this->configManager->getModelConfig($entityName);
-        $hasCustomTemplate   = 0 !== strpos($fieldMetadata['template'], '@HarmonyAdmin/');
-        $templateParameters  = [];
+        $modelConfig        = $this->configManager->getModelConfig($modelName);
+        $hasCustomTemplate  = 0 !== strpos($fieldMetadata['template'], '@HarmonyAdmin/');
+        $templateParameters = [];
 
         try {
-            $templateParameters = $this->getTemplateParameters($entityName, $view, $fieldMetadata, $item);
+            $templateParameters = $this->getTemplateParameters($modelName, $view, $fieldMetadata, $item);
 
             // if the field defines a custom template, render it (no matter if the value is null or inaccessible)
             if ($hasCustomTemplate) {
@@ -157,16 +156,16 @@ class HarmonyAdminTwigExtension extends AbstractExtension
             }
 
             if (false === $templateParameters['is_accessible']) {
-                return $twig->render($entityConfiguration['templates']['label_inaccessible'], $templateParameters);
+                return $twig->render($modelConfig['templates']['label_inaccessible'], $templateParameters);
             }
 
             if (null === $templateParameters['value']) {
-                return $twig->render($entityConfiguration['templates']['label_null'], $templateParameters);
+                return $twig->render($modelConfig['templates']['label_null'], $templateParameters);
             }
 
             if (empty($templateParameters['value']) &&
                 \in_array($fieldMetadata['dataType'], ['image', 'file', 'array', 'simple_array'])) {
-                return $twig->render($templateParameters['entity_config']['templates']['label_empty'],
+                return $twig->render($templateParameters['model_config']['templates']['label_empty'],
                     $templateParameters);
             }
 
@@ -177,26 +176,149 @@ class HarmonyAdminTwigExtension extends AbstractExtension
                 throw $e;
             }
 
-            return $twig->render($entityConfiguration['templates']['label_undefined'], $templateParameters);
+            return $twig->render($modelConfig['templates']['label_undefined'], $templateParameters);
         }
     }
 
     /**
-     * @param       $entityName
+     * Checks whether the given 'action' is enabled for the given 'model'.
+     *
+     * @param string $view
+     * @param string $action
+     * @param string $modelName
+     *
+     * @return bool
+     */
+    public function isActionEnabled($view, $action, $modelName): bool
+    {
+        return $this->configManager->isActionEnabled($modelName, $view, $action);
+    }
+
+    /**
+     * Returns the full action configuration for the given 'model' and 'view'.
+     *
+     * @param string $view
+     * @param string $action
+     * @param string $modelName
+     *
+     * @return array
+     */
+    public function getActionConfiguration($view, $action, $modelName): array
+    {
+        return $this->configManager->getActionConfig($modelName, $view, $action);
+    }
+
+    /**
+     * Returns the actions configured for each item displayed in the given view.
+     * This method is needed because some actions are displayed globally for the
+     * entire view (e.g. 'new' action in 'list' view).
+     *
+     * @param string $view
+     * @param string $modelName
+     *
+     * @return array
+     */
+    public function getActionsForItem($view, $modelName): array
+    {
+        try {
+            $modelConfig = $this->configManager->getModelConfig($modelName);
+        }
+        catch (\Exception $e) {
+            return [];
+        }
+
+        $disabledActions = $modelConfig['disabled_actions'];
+        $viewActions     = $modelConfig[$view]['actions'];
+
+        $actionsExcludedForItems = [
+            'list' => ['new', 'search'],
+            'edit' => [],
+            'new'  => [],
+            'show' => [],
+        ];
+        $excludedActions         = $actionsExcludedForItems[$view];
+
+        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
+            return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
+        });
+    }
+
+    /**
+     * Copied from the official Text Twig extension.
+     * code: https://github.com/twigphp/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
+     * author: Henrik Bjornskov <hb@peytz.dk>
+     * copyright holder: (c) 2009 Fabien Potencier
+     *
+     * @param Environment       $env
+     * @param                   $value
+     * @param int               $length
+     * @param bool              $preserve
+     * @param string            $separator
+     *
+     * @return string
+     */
+    public function truncateText(Environment $env, $value, $length = 64, $preserve = false, $separator = '...'): string
+    {
+        try {
+            $value = (string)$value;
+        }
+        catch (\Exception $e) {
+            $value = '';
+        }
+
+        if (mb_strlen($value, $env->getCharset()) > $length) {
+            if ($preserve) {
+                // If breakpoint is on the last word, return the value without separator.
+                if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
+                    return $value;
+                }
+
+                $length = $breakpoint;
+            }
+
+            return rtrim(mb_substr($value, 0, $length, $env->getCharset())) . $separator;
+        }
+
+        return $value;
+    }
+
+    /**
+     * This reimplementation of Symfony's logout_path() helper is needed because
+     * when no arguments are passed to the getLogoutPath(), it's common to get
+     * exceptions and there is no way to recover from them in a Twig template.
+     *
+     * @return null|string
+     */
+    public function getLogoutPath(): ?string
+    {
+        if (null === $this->logoutUrlGenerator) {
+            return null;
+        }
+
+        try {
+            return $this->logoutUrlGenerator->getLogoutPath();
+        }
+        catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param       $modelName
      * @param       $view
      * @param array $fieldMetadata
      * @param       $item
      *
      * @return array
      */
-    private function getTemplateParameters($entityName, $view, array $fieldMetadata, $item): array
+    private function getTemplateParameters($modelName, $view, array $fieldMetadata, $item): array
     {
         $fieldName = $fieldMetadata['property'];
         $fieldType = $fieldMetadata['dataType'];
 
         $parameters = [
             'backend_config' => $this->getBackendConfiguration(),
-            'entity_config'  => $this->configManager->getModelConfig($entityName),
+            'model_config'   => $this->configManager->getModelConfig($modelName),
             'field_options'  => $fieldMetadata,
             'item'           => $item,
             'view'           => $view,
@@ -278,180 +400,57 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      */
     private function addAssociationFieldParameters(array $templateParameters): array
     {
-        $targetEntityConfig
+        $targetModelConfig
             = $this->configManager->getModelConfigByClass($templateParameters['field_options']['targetEntity']);
-        // the associated entity is not managed by HarmonyAdmin
-        if (null === $targetEntityConfig) {
+        // the associated model is not managed by HarmonyAdmin
+        if (null === $targetModelConfig) {
             return $templateParameters;
         }
 
-        $isShowActionAllowed = !\in_array('show', $targetEntityConfig['disabled_actions']);
+        $isShowActionAllowed = !\in_array('show', $targetModelConfig['disabled_actions']);
 
-        if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_ONE) {
+        if ($templateParameters['field_options']['associationType'] & 3) {
             if ($this->propertyAccessor->isReadable($templateParameters['value'],
-                $targetEntityConfig['primary_key_field_name'])) {
+                $targetModelConfig['primary_key_field_name'])) {
                 $primaryKeyValue = $this->propertyAccessor->getValue($templateParameters['value'],
-                    $targetEntityConfig['primary_key_field_name']);
+                    $targetModelConfig['primary_key_field_name']);
             } else {
                 $primaryKeyValue = null;
             }
 
-            // get the string representation of the associated *-to-one entity
+            // get the string representation of the associated *-to-one model
             if (method_exists($templateParameters['value'], '__toString')) {
                 $templateParameters['value'] = (string)$templateParameters['value'];
             } elseif (null !== $primaryKeyValue) {
-                $templateParameters['value'] = sprintf('%s #%s', $targetEntityConfig['name'], $primaryKeyValue);
+                $templateParameters['value'] = sprintf('%s #%s', $targetModelConfig['name'], $primaryKeyValue);
             } else {
                 $templateParameters['value'] = null;
             }
 
-            // if the associated entity is managed by HarmonyAdmin, and the "show"
-            // action is enabled for the associated entity, display a link to it
-            if (null !== $targetEntityConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
+            // if the associated model is managed by HarmonyAdmin, and the "show"
+            // action is enabled for the associated model, display a link to it
+            if (null !== $targetModelConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
                 $templateParameters['link_parameters'] = [
                     'action' => 'show',
-                    'model'  => $targetEntityConfig['name'],
+                    'model'  => $targetModelConfig['name'],
                     // casting to string is needed because models can use objects as primary keys
                     'id'     => (string)$primaryKeyValue,
                 ];
             }
         }
 
-        if ($templateParameters['field_options']['associationType'] & ClassMetadata::TO_MANY) {
-            // if the associated entity is managed by HarmonyAdmin, and the "show"
-            // action is enabled for the associated entity, display a link to it
-            if (null !== $targetEntityConfig && $isShowActionAllowed) {
+        if ($templateParameters['field_options']['associationType'] & 12) {
+            // if the associated model is managed by HarmonyAdmin, and the "show"
+            // action is enabled for the associated model, display a link to it
+            if (null !== $targetModelConfig && $isShowActionAllowed) {
                 $templateParameters['link_parameters'] = [
                     'action'           => 'show',
-                    'model'            => $targetEntityConfig['name'],
-                    'primary_key_name' => $targetEntityConfig['primary_key_field_name'],
+                    'model'            => $targetModelConfig['name'],
+                    'primary_key_name' => $targetModelConfig['primary_key_field_name'],
                 ];
             }
         }
 
         return $templateParameters;
-    }
-
-    /**
-     * Checks whether the given 'action' is enabled for the given 'model'.
-     *
-     * @param string $view
-     * @param string $action
-     * @param string $entityName
-     *
-     * @return bool
-     */
-    public function isActionEnabled($view, $action, $entityName): bool
-    {
-        return $this->configManager->isActionEnabled($entityName, $view, $action);
-    }
-
-    /**
-     * Returns the full action configuration for the given 'model' and 'view'.
-     *
-     * @param string $view
-     * @param string $action
-     * @param string $entityName
-     *
-     * @return array
-     */
-    public function getActionConfiguration($view, $action, $entityName): array
-    {
-        return $this->configManager->getActionConfig($entityName, $view, $action);
-    }
-
-    /**
-     * Returns the actions configured for each item displayed in the given view.
-     * This method is needed because some actions are displayed globally for the
-     * entire view (e.g. 'new' action in 'list' view).
-     *
-     * @param string $view
-     * @param string $entityName
-     *
-     * @return array
-     */
-    public function getActionsForItem($view, $entityName): array
-    {
-        try {
-            $entityConfig = $this->configManager->getModelConfig($entityName);
-        }
-        catch (\Exception $e) {
-            return [];
-        }
-
-        $disabledActions = $entityConfig['disabled_actions'];
-        $viewActions     = $entityConfig[$view]['actions'];
-
-        $actionsExcludedForItems = [
-            'list' => ['new', 'search'],
-            'edit' => [],
-            'new'  => [],
-            'show' => [],
-        ];
-        $excludedActions         = $actionsExcludedForItems[$view];
-
-        return array_filter($viewActions, function ($action) use ($excludedActions, $disabledActions) {
-            return !\in_array($action['name'], $excludedActions) && !\in_array($action['name'], $disabledActions);
-        });
-    }
-
-    /**
-     * Copied from the official Text Twig extension.
-     * code: https://github.com/twigphp/Twig-extensions/blob/master/lib/Twig/Extensions/Extension/Text.php
-     * author: Henrik Bjornskov <hb@peytz.dk>
-     * copyright holder: (c) 2009 Fabien Potencier
-     *
-     * @param Environment       $env
-     * @param                   $value
-     * @param int               $length
-     * @param bool              $preserve
-     * @param string            $separator
-     *
-     * @return string
-     */
-    public function truncateText(Environment $env, $value, $length = 64, $preserve = false, $separator = '...'): string
-    {
-        try {
-            $value = (string)$value;
-        }
-        catch (\Exception $e) {
-            $value = '';
-        }
-
-        if (mb_strlen($value, $env->getCharset()) > $length) {
-            if ($preserve) {
-                // If breakpoint is on the last word, return the value without separator.
-                if (false === ($breakpoint = mb_strpos($value, ' ', $length, $env->getCharset()))) {
-                    return $value;
-                }
-
-                $length = $breakpoint;
-            }
-
-            return rtrim(mb_substr($value, 0, $length, $env->getCharset())) . $separator;
-        }
-
-        return $value;
-    }
-
-    /**
-     * This reimplementation of Symfony's logout_path() helper is needed because
-     * when no arguments are passed to the getLogoutPath(), it's common to get
-     * exceptions and there is no way to recover from them in a Twig template.
-     *
-     * @return null|string
-     */
-    public function getLogoutPath(): ?string
-    {
-        if (null === $this->logoutUrlGenerator) {
-            return null;
-        }
-
-        try {
-            return $this->logoutUrlGenerator->getLogoutPath();
-        }
-        catch (\Exception $e) {
-            return null;
-        }
     }
 }

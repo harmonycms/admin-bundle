@@ -1,5 +1,5 @@
 <div class="col-md-3 col-xl-2">
-  <a href="{{ path('admin_entity', { entity: item.entity, action: 'list' }) }}"
+  <a href="{{ path('admin_model', { model: item.model, action: 'list' }) }}"
      class="card bg-{{ item.css_class|default('primary') }} color-white widget-stat mb-0 d-block">
     <div class="card-body">
       <h2 class="m-b-5 font-strong">{{ item.count }}</h2>

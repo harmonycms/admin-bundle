@@ -18,7 +18,7 @@
               </div>
               <!-- /.box-header -->
               <div class="box-body">
-                {% for entity, item in block.items %}
+                {% for model, item in block.items %}
                   {{ include(item.template, { item: item}) }}
                 {% endfor %}
                 <!-- /.row -->
@@ -28,7 +28,7 @@
           </div>
           <!-- /.box -->
         {% else %}
-          {% for entity, item in block.items %}
+          {% for model, item in block.items %}
             {{ include(item.template, { item: item}) }}
           {% endfor %}
         {% endif %}

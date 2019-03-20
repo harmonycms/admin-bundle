@@ -3,9 +3,11 @@
 namespace Harmony\Bundle\AdminBundle\Form\EventListener;
 
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
+use function is_array;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Traversable;
 
 /**
  * @author Yonel Ceruto <yonelceruto@gmail.com>
@@ -34,9 +36,9 @@ class HarmonyAdminAutocompleteSubscriber implements EventSubscriberInterface
 
         $options             = $form->getConfig()->getOptions();
         $options['compound'] = false;
-        $options['choices']  = \is_array($data) || $data instanceof \Traversable ? $data : [$data];
+        $options['choices']  = is_array($data) || $data instanceof Traversable ? $data : [$data];
 
-        $form->add('autocomplete', FormTypeHelper::getTypeClass('entity'), $options);
+        $form->add('autocomplete', FormTypeHelper::getTypeClass('model'), $options);
     }
 
     /**
@@ -59,6 +61,6 @@ class HarmonyAdminAutocompleteSubscriber implements EventSubscriberInterface
         // reset some critical lazy options
         unset($options['em'], $options['loader'], $options['empty_data'], $options['choice_list'], $options['choices_as_values']);
 
-        $form->add('autocomplete', FormTypeHelper::getTypeClass('entity'), $options);
+        $form->add('autocomplete', FormTypeHelper::getTypeClass('model'), $options);
     }
 }

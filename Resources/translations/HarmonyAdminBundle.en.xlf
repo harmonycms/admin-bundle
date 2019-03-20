@@ -5,19 +5,19 @@
       <!-- page titles -->
       <trans-unit id="new.page_title">
         <source>new.page_title</source>
-        <target>Create %entity_name%</target>
+        <target>Create %model_name%</target>
       </trans-unit>
       <trans-unit id="show.page_title">
         <source>show.page_title</source>
-        <target>%entity_name% (#%entity_id%)</target>
+        <target>%model_name% (#%model_id%)</target>
       </trans-unit>
       <trans-unit id="edit.page_title">
         <source>edit.page_title</source>
-        <target>Edit %entity_name% (#%entity_id%)</target>
+        <target>Edit %model_name% (#%model_id%)</target>
       </trans-unit>
       <trans-unit id="list.page_title">
         <source>list.page_title</source>
-        <target>%entity_name%</target>
+        <target>%model_name%</target>
       </trans-unit>
       <trans-unit id="search.page_title">
         <source>search.page_title</source>
@@ -177,7 +177,7 @@
       <!-- generic actions displayed on buttons and links -->
       <trans-unit id="action.new">
         <source>action.new</source>
-        <target>Add %entity_name%</target>
+        <target>Add %model_name%</target>
       </trans-unit>
       <trans-unit id="action.show">
         <source>action.show</source>
@@ -213,12 +213,12 @@
       </trans-unit>
 
       <!-- exceptions -->
-      <trans-unit id="exception.entity_not_found">
-        <source>exception.entity_not_found</source>
+      <trans-unit id="exception.model_not_found">
+        <source>exception.model_not_found</source>
         <target>This item is no longer available.</target>
       </trans-unit>
-      <trans-unit id="exception.entity_remove">
-        <source>exception.entity_remove</source>
+      <trans-unit id="exception.model_remove">
+        <source>exception.model_remove</source>
         <target>This item can't be deleted because other items depend on it.</target>
       </trans-unit>
       <trans-unit id="exception.forbidden_action">
@@ -229,8 +229,8 @@
         <source>exception.no_entities_configured</source>
         <target>The application is not properly configured.</target>
       </trans-unit>
-      <trans-unit id="exception.undefined_entity">
-        <source>exception.undefined_entity</source>
+      <trans-unit id="exception.undefined_model">
+        <source>exception.undefined_model</source>
         <target>The application is not properly configured for this kind of items.</target>
       </trans-unit>
 

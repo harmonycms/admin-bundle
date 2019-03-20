@@ -10,6 +10,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use function array_splice;
+use function current;
+use function iterator_to_array;
+use function sprintf;
 
 /**
  * Autocomplete form type.
@@ -45,11 +49,11 @@ class AutocompleteType extends AbstractType implements DataMapperInterface
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         if (null === $config = $this->configManager->getModelConfigByClass($options['class'])) {
-            throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).',
+            throw new \InvalidArgumentException(sprintf('The configuration of the "%s" model is not available (this model is used as the target of the "%s" autocomplete field).',
                 $options['class'], $form->getName()));
         }
 
-        $view->vars['autocomplete_entity_name'] = $config['name'];
+        $view->vars['autocomplete_model_name'] = $config['name'];
     }
 
     /**

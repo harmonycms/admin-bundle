@@ -8,7 +8,7 @@ use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
- * It looks for the values of entity which match the given query. It's used for
+ * It looks for the values of model which match the given query. It's used for
  * the autocomplete field types.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -41,50 +41,50 @@ class Autocomplete
     }
 
     /**
-     * Finds the values of the given entity which match the query provided.
+     * Finds the values of the given model which match the query provided.
      *
-     * @param string $entity
+     * @param string $model
      * @param string $query
      * @param int    $page
      *
      * @return array
      * @throws \InvalidArgumentException
      */
-    public function find($entity, $query, $page = 1)
+    public function find($model, $query, $page = 1)
     {
-        if (empty($entity) || empty($query)) {
+        if (empty($model) || empty($query)) {
             return ['results' => []];
         }
 
         $backendConfig = $this->configManager->getBackendConfig();
-        if (!isset($backendConfig['entities'][$entity])) {
-            throw new \InvalidArgumentException(sprintf('The "entity" argument must contain the name of an entity managed by HarmonyAdmin ("%s" given).',
-                $entity));
+        if (!isset($backendConfig['entities'][$model])) {
+            throw new \InvalidArgumentException(sprintf('The "model" argument must contain the name of an model managed by HarmonyAdmin ("%s" given).',
+                $model));
         }
 
-        $paginator = $this->finder->findByAllProperties($backendConfig['models'][$entity], $query, $page,
+        $paginator = $this->finder->findByAllProperties($backendConfig['models'][$model], $query, $page,
             $backendConfig['show']['max_results']);
 
         return [
             'results'       => $this->processResults($paginator->getCurrentPageResults(),
-                $backendConfig['models'][$entity]),
+                $backendConfig['models'][$model]),
             'has_next_page' => $paginator->hasNextPage(),
         ];
     }
 
     /**
-     * @param       $entities
-     * @param array $targetEntityConfig
+     * @param       $models
+     * @param array $targetModelConfig
      *
      * @return array
      */
-    private function processResults($entities, array $targetEntityConfig)
+    private function processResults($models, array $targetModelConfig)
     {
         $results = [];
-        foreach ($entities as $entity) {
+        foreach ($models as $model) {
             $results[] = [
-                'id'   => $this->propertyAccessor->getValue($entity, $targetEntityConfig['primary_key_field_name']),
-                'text' => (string)$entity,
+                'id'   => $this->propertyAccessor->getValue($model, $targetModelConfig['primary_key_field_name']),
+                'text' => (string)$model,
             ];
         }
 

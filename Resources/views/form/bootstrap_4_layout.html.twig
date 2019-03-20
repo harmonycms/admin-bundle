@@ -9,8 +9,8 @@
         harmony_admin.view ~ '-form'
       ]|join(' '),
       'data-view': harmony_admin.view,
-      'data-entity': harmony_admin.model.name,
-      'data-entity-id': attribute(value, harmony_admin.model.primary_key_field_name),
+      'data-model': harmony_admin.model.name,
+      'data-model-id': attribute(value, harmony_admin.model.primary_key_field_name),
     }) %}
   {% endif %}
 
@@ -472,29 +472,29 @@
 {% block item_actions %}
   {% if harmony_admin is defined %}
     {% set _translation_domain = harmony_admin.model.translation_domain %}
-    {% set _trans_parameters = { '%entity_name%':  harmony_admin.model.name|trans, '%entity_label%': harmony_admin.model.label|trans } %}
+    {% set _trans_parameters = { '%model_name%':  harmony_admin.model.name|trans, '%model_label%': harmony_admin.model.label|trans } %}
 
     {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
     <button type="submit" class="btn btn-primary action-save">
       <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
     </button>
 
-    {% set _entity_actions = (harmony_admin.view == 'new')
+    {% set _model_actions = (harmony_admin.view == 'new')
       ? harmony_admin_get_actions_for_new_item(harmony_admin.model.name)
       : harmony_admin_get_actions_for_edit_item(harmony_admin.model.name) %}
 
-    {% set _entity_id = (harmony_admin.view == 'new')
+    {% set _model_id = (harmony_admin.view == 'new')
       ? null
       : attribute(harmony_admin.item, harmony_admin.model.primary_key_field_name) %}
 
     {% set _request_parameters = { model: harmony_admin.model.name, referer: app.request.query.get('referer') } %}
 
     {{ include('@HarmonyAdmin/default/includes/_actions.html.twig', {
-      actions: _entity_actions,
+      actions: _model_actions,
       request_parameters: _request_parameters,
       translation_domain: _translation_domain,
       trans_parameters: _trans_parameters,
-      item_id: _entity_id
+      item_id: _model_id
     }, with_context = false) }}
   {% endif %}
 {% endblock item_actions %}
@@ -600,7 +600,7 @@
     attr: attr|merge({
       'data-harmony_admin-autocomplete-url' : path('admin', {
         action: 'autocomplete',
-        entity: autocomplete_entity_name,
+        model: autocomplete_model_name,
       })|raw })
   }) }}
 {% endblock harmony_admin_autocomplete_widget %}

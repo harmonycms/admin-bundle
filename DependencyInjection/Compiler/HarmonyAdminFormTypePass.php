@@ -14,11 +14,11 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Form\FormTypeGuesserChain;
-use function sprintf;
-use function iterator_to_array;
 use function array_keys;
 use function array_map;
 use function class_exists;
+use function iterator_to_array;
+use function sprintf;
 
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>

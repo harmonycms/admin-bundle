@@ -5,6 +5,7 @@ namespace Harmony\Bundle\AdminBundle\Form\Type\Configurator;
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormConfigInterface;
+use function in_array;
 
 /**
  * This configurator is applied to any form field of type 'collection' and is
@@ -14,6 +15,7 @@ use Symfony\Component\Form\FormConfigInterface;
  */
 class CollectionTypeConfigurator implements TypeConfiguratorInterface
 {
+
     /**
      * {@inheritdoc}
      */
@@ -44,6 +46,6 @@ class CollectionTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return \in_array($type, ['collection', CollectionType::class], true);
+        return in_array($type, ['collection', CollectionType::class], true);
     }
 }

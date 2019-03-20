@@ -42,6 +42,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use function array_filter;
+use function array_flip;
+use function in_array;
 
 /**
  * Utility class to map shortcut form types (e.g. `text` or `submit`) to its
@@ -53,6 +56,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 final class FormTypeHelper
 {
 
+    /** @var array $nameToClassMap */
     private static $nameToClassMap
         = [
             // Symfony's built-in types
@@ -133,7 +137,7 @@ final class FormTypeHelper
         // needed to avoid collisions between immutable and non-immutable date types,
         // which are mapped to the same Symfony Form type classes
         $filteredNameToClassMap = array_filter(self::$nameToClassMap, function ($typeName) {
-            return !\in_array($typeName, ['datetime_immutable', 'date_immutable', 'time_immutable']);
+            return !in_array($typeName, ['datetime_immutable', 'date_immutable', 'time_immutable']);
         }, ARRAY_FILTER_USE_KEY);
         $classToNameMap         = array_flip($filteredNameToClassMap);
 

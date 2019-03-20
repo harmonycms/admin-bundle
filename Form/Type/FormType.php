@@ -13,6 +13,12 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use function array_replace;
+use function count;
+use function in_array;
+use function mb_strtolower;
+use function sprintf;
+use function strpos;
 
 /**
  * Custom form type that deals with some of the logic used to render the
@@ -83,7 +89,7 @@ class FormType extends AbstractType
             // in a property to get them in form template
             if (\in_array($formFieldType, ['harmony_admin_tab', AdminTabType::class])) {
                 // The first tab should be marked as active by default
-                $metadata['active'] = 0 === \count($formTabs);
+                $metadata['active'] = 0 === count($formTabs);
                 $metadata['errors'] = 0;
                 $currentFormTab     = $metadata['fieldName'];
 
@@ -111,7 +117,7 @@ class FormType extends AbstractType
         $builder->setAttribute('harmony_admin_form_tabs', $formTabs);
         $builder->setAttribute('harmony_admin_form_groups', $formGroups);
 
-        if (\count($formTabs) > 0) {
+        if (count($formTabs) > 0) {
             $builder->addEventSubscriber(new HarmonyAdminTabSubscriber());
         }
     }

@@ -5,8 +5,8 @@ namespace Harmony\Bundle\AdminBundle\EventListener;
 use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
 use Harmony\Bundle\MenuBundle\Event\ConfigureMenuEvent;
 use Harmony\Bundle\MenuBundle\Menu\MenuDomain;
-use Harmony\Sdk\Theme\ThemeInterface;
 use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsRouter;
+use Harmony\Sdk\Theme\ThemeInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 

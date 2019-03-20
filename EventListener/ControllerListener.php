@@ -7,6 +7,9 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Kernel;
+use function class_exists;
+use function is_array;
+use function sprintf;
 
 /**
  * Sets the right controller to be executed when entities define custom
@@ -36,7 +39,7 @@ class ControllerListener
     }
 
     /**
-     * Exchange default admin controller by custom entity admin controller.
+     * Exchange default admin controller by custom model admin controller.
      *
      * @param FilterControllerEvent $event
      *
@@ -56,24 +59,24 @@ class ControllerListener
         $currentController = $event->getController();
         // if the controller is defined in a class, $currentController is an array
         // otherwise do nothing because it's a Closure (rare but possible in Symfony)
-        if (!\is_array($currentController)) {
+        if (!is_array($currentController)) {
             return;
         }
 
         // this condition happens when accessing the backend homepage, which
-        // then redirects to the 'list' action of the first configured entity.
-        if (null === $entityName = $request->query->get('entity')) {
+        // then redirects to the 'list' action of the first configured model.
+        if (null === $modelName = $request->query->get('model')) {
             return;
         }
 
-        $entity = $this->configManager->getModelConfig($entityName);
+        $model = $this->configManager->getModelConfig($modelName);
 
-        // if the entity doesn't define a custom controller, do nothing
-        if (!isset($entity['controller'])) {
+        // if the model doesn't define a custom controller, do nothing
+        if (!isset($model['controller'])) {
             return;
         }
 
-        $customController = $entity['controller'];
+        $customController = $model['controller'];
         $controllerMethod = $currentController[1];
 
         // build the full controller name depending on its type
@@ -89,8 +92,8 @@ class ControllerListener
         $newController = $this->resolver->getController($request);
 
         if (false === $newController) {
-            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" entity in your HarmonyAdmin backend.',
-                $request->getPathInfo(), $entityName));
+            throw new NotFoundHttpException(sprintf('Unable to find the controller for path "%s". Check the "controller" configuration of the "%s" model in your HarmonyAdmin backend.',
+                $request->getPathInfo(), $modelName));
         }
 
         $event->setController($newController);

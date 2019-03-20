@@ -25,16 +25,16 @@ use function urlencode;
 final class HarmonyAdminRouter
 {
 
-    /** @var ConfigManager */
+    /** @var ConfigManager $configManager */
     private $configManager;
 
-    /** @var UrlGeneratorInterface */
+    /** @var UrlGeneratorInterface $urlGenerator */
     private $urlGenerator;
 
-    /** @var PropertyAccessorInterface */
+    /** @var PropertyAccessorInterface $propertyAccessor */
     private $propertyAccessor;
 
-    /** @var RequestStack */
+    /** @var RequestStack $requestStack */
     private $requestStack;
 
     /**
@@ -55,26 +55,26 @@ final class HarmonyAdminRouter
     }
 
     /**
-     * @param object|string $entity
+     * @param object|string $model
      * @param string        $action
      * @param array         $parameters
      *
      * @throws UndefinedModelException
      * @return string
      */
-    public function generate($entity, $action, array $parameters = [])
+    public function generate($model, $action, array $parameters = [])
     {
-        if (is_object($entity)) {
-            $config = $this->getEntityConfigByClass(get_class($entity));
+        if (is_object($model)) {
+            $config = $this->getModelConfigByClass(get_class($model));
 
             // casting to string is needed because entities can use objects as primary keys
-            $parameters['id'] = (string)$this->propertyAccessor->getValue($entity, 'id');
+            $parameters['id'] = (string)$this->propertyAccessor->getValue($model, 'id');
         } else {
-            $config = class_exists($entity) ? $this->getEntityConfigByClass($entity) :
-                $this->configManager->getModelConfig($entity);
+            $config = class_exists($model) ? $this->getModelConfigByClass($model) :
+                $this->configManager->getModelConfig($model);
         }
 
-        $parameters['entity'] = $config['name'];
+        $parameters['model']  = $config['name'];
         $parameters['action'] = $action;
 
         $referer = $parameters['referer'] ?? null;
@@ -100,10 +100,10 @@ final class HarmonyAdminRouter
      * @throws UndefinedModelException
      * @return array
      */
-    private function getEntityConfigByClass($class)
+    private function getModelConfigByClass($class)
     {
         if (!$config = $this->configManager->getModelConfigByClass($this->getRealClass($class))) {
-            throw new UndefinedModelException(['entity_name' => $class]);
+            throw new UndefinedModelException(['model_name' => $class]);
         }
 
         return $config;

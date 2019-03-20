@@ -5,6 +5,8 @@ namespace Harmony\Bundle\AdminBundle\Form\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use function count;
+use function key;
 
 /**
  * This form event subscriber helps to provide the tab functionality.
@@ -38,9 +40,9 @@ class HarmonyAdminTabSubscriber implements EventSubscriberInterface
         foreach ($event->getForm() as $child) {
             $errors = $child->getErrors(true);
 
-            if (\count($errors) > 0) {
+            if (count($errors) > 0) {
                 $formTab                      = $child->getConfig()->getAttribute('harmony_admin_form_tab');
-                $formTabs[$formTab]['errors'] += \count($errors);
+                $formTabs[$formTab]['errors'] += count($errors);
 
                 if (null === $firstTabWithErrors) {
                     $firstTabWithErrors = $formTab;

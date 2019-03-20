@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class BaseException extends HttpException
 {
+
     /** @var ExceptionContext */
     private $context;
 

@@ -4,6 +4,7 @@ namespace Harmony\Bundle\AdminBundle\Form\Type\Configurator;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormConfigInterface;
+use function in_array;
 
 /**
  * This configurator is applied to any form field of type 'checkbox' and is used
@@ -13,6 +14,7 @@ use Symfony\Component\Form\FormConfigInterface;
  */
 class CheckboxTypeConfigurator implements TypeConfiguratorInterface
 {
+
     /**
      * {@inheritdoc}
      */
@@ -34,6 +36,6 @@ class CheckboxTypeConfigurator implements TypeConfiguratorInterface
      */
     public function supports($type, array $options, array $metadata)
     {
-        return \in_array($type, ['checkbox', CheckboxType::class], true);
+        return in_array($type, ['checkbox', CheckboxType::class], true);
     }
 }

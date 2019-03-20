@@ -15,8 +15,8 @@ class Finder
     /** Constant */
     private const MAX_RESULTS = 15;
 
-    /** @var QueryBuilder $queryBuilder */
-    private $queryBuilder;
+    /** @var DoctrineBuilderRegistry $builderRegistry */
+    private $builderRegistry;
 
     /** @var Paginator $paginator */
     private $paginator;
@@ -24,17 +24,17 @@ class Finder
     /**
      * Finder constructor.
      *
-     * @param QueryBuilder $queryBuilder
-     * @param Paginator    $paginator
+     * @param DoctrineBuilderRegistry $builderRegistry
+     * @param Paginator               $paginator
      */
-    public function __construct(QueryBuilder $queryBuilder, Paginator $paginator)
+    public function __construct(DoctrineBuilderRegistry $builderRegistry, Paginator $paginator)
     {
-        $this->queryBuilder = $queryBuilder;
-        $this->paginator    = $paginator;
+        $this->builderRegistry = $builderRegistry;
+        $this->paginator       = $paginator;
     }
 
     /**
-     * @param array  $entityConfig
+     * @param array  $modelConfig
      * @param string $searchQuery
      * @param int    $page
      * @param int    $maxResults
@@ -42,13 +42,13 @@ class Finder
      * @param string $sortDirection
      *
      * @return Pagerfanta
+     * @throws \MongoException
      */
-    public function findByAllProperties(array $entityConfig, string $searchQuery, int $page = 1,
+    public function findByAllProperties(array $modelConfig, string $searchQuery, int $page = 1,
                                         int $maxResults = self::MAX_RESULTS, string $sortField = null,
                                         string $sortDirection = null)
     {
-        $builder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField,
-            $sortDirection);
+        $builder = $this->builderRegistry->createSearchBuilder($modelConfig, $searchQuery, $sortField, $sortDirection);
 
         return $this->paginator->createPaginator($builder, $page, $maxResults);
     }

@@ -11,11 +11,11 @@
 {% endblock %}
 
 {% block main %}
-  {% block entity_form %}
+  {% block model_form %}
     {{ form_start(form, { 'attr': { 'class': 'card' } }) }}
     <div class="card-body">
       {{ form_widget(form.settings) }}
     </div>
     {{ form_end(form) }}
-  {% endblock entity_form %}
+  {% endblock model_form %}
 {% endblock %}

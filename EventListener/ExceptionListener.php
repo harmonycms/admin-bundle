@@ -24,14 +24,23 @@ use Twig\Error\SyntaxError;
 class ExceptionListener extends BaseExceptionListener
 {
 
-    /** @var Environment */
+    /** @var Environment $twig */
     private $twig;
 
-    /** @var array */
+    /** @var array $harmonyAdminConfig */
     private $harmonyAdminConfig;
 
-    private $currentEntityName;
+    /** @var string $currentModelName */
+    private $currentModelName;
 
+    /**
+     * ExceptionListener constructor.
+     *
+     * @param Environment          $twig
+     * @param array                $harmonyAdminConfig
+     * @param                      $controller
+     * @param LoggerInterface|null $logger
+     */
     public function __construct(Environment $twig, array $harmonyAdminConfig, $controller,
                                 LoggerInterface $logger = null)
     {
@@ -48,8 +57,8 @@ class ExceptionListener extends BaseExceptionListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $exception               = $event->getException();
-        $this->currentEntityName = $event->getRequest()->query->get('entity');
+        $exception              = $event->getException();
+        $this->currentModelName = $event->getRequest()->query->get('model');
 
         if (!$exception instanceof BaseException) {
             return;
@@ -68,8 +77,8 @@ class ExceptionListener extends BaseExceptionListener
      */
     public function showExceptionPageAction(FlattenException $exception)
     {
-        $entityConfig          = $this->harmonyAdminConfig['entities'][$this->currentEntityName] ?? null;
-        $exceptionTemplatePath = $entityConfig['templates']['exception'] ??
+        $modelConfig           = $this->harmonyAdminConfig['entities'][$this->currentModelName] ?? null;
+        $exceptionTemplatePath = $modelConfig['templates']['exception'] ??
             $this->harmonyAdminConfig['design']['templates']['exception'] ??
             '@HarmonyAdmin/default/exception.html.twig';
 

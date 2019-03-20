@@ -3,12 +3,14 @@
 namespace Harmony\Bundle\AdminBundle\Exception;
 
 use Symfony\Component\Debug\Exception\FlattenException as BaseFlattenException;
+use function get_class;
 
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
 class FlattenException extends BaseFlattenException
 {
+
     /** @var ExceptionContext */
     private $context;
 
@@ -18,17 +20,17 @@ class FlattenException extends BaseFlattenException
      * @param array      $headers
      *
      * @return FlattenException
-     *
      * @throws \RuntimeException
      */
     public static function create(\Exception $exception, $statusCode = null, array $headers = [])
     {
         if (!$exception instanceof BaseException) {
-            throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "Harmony\Bundle\AdminBundle\Exception\BaseException" instance, or subclass. "%s" given.', __CLASS__, \get_class($exception)));
+            throw new \RuntimeException(sprintf('You should only try to create an instance of "%s" with a "Harmony\Bundle\AdminBundle\Exception\BaseException" instance, or subclass. "%s" given.',
+                __CLASS__, get_class($exception)));
         }
 
         /** @var FlattenException $e */
-        $e = parent::create($exception, $statusCode, $headers);
+        $e          = parent::create($exception, $statusCode, $headers);
         $e->context = $exception->getContext();
 
         return $e;

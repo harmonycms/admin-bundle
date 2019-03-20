@@ -1,35 +1,35 @@
 {% form_theme form with harmony_admin_config('design.form_theme') %}
 
-{% set _entity_config = harmony_admin_entity(app.request.get('model')) %}
-{% set _entity_id = attribute(model, _entity_config.primary_key_field_name) %}
-{% trans_default_domain _entity_config.translation_domain %}
-{% set _trans_parameters = { '%entity_name%': _entity_config.name|trans, '%entity_label%': _entity_config.label|trans, '%entity_id%': _entity_id } %}
+{% set _model_config = harmony_admin_model(app.request.get('model')) %}
+{% set _model_id = attribute(model, _model_config.primary_key_field_name) %}
+{% trans_default_domain _model_config.translation_domain %}
+{% set _trans_parameters = { '%model_name%': _model_config.name|trans, '%model_label%': _model_config.label|trans, '%model_id%': _model_id } %}
 
-{% extends _entity_config.templates.layout %}
+{% extends _model_config.templates.layout %}
 
-{% block body_id 'harmony_admin-edit-' ~ _entity_config.name ~ '-' ~ _entity_id %}
-{% block body_class 'edit edit-' ~ _entity_config.name|lower %}
+{% block body_id 'harmony_admin-edit-' ~ _model_config.name ~ '-' ~ _model_id %}
+{% block body_class 'edit edit-' ~ _model_config.name|lower %}
 
 {% block content_title %}
   {% spaceless %}
     {% set _default_title = 'edit.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
-    {{ _entity_config.edit.title is defined ? _entity_config.edit.title|trans(_trans_parameters) : _default_title }}
+    {{ _model_config.edit.title is defined ? _model_config.edit.title|trans(_trans_parameters) : _default_title }}
   {% endspaceless %}
 {% endblock %}
 
 {% block main %}
-  {% block entity_form %}
+  {% block model_form %}
     {{ form(form, { 'attr': { 'class': 'card' } }) }}
-  {% endblock entity_form %}
+  {% endblock model_form %}
 
   {% block delete_form %}
     {{ include('@HarmonyAdmin/default/includes/_delete_form.html.twig', {
       view: 'edit',
       referer: app.request.query.get('referer', ''),
       delete_form: delete_form,
-      _translation_domain: _entity_config.translation_domain,
+      _translation_domain: _model_config.translation_domain,
       _trans_parameters: _trans_parameters,
-      _entity_config: _entity_config,
+      _model_config: _model_config,
     }, with_context = false) }}
   {% endblock delete_form %}
 {% endblock %}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Router;
 
 use Doctrine\Common\Persistence\Proxy;
@@ -8,6 +10,14 @@ use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use function class_exists;
+use function get_class;
+use function in_array;
+use function is_object;
+use function is_string;
+use function strrpos;
+use function substr;
+use function urlencode;
 
 /**
  * @author Konstantin Grachev <me@grachevko.ru>
@@ -54,8 +64,8 @@ final class HarmonyAdminRouter
      */
     public function generate($entity, $action, array $parameters = [])
     {
-        if (\is_object($entity)) {
-            $config = $this->getEntityConfigByClass(\get_class($entity));
+        if (is_object($entity)) {
+            $config = $this->getEntityConfigByClass(get_class($entity));
 
             // casting to string is needed because entities can use objects as primary keys
             $parameters['id'] = (string)$this->propertyAccessor->getValue($entity, 'id');
@@ -76,8 +86,8 @@ final class HarmonyAdminRouter
 
         if (false === $referer) {
             unset($parameters['referer']);
-        } elseif ($request && !\is_string($referer) &&
-            (true === $referer || \in_array($action, ['new', 'edit', 'delete'], true))) {
+        } elseif ($request && !is_string($referer) &&
+            (true === $referer || in_array($action, ['new', 'edit', 'delete'], true))) {
             $parameters['referer'] = urlencode($request->getUri());
         }
 

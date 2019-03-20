@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Search;
 
 use Doctrine\ORM\EntityManager;

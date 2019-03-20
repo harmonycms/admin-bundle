@@ -418,7 +418,7 @@ class AdminController extends AbstractController
      */
     protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null, $dqlFilter = null)
     {
-        return $this->searchQueryBuilder->createListQueryBuilder($this->model, $sortField, $sortDirection, $dqlFilter);
+        return $this->builderRegistry->createListBuilder($entityClass, $sortField, $sortDirection, $dqlFilter);
     }
 
     /**
@@ -464,12 +464,13 @@ class AdminController extends AbstractController
      * @param string|null $dqlFilter
      *
      * @return QueryBuilder The Query Builder instance
+     * @throws \MongoException
      */
     protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null,
                                                 $sortDirection = null, $dqlFilter = null)
     {
-        return $this->searchQueryBuilder->createSearchQueryBuilder($this->model, $searchQuery, $sortField,
-            $sortDirection, $dqlFilter);
+        return $this->builderRegistry->createSearchBuilder($this->model, $searchQuery, $sortField, $sortDirection,
+            $dqlFilter);
     }
 
     /**

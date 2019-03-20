@@ -8,8 +8,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
 use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
+use Harmony\Bundle\AdminBundle\Search\DoctrineBuilderRegistry;
 use Harmony\Bundle\AdminBundle\Search\Paginator as SearchPaginator;
-use Harmony\Bundle\AdminBundle\Search\QueryBuilder as SearchQueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -44,8 +44,8 @@ trait InitializeTrait
     /** @var ConfigManager $configManager */
     protected $configManager;
 
-    /** @var SearchQueryBuilder $searchQueryBuilder */
-    protected $searchQueryBuilder;
+    /** @var DoctrineBuilderRegistry $builderRegistry */
+    protected $builderRegistry;
 
     /** @var SearchPaginator $searchPaginator */
     protected $searchPaginator;
@@ -55,16 +55,16 @@ trait InitializeTrait
      *
      * @param EventDispatcherInterface $dispatcher
      * @param ConfigManager            $configManager
-     * @param SearchQueryBuilder       $searchQueryBuilder
+     * @param DoctrineBuilderRegistry  $builderRegistry
      * @param SearchPaginator          $searchPaginator
      */
     public function __construct(EventDispatcherInterface $dispatcher, ConfigManager $configManager,
-                                SearchQueryBuilder $searchQueryBuilder, SearchPaginator $searchPaginator)
+                                DoctrineBuilderRegistry $builderRegistry, SearchPaginator $searchPaginator)
     {
-        $this->dispatcher         = $dispatcher;
-        $this->configManager      = $configManager;
-        $this->searchQueryBuilder = $searchQueryBuilder;
-        $this->searchPaginator    = $searchPaginator;
+        $this->dispatcher      = $dispatcher;
+        $this->configManager   = $configManager;
+        $this->builderRegistry = $builderRegistry;
+        $this->searchPaginator = $searchPaginator;
     }
 
     /**

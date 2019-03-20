@@ -18,7 +18,7 @@ services:
     arguments:
       $originalBackendConfig: '%harmony_admin.config%'
 
-  Harmony\Bundle\AdminBundle\Search\QueryBuilder: ~
+  Harmony\Bundle\AdminBundle\Search\DoctrineBuilderRegistry: ~
 
   Harmony\Bundle\AdminBundle\Search\Finder: ~
 

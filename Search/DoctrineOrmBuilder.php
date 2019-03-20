@@ -1,74 +1,49 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Harmony\Bundle\AdminBundle\Search;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\MongoDB\Query\Builder as DoctrineOdmQueryBuilder;
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ORM\QueryBuilder as DoctrineOrmQueryBuilder;
-use function explode;
-use function sprintf;
-use function is_numeric;
-use function is_int;
-use function preg_match;
-use function ctype_digit;
-use function mb_strtolower;
-use function in_array;
-use function count;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 use function array_key_exists;
+use function count;
+use function ctype_digit;
+use function explode;
+use function is_int;
+use function is_numeric;
+use function mb_strtolower;
+use function sprintf;
 use function strpos;
 
 /**
- * @author Javier Eguiluz <javier.eguiluz@gmail.com>
+ * Class DoctrineOrmBuilder
+ *
+ * @package Harmony\Bundle\AdminBundle\Search
  */
-class QueryBuilder
+class DoctrineOrmBuilder
 {
 
-    /** @var ManagerRegistry $registry */
-    private $registry;
-
     /**
-     * QueryBuilder constructor.
+     * Creates the builder used to get all the records displayed by the "list" view.
      *
-     * @param ManagerRegistry $registry
+     * @param EntityManager $manager
+     * @param string        $class
+     * @param string|null   $sortField
+     * @param string|null   $sortDirection
+     * @param string|null   $dqlFilter
+     *
+     * @return QueryBuilder
      */
-    public function __construct(ManagerRegistry $registry)
+    public static function createListBuilder(EntityManager $manager, string $class, ?string $sortField,
+                                             ?string $sortDirection, ?string $dqlFilter): QueryBuilder
     {
-        $this->registry = $registry;
-    }
-
-    /**
-     * Creates the query builder used to get all the records displayed by the
-     * "list" view.
-     *
-     * @param array       $objectConfig
-     * @param string|null $sortField
-     * @param string|null $sortDirection
-     * @param string|null $dqlFilter
-     *
-     * @return DoctrineOrmQueryBuilder|DoctrineOdmQueryBuilder
-     */
-    public function createListQueryBuilder(array $objectConfig, $sortField = null, $sortDirection = null,
-                                           $dqlFilter = null)
-    {
-        /* @var ObjectManager|DocumentManager|\Doctrine\ORM\EntityManager $objectManager */
-        $objectManager = $this->registry->getManagerForClass($objectConfig['class']);
         /* @var ClassMetadata $classMetadata */
-        $classMetadata = $objectManager->getClassMetadata($objectConfig['class']);
+        $classMetadata = $manager->getClassMetadata($class);
 
-        if ($objectManager instanceof DocumentManager) {
-            /** @var DoctrineOdmQueryBuilder $queryBuilder */
-            $queryBuilder = $objectManager->createQueryBuilder($objectConfig['class']);
-        } else {
-            /** @var DoctrineOrmQueryBuilder $queryBuilder */
-            $queryBuilder = $objectManager->createQueryBuilder()->select('entity');
-        }
+        /* @var QueryBuilder $queryBuilder */
+        $queryBuilder = $manager->createQueryBuilder()->select('entity')->from($class, 'entity');
 
-        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
+        $isSortedByDoctrineAssociation = self::isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             $sortFieldParts = explode('.', $sortField);
             $queryBuilder->leftJoin('entity.' . $sortFieldParts[0], $sortFieldParts[0]);
@@ -79,45 +54,34 @@ class QueryBuilder
         }
 
         if (null !== $sortField) {
-            if ($queryBuilder instanceof DoctrineOrmQueryBuilder) {
-                $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
-                    $sortDirection);
-            } elseif ($queryBuilder instanceof DoctrineOdmQueryBuilder) {
-                $queryBuilder->sort(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
-                    $sortDirection);
-            }
+            $queryBuilder->orderBy(sprintf('%s%s', $isSortedByDoctrineAssociation ? '' : 'entity.', $sortField),
+                $sortDirection);
         }
 
         return $queryBuilder;
     }
 
     /**
-     * Creates the query builder used to get the results of the search query
-     * performed by the user in the "search" view.
+     * Creates the builder used to get the results of the search query performed by the user in the "search" view.
      *
-     * @param array       $objectConfig
-     * @param string      $searchQuery
-     * @param string|null $sortField
-     * @param string|null $sortDirection
-     * @param string|null $dqlFilter
+     * @param EntityManager $manager
+     * @param array         $config
+     * @param string        $searchQuery
+     * @param string|null   $sortField
+     * @param string|null   $sortDirection
+     * @param string|null   $dqlFilter
      *
-     * @return DoctrineOrmQueryBuilder|DoctrineOdmQueryBuilder
+     * @return QueryBuilder
      */
-    public function createSearchQueryBuilder(array $objectConfig, $searchQuery, $sortField = null,
-                                             $sortDirection = null, $dqlFilter = null)
+    public static function createSearchBuilder(EntityManager $manager, array $config, string $searchQuery,
+                                               ?string $sortField, ?string $sortDirection,
+                                               ?string $dqlFilter): QueryBuilder
     {
-        /* @var ObjectManager|DocumentManager|\Doctrine\ORM\EntityManager $objectManager */
-        $objectManager = $this->registry->getManagerForClass($objectConfig['class']);
         /* @var ClassMetadata $classMetadata */
-        $classMetadata = $objectManager->getClassMetadata($objectConfig['class']);
+        $classMetadata = $manager->getClassMetadata($config['class']);
 
-        if ($objectManager instanceof DocumentManager) {
-            /** @var DoctrineOdmQueryBuilder $queryBuilder */
-            $queryBuilder = $objectManager->createQueryBuilder($objectConfig['class']);
-        } else {
-            /** @var DoctrineOrmQueryBuilder $queryBuilder */
-            $queryBuilder = $objectManager->createQueryBuilder()->select('entity');
-        }
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $manager->createQueryBuilder()->select('entity');
 
         $isSearchQueryNumeric      = is_numeric($searchQuery);
         $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= - 32768 &&
@@ -130,9 +94,9 @@ class QueryBuilder
 
         $queryParameters       = [];
         $entitiesAlreadyJoined = [];
-        foreach ($objectConfig['search']['fields'] as $fieldName => $metadata) {
+        foreach ($config['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
-            if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
+            if (self::isDoctrineAssociation($classMetadata, $fieldName)) {
                 [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);
                 if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
                     $queryBuilder->leftJoin('entity.' . $associatedEntityName, $associatedEntityName);
@@ -175,7 +139,7 @@ class QueryBuilder
             $queryBuilder->andWhere($dqlFilter);
         }
 
-        $isSortedByDoctrineAssociation = $this->isDoctrineAssociation($classMetadata, $sortField);
+        $isSortedByDoctrineAssociation = self::isDoctrineAssociation($classMetadata, $sortField);
         if ($isSortedByDoctrineAssociation) {
             $associatedEntityName = explode('.', $sortField)[0];
             if (!in_array($associatedEntityName, $entitiesAlreadyJoined)) {
@@ -202,7 +166,7 @@ class QueryBuilder
      *
      * @return bool
      */
-    protected function isDoctrineAssociation(ClassMetadata $classMetadata, $fieldName)
+    protected static function isDoctrineAssociation(ClassMetadata $classMetadata, $fieldName)
     {
         if (null === $fieldName) {
             return false;

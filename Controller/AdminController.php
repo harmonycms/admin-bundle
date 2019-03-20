@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
-use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
-use Doctrine\ORM\QueryBuilder;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
-use Harmony\Bundle\AdminBundle\Exception\ModelRemoveException;
 use Harmony\Bundle\AdminBundle\Exception\ForbiddenActionException;
+use Harmony\Bundle\AdminBundle\Exception\ModelRemoveException;
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -241,7 +239,7 @@ class AdminController extends AbstractController
             try {
                 $this->executeDynamicMethod('remove<ModelName>Model', [$item, $form]);
             }
-            catch (ForeignKeyConstraintViolationException $e) {
+            catch (\Exception $e) {
                 throw new ModelRemoveException([
                     'model_name' => $this->model['name'],
                     'message'    => $e->getMessage()
@@ -414,7 +412,7 @@ class AdminController extends AbstractController
      * @param string|null $sortField
      * @param string|null $dqlFilter
      *
-     * @return QueryBuilder The Query Builder instance
+     * @return \Doctrine\MongoDB\Query\Builder|\Doctrine\ORM\QueryBuilder Query Builder instance
      */
     protected function createListQueryBuilder($class, $sortDirection, $sortField = null, $dqlFilter = null)
     {
@@ -463,7 +461,7 @@ class AdminController extends AbstractController
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
      *
-     * @return QueryBuilder The Query Builder instance
+     * @return \Doctrine\ORM\QueryBuilder The Query Builder instance
      * @throws \MongoException
      */
     protected function createSearchQueryBuilder($class, $searchQuery, array $searchableFields, $sortField = null,

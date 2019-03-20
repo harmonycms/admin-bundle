@@ -81,8 +81,7 @@ class MetadataConfigPass implements ConfigPassInterface
     {
         $PropertiesMetadata = [];
 
-        if (property_exists($classMetadata, 'isIdentifierComposite') &&
-            false === $classMetadata->isIdentifierComposite) {
+        if (property_exists($classMetadata, 'isIdentifierComposite') && $classMetadata->isIdentifierComposite) {
             throw new \RuntimeException(sprintf("The '%s' model isn't valid because it contains a composite primary key.",
                 $classMetadata->name));
         }

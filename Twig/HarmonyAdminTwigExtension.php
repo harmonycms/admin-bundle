@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Twig;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -308,7 +310,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
             if (null !== $targetEntityConfig && null !== $primaryKeyValue && $isShowActionAllowed) {
                 $templateParameters['link_parameters'] = [
                     'action' => 'show',
-                    'entity' => $targetEntityConfig['name'],
+                    'model'  => $targetEntityConfig['name'],
                     // casting to string is needed because models can use objects as primary keys
                     'id'     => (string)$primaryKeyValue,
                 ];
@@ -321,7 +323,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
             if (null !== $targetEntityConfig && $isShowActionAllowed) {
                 $templateParameters['link_parameters'] = [
                     'action'           => 'show',
-                    'entity'           => $targetEntityConfig['name'],
+                    'model'            => $targetEntityConfig['name'],
                     'primary_key_name' => $targetEntityConfig['primary_key_field_name'],
                 ];
             }
@@ -331,7 +333,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     }
 
     /**
-     * Checks whether the given 'action' is enabled for the given 'entity'.
+     * Checks whether the given 'action' is enabled for the given 'model'.
      *
      * @param string $view
      * @param string $action
@@ -345,7 +347,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     }
 
     /**
-     * Returns the full action configuration for the given 'entity' and 'view'.
+     * Returns the full action configuration for the given 'model' and 'view'.
      *
      * @param string $view
      * @param string $action

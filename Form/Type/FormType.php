@@ -44,16 +44,16 @@ class FormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $entity           = $options['entity'];
+        $model            = $options['model'];
         $view             = $options['view'];
-        $entityConfig     = $this->configManager->getEntityConfig($entity);
-        $entityProperties = $entityConfig[$view]['fields'] ?? [];
+        $modelConfig      = $this->configManager->getEntityConfig($model);
+        $modelProperties  = $modelConfig[$view]['fields'] ?? [];
         $formTabs         = [];
         $currentFormTab   = null;
         $formGroups       = [];
         $currentFormGroup = null;
 
-        foreach ($entityProperties as $name => $metadata) {
+        foreach ($modelProperties as $name => $metadata) {
             $formFieldOptions = $metadata['type_options'];
 
             // Configure options using the list of registered type configurators:
@@ -135,12 +135,12 @@ class FormType extends AbstractType
         $resolver->setDefaults([
             'allow_extra_fields' => true,
             'data_class'         => function (Options $options) use ($configManager) {
-                $entity       = $options['entity'];
-                $entityConfig = $configManager->getEntityConfig($entity);
+                $model       = $options['model'];
+                $modelConfig = $configManager->getEntityConfig($model);
 
-                return $entityConfig['class'];
+                return $modelConfig['class'];
             },
-        ])->setRequired(['entity', 'view'])->setNormalizer('attr', $this->getAttributesNormalizer());
+        ])->setRequired(['model', 'view'])->setNormalizer('attr', $this->getAttributesNormalizer());
     }
 
     /**
@@ -168,7 +168,7 @@ class FormType extends AbstractType
     {
         return function (Options $options, $value) {
             return array_replace([
-                'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['entity'])),
+                'id' => sprintf('%s-%s-form', $options['view'], mb_strtolower($options['model'])),
             ], $value);
         };
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Search;
 
 use Pagerfanta\Pagerfanta;
@@ -9,18 +11,26 @@ use Pagerfanta\Pagerfanta;
  */
 class Finder
 {
+
+    /** Constant */
     private const MAX_RESULTS = 15;
 
-    /** @var QueryBuilder */
+    /** @var QueryBuilder $queryBuilder */
     private $queryBuilder;
 
-    /** @var Paginator */
+    /** @var Paginator $paginator */
     private $paginator;
 
+    /**
+     * Finder constructor.
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param Paginator    $paginator
+     */
     public function __construct(QueryBuilder $queryBuilder, Paginator $paginator)
     {
         $this->queryBuilder = $queryBuilder;
-        $this->paginator = $paginator;
+        $this->paginator    = $paginator;
     }
 
     /**
@@ -33,10 +43,13 @@ class Finder
      *
      * @return Pagerfanta
      */
-    public function findByAllProperties(array $entityConfig, $searchQuery, $page = 1, $maxResults = self::MAX_RESULTS, $sortField = null, $sortDirection = null)
+    public function findByAllProperties(array $entityConfig, string $searchQuery, int $page = 1,
+                                        int $maxResults = self::MAX_RESULTS, string $sortField = null,
+                                        string $sortDirection = null)
     {
-        $queryBuilder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField, $sortDirection);
+        $builder = $this->queryBuilder->createSearchQueryBuilder($entityConfig, $searchQuery, $sortField,
+            $sortDirection);
 
-        return $this->paginator->createOrmPaginator($queryBuilder, $page, $maxResults);
+        return $this->paginator->createPaginator($builder, $page, $maxResults);
     }
 }

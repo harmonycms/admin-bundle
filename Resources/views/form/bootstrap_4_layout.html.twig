@@ -9,8 +9,8 @@
         harmony_admin.view ~ '-form'
       ]|join(' '),
       'data-view': harmony_admin.view,
-      'data-entity': harmony_admin.entity.name,
-      'data-entity-id': attribute(value, harmony_admin.entity.primary_key_field_name),
+      'data-entity': harmony_admin.model.name,
+      'data-entity-id': attribute(value, harmony_admin.model.primary_key_field_name),
     }) %}
   {% endif %}
 
@@ -253,7 +253,7 @@
     {% endif %}
     <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
     {{- widget|raw -}}
-    {{- label is not same as(false) ? label|trans({}, translation_domain ?: harmony_admin.entity.translation_domain) -}}
+    {{- label is not same as(false) ? label|trans({}, translation_domain ?: harmony_admin.model.translation_domain) -}}
     <span class="input-span"></span>
     </label>
   {% endif %}
@@ -281,7 +281,7 @@
 
     {% if harmony_admin.field.help|default('') != '' %}
       <span class="help-block"><i
-            class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.entity.translation_domain)|raw }}</span>
+            class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.model.translation_domain)|raw }}</span>
     {% endif %}
   </div>
 {%- endblock form_row %}
@@ -396,7 +396,7 @@
 
 {% block empty_collection %}
   <div class="empty collection-empty">
-    {{ include(harmony_admin.entity.templates.label_empty) }}
+    {{ include(harmony_admin.model.templates.label_empty) }}
   </div>
 {% endblock empty_collection %}
 
@@ -471,8 +471,8 @@
 
 {% block item_actions %}
   {% if harmony_admin is defined %}
-    {% set _translation_domain = harmony_admin.entity.translation_domain %}
-    {% set _trans_parameters = { '%entity_name%':  harmony_admin.entity.name|trans, '%entity_label%': harmony_admin.entity.label|trans } %}
+    {% set _translation_domain = harmony_admin.model.translation_domain %}
+    {% set _trans_parameters = { '%entity_name%':  harmony_admin.model.name|trans, '%entity_label%': harmony_admin.model.label|trans } %}
 
     {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
     <button type="submit" class="btn btn-primary action-save">
@@ -480,14 +480,14 @@
     </button>
 
     {% set _entity_actions = (harmony_admin.view == 'new')
-      ? harmony_admin_get_actions_for_new_item(harmony_admin.entity.name)
-      : harmony_admin_get_actions_for_edit_item(harmony_admin.entity.name) %}
+      ? harmony_admin_get_actions_for_new_item(harmony_admin.model.name)
+      : harmony_admin_get_actions_for_edit_item(harmony_admin.model.name) %}
 
     {% set _entity_id = (harmony_admin.view == 'new')
       ? null
-      : attribute(harmony_admin.item, harmony_admin.entity.primary_key_field_name) %}
+      : attribute(harmony_admin.item, harmony_admin.model.primary_key_field_name) %}
 
-    {% set _request_parameters = { entity: harmony_admin.entity.name, referer: app.request.query.get('referer') } %}
+    {% set _request_parameters = { model: harmony_admin.model.name, referer: app.request.query.get('referer') } %}
 
     {{ include('@HarmonyAdmin/default/includes/_actions.html.twig', {
       actions: _entity_actions,
@@ -504,7 +504,7 @@
   <div class="card-body">
     {% set _translation_domain = 'HarmonyAdminBundle' %}
     {% if harmony_admin is defined %}
-      {% set _translation_domain = harmony_admin.entity.translation_domain %}
+      {% set _translation_domain = harmony_admin.model.translation_domain %}
     {% endif %}
 
     {% if harmony_admin_form_tabs is defined and harmony_admin_form_tabs | length > 0 %}
@@ -621,7 +621,7 @@
 {% block harmony_admin_section_row %}
   {% set _translation_domain = 'HarmonyAdminBundle' %}
   {% if harmony_admin is defined %}
-    {% set _translation_domain = harmony_admin.entity.translation_domain %}
+    {% set _translation_domain = harmony_admin.model.translation_domain %}
   {% endif %}
   <div class="field-section {{ harmony_admin.field.css_class|default('') }}">
     {% if harmony_admin.field.label|default(false) or harmony_admin.field.icon|default(false) %}

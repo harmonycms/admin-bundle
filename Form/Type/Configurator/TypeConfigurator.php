@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Form\Type\Configurator;
 
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Symfony\Component\Form\FormConfigInterface;
+use function array_key_exists;
 
 /**
  * @author Konstantin Grachev <me@grachevko.ru>
@@ -36,10 +39,10 @@ final class TypeConfigurator implements TypeConfiguratorInterface
         }
 
         if (empty($options['translation_domain'])) {
-            $entityConfig = $this->configManager->getEntityConfig($parentConfig->getOption('entity'));
+            $modelConfig = $this->configManager->getEntityConfig($parentConfig->getOption('model'));
 
-            if (!empty($entityConfig['translation_domain'])) {
-                $options['translation_domain'] = $entityConfig['translation_domain'];
+            if (!empty($modelConfig['translation_domain'])) {
+                $options['translation_domain'] = $modelConfig['translation_domain'];
             }
         }
 

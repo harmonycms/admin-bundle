@@ -468,8 +468,8 @@ class AdminController extends AbstractController
     protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null,
                                                 $sortDirection = null, $dqlFilter = null)
     {
-        return $this->get('harmony_admin.query_builder')
-            ->createSearchQueryBuilder($this->model, $searchQuery, $sortField, $sortDirection, $dqlFilter);
+        return $this->searchQueryBuilder->createSearchQueryBuilder($this->model, $searchQuery, $sortField,
+            $sortDirection, $dqlFilter);
     }
 
     /**

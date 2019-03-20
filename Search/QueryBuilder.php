@@ -28,17 +28,17 @@ use function strpos;
 class QueryBuilder
 {
 
-    /** @var ManagerRegistry */
-    private $doctrine;
+    /** @var ManagerRegistry $registry */
+    private $registry;
 
     /**
      * QueryBuilder constructor.
      *
-     * @param ManagerRegistry $doctrine
+     * @param ManagerRegistry $registry
      */
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->doctrine = $doctrine;
+        $this->registry = $registry;
     }
 
     /**
@@ -56,7 +56,7 @@ class QueryBuilder
                                            $dqlFilter = null)
     {
         /* @var ObjectManager|DocumentManager|\Doctrine\ORM\EntityManager $objectManager */
-        $objectManager = $this->doctrine->getManagerForClass($objectConfig['class']);
+        $objectManager = $this->registry->getManagerForClass($objectConfig['class']);
         /* @var ClassMetadata $classMetadata */
         $classMetadata = $objectManager->getClassMetadata($objectConfig['class']);
 
@@ -95,23 +95,29 @@ class QueryBuilder
      * Creates the query builder used to get the results of the search query
      * performed by the user in the "search" view.
      *
-     * @param array       $entityConfig
+     * @param array       $objectConfig
      * @param string      $searchQuery
      * @param string|null $sortField
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
      *
-     * @return DoctrineQueryBuilder
+     * @return DoctrineOrmQueryBuilder|DoctrineOdmQueryBuilder
      */
-    public function createSearchQueryBuilder(array $entityConfig, $searchQuery, $sortField = null,
+    public function createSearchQueryBuilder(array $objectConfig, $searchQuery, $sortField = null,
                                              $sortDirection = null, $dqlFilter = null)
     {
-        /* @var EntityManager $em */
-        $em = $this->doctrine->getManagerForClass($entityConfig['class']);
+        /* @var ObjectManager|DocumentManager|\Doctrine\ORM\EntityManager $objectManager */
+        $objectManager = $this->registry->getManagerForClass($objectConfig['class']);
         /* @var ClassMetadata $classMetadata */
-        $classMetadata = $em->getClassMetadata($entityConfig['class']);
-        /* @var DoctrineQueryBuilder $queryBuilder */
-        $queryBuilder = $em->createQueryBuilder()->select('entity')->from($entityConfig['class'], 'entity');
+        $classMetadata = $objectManager->getClassMetadata($objectConfig['class']);
+
+        if ($objectManager instanceof DocumentManager) {
+            /** @var DoctrineOdmQueryBuilder $queryBuilder */
+            $queryBuilder = $objectManager->createQueryBuilder($objectConfig['class']);
+        } else {
+            /** @var DoctrineOrmQueryBuilder $queryBuilder */
+            $queryBuilder = $objectManager->createQueryBuilder()->select('entity');
+        }
 
         $isSearchQueryNumeric      = is_numeric($searchQuery);
         $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= - 32768 &&
@@ -124,7 +130,7 @@ class QueryBuilder
 
         $queryParameters       = [];
         $entitiesAlreadyJoined = [];
-        foreach ($entityConfig['search']['fields'] as $fieldName => $metadata) {
+        foreach ($objectConfig['search']['fields'] as $fieldName => $metadata) {
             $entityName = 'entity';
             if ($this->isDoctrineAssociation($classMetadata, $fieldName)) {
                 [$associatedEntityName, $associatedFieldName] = explode('.', $fieldName);

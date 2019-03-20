@@ -40,7 +40,12 @@ class MetadataConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             try {
-                $objectManager = $this->registry->getManagerForClass($modelConfig['class']);
+                // TODO: Need to be tested in both ORM and ODM, seems to works only for ORM!!!
+                $modelConfig['class'] = $this->registry->getManager()
+                    ->getMetadataFactory()
+                    ->getMetadataFor($modelConfig['class'])
+                    ->getName();
+                $objectManager        = $this->registry->getManagerForClass($modelConfig['class']);
             }
             catch (\ReflectionException $e) {
                 throw new InvalidTypeException(sprintf('The configured class "%s" for the path "harmony_admin.models.%s" does not exist. Did you forget to create the model class or to define its namespace?',

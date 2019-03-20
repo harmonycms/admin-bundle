@@ -1,14 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Configuration;
 
 use Symfony\Component\Finder\Finder;
 use Twig\Loader\FilesystemLoader;
+use function array_key_exists;
+use function implode;
+use function mb_substr;
+use function preg_replace;
+use function sprintf;
+use function str_replace;
+use function strpos;
+use function substr;
 
 /**
  * Processes the template configuration to decide which template to use to
  * display each property in each view. It also processes the global templates
- * used when there is no entity configuration (e.g. for error pages).
+ * used when there is no model configuration (e.g. for error pages).
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -87,7 +97,7 @@ class TemplateConfigPass implements ConfigPassInterface
      */
     public function process(array $backendConfig): array
     {
-        $backendConfig = $this->processEntityTemplates($backendConfig);
+        $backendConfig = $this->processModelTemplates($backendConfig);
         $backendConfig = $this->processDefaultTemplates($backendConfig);
         $backendConfig = $this->processFieldTemplates($backendConfig);
 
@@ -98,7 +108,7 @@ class TemplateConfigPass implements ConfigPassInterface
 
     /**
      * Determines the template used to render each backend element. This is not
-     * trivial because templates can depend on the entity displayed and they
+     * trivial because templates can depend on the model displayed and they
      * define an advanced override mechanism.
      *
      * @param array $backendConfig
@@ -106,50 +116,50 @@ class TemplateConfigPass implements ConfigPassInterface
      * @return array
      * @throws \RuntimeException
      */
-    private function processEntityTemplates(array $backendConfig)
+    private function processModelTemplates(array $backendConfig)
     {
         // first, resolve the general template overriding mechanism
-        // 1st level priority: harmony_admin.models.<entityName>.templates.<templateName> config option
+        // 1st level priority: harmony_admin.models.<modelName>.templates.<templateName> config option
         // 2nd level priority: harmony_admin.design.templates.<templateName> config option
-        // 3rd level priority: app/Resources/views/harmony_admin/<entityName>/<templateName>.html.twig
+        // 3rd level priority: app/Resources/views/harmony_admin/<modelName>/<templateName>.html.twig
         // 4th level priority: app/Resources/views/harmony_admin/<templateName>.html.twig
         // 5th level priority: @HarmonyAdmin/default/<templateName>.html.twig
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             foreach ($this->defaultBackendTemplates as $templateName => $defaultTemplatePath) {
                 $candidateTemplates = [
-                    isset($entityConfig['templates'][$templateName]) ? $entityConfig['templates'][$templateName] : null,
+                    isset($modelConfig['templates'][$templateName]) ? $modelConfig['templates'][$templateName] : null,
                     isset($backendConfig['design']['templates'][$templateName]) ?
                         $backendConfig['design']['templates'][$templateName] : null,
-                    'harmony_admin/' . $entityName . '/' . $templateName . '.html.twig',
+                    'harmony_admin/' . $modelName . '/' . $templateName . '.html.twig',
                     'harmony_admin/' . $templateName . '.html.twig',
                 ];
                 $templatePath       = $this->findFirstExistingTemplate($candidateTemplates) ?: $defaultTemplatePath;
 
                 if (null === $templatePath) {
-                    throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" entity exists (templates defined: %s).',
-                        $templateName, $entityName, implode(', ', $candidateTemplates)));
+                    throw new \RuntimeException(sprintf('None of the templates defined for the "%s" fragment of the "%s" model exists (templates defined: %s).',
+                        $templateName, $modelName, implode(', ', $candidateTemplates)));
                 }
 
-                $entityConfig['templates'][$templateName] = $templatePath;
+                $modelConfig['templates'][$templateName] = $templatePath;
             }
 
-            $backendConfig['models'][$entityName] = $entityConfig;
+            $backendConfig['models'][$modelName] = $modelConfig;
         }
 
-        // second, walk through all entity fields to determine their specific template
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
+        // second, walk through all model fields to determine their specific template
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             foreach (['list', 'show'] as $view) {
-                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
+                foreach ($modelConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     // if the field defines its own template, resolve its location
                     if (isset($fieldMetadata['template'])) {
                         $templatePath = $fieldMetadata['template'];
 
                         // before considering $templatePath a regular Symfony template
                         // path, check if the given template exists in any of these directories:
-                        // * app/Resources/views/harmony_admin/<entityName>/<templatePath>
+                        // * app/Resources/views/harmony_admin/<modelName>/<templatePath>
                         // * app/Resources/views/harmony_admin/<templatePath>
                         $templatePath = $this->findFirstExistingTemplate([
-                            'harmony_admin/' . $entityName . '/' . $templatePath,
+                            'harmony_admin/' . $modelName . '/' . $templatePath,
                             'harmony_admin/' . $templatePath,
                             $templatePath,
                         ]);
@@ -159,11 +169,11 @@ class TemplateConfigPass implements ConfigPassInterface
                         $templatePath = null;
                     }
 
-                    $entityConfig[$view]['fields'][$fieldName]['template'] = $templatePath;
+                    $modelConfig[$view]['fields'][$fieldName]['template'] = $templatePath;
                 }
             }
 
-            $backendConfig['models'][$entityName] = $entityConfig;
+            $backendConfig['models'][$modelName] = $modelConfig;
         }
 
         return $backendConfig;
@@ -171,9 +181,9 @@ class TemplateConfigPass implements ConfigPassInterface
 
     /**
      * Determines the templates used to render each backend element when no
-     * entity configuration is available. It's similar to processEntityTemplates()
-     * but it doesn't take into account the details of each entity.
-     * This is needed for example when an exception is triggered and no entity
+     * model configuration is available. It's similar to processmodelTemplates()
+     * but it doesn't take into account the details of each model.
+     * This is needed for example when an exception is triggered and no model
      * configuration is available to know which template should be rendered.
      *
      * @param array $backendConfig
@@ -206,7 +216,7 @@ class TemplateConfigPass implements ConfigPassInterface
 
     /**
      * Determines the template used to render each backend element. This is not
-     * trivial because templates can depend on the entity displayed and they
+     * trivial because templates can depend on the model displayed and they
      * define an advanced override mechanism.
      *
      * @param array $backendConfig
@@ -215,9 +225,9 @@ class TemplateConfigPass implements ConfigPassInterface
      */
     private function processFieldTemplates(array $backendConfig): array
     {
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             foreach (['list', 'show'] as $view) {
-                foreach ($entityConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
+                foreach ($modelConfig[$view]['fields'] as $fieldName => $fieldMetadata) {
                     if (null !== $fieldMetadata['template']) {
                         continue;
                     }
@@ -232,19 +242,19 @@ class TemplateConfigPass implements ConfigPassInterface
 
                     // primary key values are displayed unmodified to prevent common issues
                     // such as formatting its values as numbers (e.g. `1,234` instead of `1234`)
-                    if ($entityConfig['primary_key_field_name'] === $fieldName) {
-                        $template = $entityConfig['templates']['field_id'];
-                    } elseif (array_key_exists($fieldTemplateName, $entityConfig['templates'])) {
-                        $template = $entityConfig['templates'][$fieldTemplateName];
+                    if ($modelConfig['primary_key_field_name'] === $fieldName) {
+                        $template = $modelConfig['templates']['field_id'];
+                    } elseif (array_key_exists($fieldTemplateName, $modelConfig['templates'])) {
+                        $template = $modelConfig['templates'][$fieldTemplateName];
                     } else {
-                        $template = $entityConfig['templates']['label_undefined'];
+                        $template = $modelConfig['templates']['label_undefined'];
                     }
 
-                    $entityConfig[$view]['fields'][$fieldName]['template'] = $template;
+                    $modelConfig[$view]['fields'][$fieldName]['template'] = $template;
                 }
             }
 
-            $backendConfig['models'][$entityName] = $entityConfig;
+            $backendConfig['models'][$modelName] = $modelConfig;
         }
 
         return $backendConfig;

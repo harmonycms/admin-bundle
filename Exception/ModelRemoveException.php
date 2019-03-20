@@ -5,7 +5,7 @@ namespace Harmony\Bundle\AdminBundle\Exception;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class EntityRemoveException extends BaseException
+class ModelRemoveException extends BaseException
 {
     public function __construct(array $parameters = [])
     {

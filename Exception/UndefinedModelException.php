@@ -5,7 +5,7 @@ namespace Harmony\Bundle\AdminBundle\Exception;
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-class UndefinedEntityException extends BaseException
+class UndefinedModelException extends BaseException
 {
     public function __construct(array $parameters = [])
     {

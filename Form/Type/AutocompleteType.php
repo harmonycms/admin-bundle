@@ -44,7 +44,7 @@ class AutocompleteType extends AbstractType implements DataMapperInterface
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        if (null === $config = $this->configManager->getEntityConfigByClass($options['class'])) {
+        if (null === $config = $this->configManager->getModelConfigByClass($options['class'])) {
             throw new \InvalidArgumentException(sprintf('The configuration of the "%s" entity is not available (this entity is used as the target of the "%s" autocomplete field).',
                 $options['class'], $form->getName()));
         }

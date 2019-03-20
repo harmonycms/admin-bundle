@@ -112,7 +112,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     public function getEntityConfiguration($entityName)
     {
         return null !== $this->getBackendConfiguration('models.' . $entityName) ?
-            $this->configManager->getEntityConfig($entityName) : null;
+            $this->configManager->getModelConfig($entityName) : null;
     }
 
     /**
@@ -144,7 +144,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
      */
     public function renderEntityField(Environment $twig, $view, $entityName, $item, array $fieldMetadata)
     {
-        $entityConfiguration = $this->configManager->getEntityConfig($entityName);
+        $entityConfiguration = $this->configManager->getModelConfig($entityName);
         $hasCustomTemplate   = 0 !== strpos($fieldMetadata['template'], '@HarmonyAdmin/');
         $templateParameters  = [];
 
@@ -196,7 +196,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
 
         $parameters = [
             'backend_config' => $this->getBackendConfiguration(),
-            'entity_config'  => $this->configManager->getEntityConfig($entityName),
+            'entity_config'  => $this->configManager->getModelConfig($entityName),
             'field_options'  => $fieldMetadata,
             'item'           => $item,
             'view'           => $view,
@@ -279,7 +279,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     private function addAssociationFieldParameters(array $templateParameters): array
     {
         $targetEntityConfig
-            = $this->configManager->getEntityConfigByClass($templateParameters['field_options']['targetEntity']);
+            = $this->configManager->getModelConfigByClass($templateParameters['field_options']['targetEntity']);
         // the associated entity is not managed by HarmonyAdmin
         if (null === $targetEntityConfig) {
             return $templateParameters;
@@ -373,7 +373,7 @@ class HarmonyAdminTwigExtension extends AbstractExtension
     public function getActionsForItem($view, $entityName): array
     {
         try {
-            $entityConfig = $this->configManager->getEntityConfig($entityName);
+            $entityConfig = $this->configManager->getModelConfig($entityName);
         }
         catch (\Exception $e) {
             return [];

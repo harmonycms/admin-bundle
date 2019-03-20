@@ -7,7 +7,7 @@ namespace Harmony\Bundle\AdminBundle\Controller;
 use Doctrine\Common\Persistence\ObjectManager;
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
-use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
+use Harmony\Bundle\AdminBundle\Exception\UndefinedModelException;
 use Harmony\Bundle\AdminBundle\Search\DoctrineBuilderRegistry;
 use Harmony\Bundle\AdminBundle\Search\Paginator as SearchPaginator;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
@@ -15,6 +15,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 use function array_key_exists;
+use function array_replace;
+use function count;
+use function is_numeric;
+use function method_exists;
+use function strrpos;
+use function substr;
 
 /**
  * Trait InitializeTrait
@@ -29,13 +35,13 @@ trait InitializeTrait
     /** @var array $config The full configuration of the entire backend */
     protected $config;
 
-    /** @var array $model The full configuration of the current entity */
+    /** @var array $model The full configuration of the current model */
     protected $model = [];
 
     /** @var Request $request The instance of the current Symfony request */
     protected $request;
 
-    /** @var ObjectManager $objectManager The Doctrine entity manager for the current entity */
+    /** @var ObjectManager $objectManager The Doctrine object manager for the current model */
     protected $objectManager;
 
     /** @var EventDispatcherInterface $dispatcher */
@@ -68,7 +74,7 @@ trait InitializeTrait
     }
 
     /**
-     * Utility method which initializes the configuration of the entity on which
+     * Utility method which initializes the configuration of the model on which
      * the user is performing the action.
      *
      * @param Request     $request
@@ -87,10 +93,10 @@ trait InitializeTrait
         }
 
         if (!array_key_exists($modelName, $this->config['models'])) {
-            throw new UndefinedEntityException(['entity_name' => $modelName]);
+            throw new UndefinedModelException(['model_name' => $modelName]);
         }
 
-        $this->model = $this->configManager->getEntityConfig($modelName);
+        $this->model = $this->configManager->getModelConfig($modelName);
 
         $action = $request->query->get('action', 'list');
         if (!$request->query->has('sortField')) {
@@ -132,11 +138,9 @@ trait InitializeTrait
      *
      * @return string
      */
-    protected function guessEntityFromClass(string $className): string
+    protected function guessModelFromClass(string $className): string
     {
-        $entity_name = substr($className, strrpos($className, '\\') + 1);
-
-        return (string)$entity_name;
+        return (string)substr($className, strrpos($className, '\\') + 1);
     }
 
     /**
@@ -151,7 +155,7 @@ trait InitializeTrait
         /** @var ObjectManager $objectManager */
         $objectManager = $this->getDoctrine()->getManagerForClass($class);
         $qb            = $objectManager->createQueryBuilder('model');
-        $qb->select('count(entity.id)');
+        $qb->select('count(model.id)');
         $qb->from($class, 'model');
         if ($dql_filter) {
             $qb->where($dql_filter);

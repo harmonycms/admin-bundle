@@ -2,6 +2,8 @@
 
 namespace Harmony\Bundle\AdminBundle\Configuration;
 
+use function array_keys;
+
 /**
  * Processes default values for some backend configuration options.
  *
@@ -17,22 +19,22 @@ class DefaultConfigPass implements ConfigPassInterface
      */
     public function process(array $backendConfig)
     {
-        return $this->processDefaultEntity($backendConfig);
+        return $this->processDefaultModel($backendConfig);
     }
 
     /**
-     * Finds the default entity to display when the backend index is not
+     * Finds the default model to display when the backend index is not
      * defined explicitly.
      *
      * @param array $backendConfig
      *
      * @return array
      */
-    private function processDefaultEntity(array $backendConfig)
+    private function processDefaultModel(array $backendConfig)
     {
-        $entityNames                          = array_keys($backendConfig['models']);
-        $firstEntityName                      = isset($entityNames[0]) ? $entityNames[0] : null;
-        $backendConfig['default_entity_name'] = $firstEntityName;
+        $modelNames                          = array_keys($backendConfig['models']);
+        $firstModelName                      = isset($modelNames[0]) ? $modelNames[0] : null;
+        $backendConfig['default_model_name'] = $firstModelName;
 
         return $backendConfig;
     }

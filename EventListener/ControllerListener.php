@@ -66,7 +66,7 @@ class ControllerListener
             return;
         }
 
-        $entity = $this->configManager->getEntityConfig($entityName);
+        $entity = $this->configManager->getModelConfig($entityName);
 
         // if the entity doesn't define a custom controller, do nothing
         if (!isset($entity['controller'])) {

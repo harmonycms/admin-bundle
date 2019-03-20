@@ -6,7 +6,7 @@ namespace Harmony\Bundle\AdminBundle\Router;
 
 use Doctrine\Common\Persistence\Proxy;
 use Harmony\Bundle\AdminBundle\Configuration\ConfigManager;
-use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
+use Harmony\Bundle\AdminBundle\Exception\UndefinedModelException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -59,7 +59,7 @@ final class HarmonyAdminRouter
      * @param string        $action
      * @param array         $parameters
      *
-     * @throws UndefinedEntityException
+     * @throws UndefinedModelException
      * @return string
      */
     public function generate($entity, $action, array $parameters = [])
@@ -71,7 +71,7 @@ final class HarmonyAdminRouter
             $parameters['id'] = (string)$this->propertyAccessor->getValue($entity, 'id');
         } else {
             $config = class_exists($entity) ? $this->getEntityConfigByClass($entity) :
-                $this->configManager->getEntityConfig($entity);
+                $this->configManager->getModelConfig($entity);
         }
 
         $parameters['entity'] = $config['name'];
@@ -97,13 +97,13 @@ final class HarmonyAdminRouter
     /**
      * @param string $class
      *
-     * @throws UndefinedEntityException
+     * @throws UndefinedModelException
      * @return array
      */
     private function getEntityConfigByClass($class)
     {
-        if (!$config = $this->configManager->getEntityConfigByClass($this->getRealClass($class))) {
-            throw new UndefinedEntityException(['entity_name' => $class]);
+        if (!$config = $this->configManager->getModelConfigByClass($this->getRealClass($class))) {
+            throw new UndefinedModelException(['entity_name' => $class]);
         }
 
         return $config;

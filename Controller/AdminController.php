@@ -7,7 +7,7 @@ namespace Harmony\Bundle\AdminBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\QueryBuilder;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
-use Harmony\Bundle\AdminBundle\Exception\EntityRemoveException;
+use Harmony\Bundle\AdminBundle\Exception\ModelRemoveException;
 use Harmony\Bundle\AdminBundle\Exception\ForbiddenActionException;
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
 use Pagerfanta\Pagerfanta;
@@ -45,7 +45,7 @@ class AdminController extends AbstractController
     {
         $this->initialize($request, $model);
 
-        return $this->executeDynamicMethod($action . '<EntityName>');
+        return $this->executeDynamicMethod($action . '<ModelName>');
     }
 
     /**
@@ -63,7 +63,7 @@ class AdminController extends AbstractController
             throw new ForbiddenActionException(['action' => $action, 'model_name' => $this->model['name']]);
         }
 
-        return $this->executeDynamicMethod($action . '<EntityName>');
+        return $this->executeDynamicMethod($action . '<ModelName>');
     }
 
     /**
@@ -82,7 +82,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * The method that is executed when the user performs a 'list' action on an entity.
+     * The method that is executed when the user performs a 'list' action on an model.
      *
      * @return Response
      */
@@ -100,12 +100,12 @@ class AdminController extends AbstractController
             'delete_form_template' => $this->createDeleteForm($this->model['name'], '__id__')->createView(),
         ];
 
-        return $this->executeDynamicMethod('render<EntityName>Template',
+        return $this->executeDynamicMethod('render<ModelName>Template',
             ['list', $this->model['templates']['list'], $parameters]);
     }
 
     /**
-     * The method that is executed when the user performs a 'edit' action on an entity.
+     * The method that is executed when the user performs a 'edit' action on an model.
      *
      * @return Response|RedirectResponse
      * @throws \RuntimeException
@@ -116,43 +116,43 @@ class AdminController extends AbstractController
         $this->dispatch(HarmonyAdminEvents::PRE_EDIT);
         $id           = $this->request->query->get('id');
         $harmonyAdmin = $this->request->attributes->get('harmony_admin');
-        $entity       = $harmonyAdmin['item'];
+        $item         = $harmonyAdmin['item'];
         if ($this->request->isXmlHttpRequest() && $property = $this->request->query->get('property')) {
             $newValue       = 'true' === mb_strtolower($this->request->query->get('newValue'));
             $fieldsMetadata = $this->model['list']['fields'];
             if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
                 throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
             }
-            $this->updateEntityProperty($entity, $property, $newValue);
+            $this->updateModelProperty($item, $property, $newValue);
 
             // cast to integer instead of string to avoid sending empty responses for 'false'
             return new Response((int)$newValue);
         }
         $fields     = $this->model['edit']['fields'];
-        $editForm   = $this->executeDynamicMethod('create<EntityName>EditForm', [$entity, $fields]);
+        $editForm   = $this->executeDynamicMethod('create<ModelName>EditForm', [$item, $fields]);
         $deleteForm = $this->createDeleteForm($this->model['name'], $id);
         $editForm->handleRequest($this->request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['model' => $entity]);
-            $this->executeDynamicMethod('update<EntityName>Entity', [$entity, $editForm]);
-            $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['model' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['model' => $item]);
+            $this->executeDynamicMethod('update<ModelName>Model', [$item, $editForm]);
+            $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['model' => $item]);
 
             return $this->redirectToReferrer();
         }
         $this->dispatch(HarmonyAdminEvents::POST_EDIT);
         $parameters = [
-            'form'          => $editForm->createView(),
-            'entity_fields' => $fields,
-            'model'         => $entity,
-            'delete_form'   => $deleteForm->createView(),
+            'form'         => $editForm->createView(),
+            'model_fields' => $fields,
+            'model'        => $item,
+            'delete_form'  => $deleteForm->createView(),
         ];
 
-        return $this->executeDynamicMethod('render<EntityName>Template',
+        return $this->executeDynamicMethod('render<ModelName>Template',
             ['edit', $this->model['templates']['edit'], $parameters]);
     }
 
     /**
-     * The method that is executed when the user performs a 'show' action on an entity.
+     * The method that is executed when the user performs a 'show' action on an model.
      *
      * @return Response
      */
@@ -161,26 +161,26 @@ class AdminController extends AbstractController
         $this->dispatch(HarmonyAdminEvents::PRE_SHOW);
         $id           = $this->request->query->get('id');
         $harmonyAdmin = $this->request->attributes->get('harmony_admin');
-        $entity       = $harmonyAdmin['item'];
+        $item         = $harmonyAdmin['item'];
         $fields       = $this->model['show']['fields'];
         $deleteForm   = $this->createDeleteForm($this->model['name'], $id);
         $this->dispatch(HarmonyAdminEvents::POST_SHOW, [
             'deleteForm' => $deleteForm,
             'fields'     => $fields,
-            'model'      => $entity,
+            'model'      => $item,
         ]);
         $parameters = [
-            'model'       => $entity,
+            'model'       => $item,
             'fields'      => $fields,
             'delete_form' => $deleteForm->createView(),
         ];
 
-        return $this->executeDynamicMethod('render<EntityName>Template',
+        return $this->executeDynamicMethod('render<ModelName>Template',
             ['show', $this->model['templates']['show'], $parameters]);
     }
 
     /**
-     * The method that is executed when the user performs a 'new' action on an entity.
+     * The method that is executed when the user performs a 'new' action on an model.
      *
      * @return Response|RedirectResponse
      * @throws \ErrorException
@@ -188,41 +188,41 @@ class AdminController extends AbstractController
     protected function new()
     {
         $this->dispatch(HarmonyAdminEvents::PRE_NEW);
-        $entity               = $this->executeDynamicMethod('createNew<EntityName>Entity');
+        $model                = $this->executeDynamicMethod('createNew<ModelName>Model');
         $harmonyAdmin         = $this->request->attributes->get('harmony_admin');
-        $harmonyAdmin['item'] = $entity;
+        $harmonyAdmin['item'] = $model;
         $this->request->attributes->set('harmony_admin', $harmonyAdmin);
         $fields  = $this->model['new']['fields'];
-        $newForm = $this->executeDynamicMethod('create<EntityName>NewForm', [$entity, $fields]);
+        $newForm = $this->executeDynamicMethod('create<ModelName>NewForm', [$model, $fields]);
         $newForm->handleRequest($this->request);
         if ($newForm->isSubmitted() && $newForm->isValid()) {
-            $this->dispatch(HarmonyAdminEvents::PRE_PERSIST, ['model' => $entity]);
-            $this->executeDynamicMethod('persist<EntityName>Entity', [$entity, $newForm]);
-            $this->dispatch(HarmonyAdminEvents::POST_PERSIST, ['model' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::PRE_PERSIST, ['model' => $model]);
+            $this->executeDynamicMethod('persist<ModelName>Model', [$model, $newForm]);
+            $this->dispatch(HarmonyAdminEvents::POST_PERSIST, ['model' => $model]);
 
             return $this->redirectToReferrer();
         }
         $this->dispatch(HarmonyAdminEvents::POST_NEW, [
-            'entity_fields' => $fields,
-            'form'          => $newForm,
-            'model'         => $entity,
+            'model_fields' => $fields,
+            'form'         => $newForm,
+            'model'        => $model,
         ]);
         $parameters = [
-            'form'          => $newForm->createView(),
-            'entity_fields' => $fields,
-            'model'         => $entity,
+            'form'         => $newForm->createView(),
+            'model_fields' => $fields,
+            'model'        => $model,
         ];
 
-        return $this->executeDynamicMethod('render<EntityName>Template',
+        return $this->executeDynamicMethod('render<ModelName>Template',
             ['new', $this->model['templates']['new'], $parameters]);
     }
 
     /**
      * The method that is executed when the user performs a 'delete' action to
-     * remove any entity.
+     * remove any model.
      *
      * @return Response
-     * @throws EntityRemoveException
+     * @throws ModelRemoveException
      * @throws \ErrorException
      */
     protected function delete()
@@ -236,18 +236,18 @@ class AdminController extends AbstractController
         $form->handleRequest($this->request);
         if ($form->isSubmitted() && $form->isValid()) {
             $harmonyAdmin = $this->request->attributes->get('harmony_admin');
-            $entity       = $harmonyAdmin['item'];
-            $this->dispatch(HarmonyAdminEvents::PRE_REMOVE, ['model' => $entity]);
+            $item         = $harmonyAdmin['item'];
+            $this->dispatch(HarmonyAdminEvents::PRE_REMOVE, ['model' => $item]);
             try {
-                $this->executeDynamicMethod('remove<EntityName>Entity', [$entity, $form]);
+                $this->executeDynamicMethod('remove<ModelName>Model', [$item, $form]);
             }
             catch (ForeignKeyConstraintViolationException $e) {
-                throw new EntityRemoveException([
-                    'entity_name' => $this->model['name'],
-                    'message'     => $e->getMessage()
+                throw new ModelRemoveException([
+                    'model_name' => $this->model['name'],
+                    'message'    => $e->getMessage()
                 ]);
             }
-            $this->dispatch(HarmonyAdminEvents::POST_REMOVE, ['model' => $entity]);
+            $this->dispatch(HarmonyAdminEvents::POST_REMOVE, ['model' => $item]);
         }
         $this->dispatch(HarmonyAdminEvents::POST_DELETE);
 
@@ -255,7 +255,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * The method that is executed when the user performs a query on an entity.
+     * The method that is executed when the user performs a query on an model.
      *
      * @return Response
      */
@@ -290,97 +290,97 @@ class AdminController extends AbstractController
             'delete_form_template' => $this->createDeleteForm($this->model['name'], '__id__')->createView(),
         ];
 
-        return $this->executeDynamicMethod('render<EntityName>Template',
+        return $this->executeDynamicMethod('render<ModelName>Template',
             ['search', $this->model['templates']['list'], $parameters]);
     }
 
     /**
-     * It updates the value of some property of some entity to the new given value.
+     * It updates the value of some property of some model to the new given value.
      *
-     * @param mixed  $entity   The instance of the entity to modify
+     * @param mixed  $model    The instance of the model to modify
      * @param string $property The name of the property to change
      * @param bool   $value    The new value of the property
      *
      * @throws \RuntimeException
      */
-    protected function updateEntityProperty($entity, $property, $value)
+    protected function updateModelProperty($model, $property, $value)
     {
-        $entityConfig = $this->model;
-        if (!$this->get('harmony_admin.property_accessor')->isWritable($entity, $property)) {
-            throw new \RuntimeException(sprintf('The "%s" property of the "%s" entity is not writable.', $property,
-                $entityConfig['name']));
+        $modelConfig = $this->model;
+        if (!$this->get('harmony_admin.property_accessor')->isWritable($model, $property)) {
+            throw new \RuntimeException(sprintf('The "%s" property of the "%s" model is not writable.', $property,
+                $modelConfig['name']));
         }
-        $this->get('harmony_admin.property_accessor')->setValue($entity, $property, $value);
-        $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['model' => $entity, 'newValue' => $value]);
-        $this->executeDynamicMethod('update<EntityName>Entity', [$entity]);
-        $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['model' => $entity, 'newValue' => $value]);
+        $this->get('harmony_admin.property_accessor')->setValue($model, $property, $value);
+        $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['model' => $model, 'newValue' => $value]);
+        $this->executeDynamicMethod('update<ModelName>Model', [$model]);
+        $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['model' => $model, 'newValue' => $value]);
         $this->dispatch(HarmonyAdminEvents::POST_EDIT);
     }
 
     /**
-     * Creates a new object of the current managed entity.
+     * Creates a new object of the current managed model.
      * This method is mostly here for override convenience, because it allows
-     * the user to use his own method to customize the entity instantiation.
+     * the user to use his own method to customize the model instantiation.
      *
      * @return object
      */
-    protected function createNewEntity()
+    protected function createNewModel()
     {
-        $entityFullyQualifiedClassName = $this->model['class'];
+        $modelFullyQualifiedClassName = $this->model['class'];
 
-        return new $entityFullyQualifiedClassName();
+        return new $modelFullyQualifiedClassName();
     }
 
     /**
-     * Allows applications to modify the entity associated with the item being
+     * Allows applications to modify the model associated with the item being
      * created while persisting it.
      *
-     * @param object $entity
+     * @param object $model
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    protected function persistEntity($entity)
+    protected function persistModel($model)
     {
-        $this->objectManager->persist($entity);
+        $this->objectManager->persist($model);
         $this->objectManager->flush();
     }
 
     /**
-     * Allows applications to modify the entity associated with the item being
+     * Allows applications to modify the model associated with the item being
      * edited before updating it.
      *
-     * @param object $entity
+     * @param object $model
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    protected function updateEntity($entity)
+    protected function updateModel($model)
     {
-        $this->objectManager->persist($entity);
+        $this->objectManager->persist($model);
         $this->objectManager->flush();
     }
 
     /**
-     * Allows applications to modify the entity associated with the item being
+     * Allows applications to modify the model associated with the item being
      * deleted before removing it.
      *
-     * @param object $entity
+     * @param object $model
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    protected function removeEntity($entity)
+    protected function removeModel($model)
     {
-        $this->objectManager->remove($entity);
+        $this->objectManager->remove($model);
         $this->objectManager->flush();
     }
 
     /**
      * Performs a database query to get all the records related to the given
-     * entity. It supports pagination and field sorting.
+     * model. It supports pagination and field sorting.
      *
-     * @param string      $entityClass
+     * @param string      $class
      * @param int         $page
      * @param int         $maxPerPage
      * @param string|null $sortField
@@ -389,14 +389,14 @@ class AdminController extends AbstractController
      *
      * @return Pagerfanta The paginated query results
      */
-    protected function findAll($entityClass, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null,
+    protected function findAll($class, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null,
                                $dqlFilter = null)
     {
         if (!\in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
             $sortDirection = 'DESC';
         }
-        $queryBuilder = $this->executeDynamicMethod('create<EntityName>ListQueryBuilder',
-            [$entityClass, $sortDirection, $sortField, $dqlFilter]);
+        $queryBuilder = $this->executeDynamicMethod('create<ModelName>ListQueryBuilder',
+            [$class, $sortDirection, $sortField, $dqlFilter]);
         $this->dispatch(HarmonyAdminEvents::POST_LIST_QUERY_BUILDER, [
             'query_builder'  => $queryBuilder,
             'sort_field'     => $sortField,
@@ -409,23 +409,23 @@ class AdminController extends AbstractController
     /**
      * Creates Query Builder instance for all the records.
      *
-     * @param string      $entityClass
+     * @param string      $class
      * @param string      $sortDirection
      * @param string|null $sortField
      * @param string|null $dqlFilter
      *
      * @return QueryBuilder The Query Builder instance
      */
-    protected function createListQueryBuilder($entityClass, $sortDirection, $sortField = null, $dqlFilter = null)
+    protected function createListQueryBuilder($class, $sortDirection, $sortField = null, $dqlFilter = null)
     {
-        return $this->builderRegistry->createListBuilder($entityClass, $sortField, $sortDirection, $dqlFilter);
+        return $this->builderRegistry->createListBuilder($class, $sortField, $sortDirection, $dqlFilter);
     }
 
     /**
      * Performs a database query based on the search query provided by the user.
      * It supports pagination and field sorting.
      *
-     * @param string      $entityClass
+     * @param string      $class
      * @param string      $searchQuery
      * @param array       $searchableFields
      * @param int         $page
@@ -436,14 +436,14 @@ class AdminController extends AbstractController
      *
      * @return Pagerfanta The paginated query results
      */
-    protected function findBy($entityClass, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15,
+    protected function findBy($class, $searchQuery, array $searchableFields, $page = 1, $maxPerPage = 15,
                               $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
         if (empty($sortDirection) || !in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
             $sortDirection = 'DESC';
         }
-        $queryBuilder = $this->executeDynamicMethod('create<EntityName>SearchQueryBuilder',
-            [$entityClass, $searchQuery, $searchableFields, $sortField, $sortDirection, $dqlFilter]);
+        $queryBuilder = $this->executeDynamicMethod('create<ModelName>SearchQueryBuilder',
+            [$class, $searchQuery, $searchableFields, $sortField, $sortDirection, $dqlFilter]);
         $this->dispatch(HarmonyAdminEvents::POST_SEARCH_QUERY_BUILDER, [
             'query_builder'     => $queryBuilder,
             'search_query'      => $searchQuery,
@@ -456,7 +456,7 @@ class AdminController extends AbstractController
     /**
      * Creates Query Builder instance for search query.
      *
-     * @param string      $entityClass
+     * @param string      $class
      * @param string      $searchQuery
      * @param array       $searchableFields
      * @param string|null $sortField
@@ -466,7 +466,7 @@ class AdminController extends AbstractController
      * @return QueryBuilder The Query Builder instance
      * @throws \MongoException
      */
-    protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null,
+    protected function createSearchQueryBuilder($class, $searchQuery, array $searchableFields, $sortField = null,
                                                 $sortDirection = null, $dqlFilter = null)
     {
         return $this->builderRegistry->createSearchBuilder($this->model, $searchQuery, $sortField, $sortDirection,
@@ -474,60 +474,60 @@ class AdminController extends AbstractController
     }
 
     /**
-     * Creates the form used to edit an entity.
+     * Creates the form used to edit an model.
      *
-     * @param object $entity
-     * @param array  $entityProperties
-     *
-     * @return Form|FormInterface
-     * @throws \Exception
-     */
-    protected function createEditForm($entity, array $entityProperties)
-    {
-        return $this->createEntityForm($entity, $entityProperties, 'edit');
-    }
-
-    /**
-     * Creates the form used to create an entity.
-     *
-     * @param object $entity
-     * @param array  $entityProperties
+     * @param object $model
+     * @param array  $properties
      *
      * @return Form|FormInterface
      * @throws \Exception
      */
-    protected function createNewForm($entity, array $entityProperties)
+    protected function createEditForm($model, array $properties)
     {
-        return $this->createEntityForm($entity, $entityProperties, 'new');
+        return $this->createModelForm($model, $properties, 'edit');
     }
 
     /**
-     * Creates the form builder of the form used to create or edit the given entity.
+     * Creates the form used to create an model.
      *
-     * @param object $entity
+     * @param object $model
+     * @param array  $properties
+     *
+     * @return Form|FormInterface
+     * @throws \Exception
+     */
+    protected function createNewForm($model, array $properties)
+    {
+        return $this->createModelForm($model, $properties, 'new');
+    }
+
+    /**
+     * Creates the form builder of the form used to create or edit the given model.
+     *
+     * @param object $model
      * @param string $view The name of the view where this form is used ('new' or 'edit')
      *
      * @return FormBuilder
      */
-    protected function createEntityFormBuilder($entity, $view)
+    protected function createModelFormBuilder($model, $view)
     {
-        $formOptions = $this->executeDynamicMethod('get<EntityName>EntityFormOptions', [$entity, $view]);
+        $formOptions = $this->executeDynamicMethod('get<ModelName>ModelFormOptions', [$model, $view]);
 
         return $this->get('form.factory')
             ->createNamedBuilder(mb_strtolower($this->model['name']), FormTypeHelper::getTypeClass('harmony_admin'),
-                $entity, $formOptions);
+                $model, $formOptions);
     }
 
     /**
      * Retrieves the list of form options before sending them to the form builder.
      * This allows adding dynamic logic to the default form options.
      *
-     * @param object $entity
+     * @param object $model
      * @param string $view
      *
      * @return array
      */
-    protected function getEntityFormOptions($entity, $view)
+    protected function getModelFormOptions($model, $view)
     {
         $formOptions          = $this->model[$view]['form_options'];
         $formOptions['model'] = $this->model['name'];
@@ -537,19 +537,19 @@ class AdminController extends AbstractController
     }
 
     /**
-     * Creates the form object used to create or edit the given entity.
+     * Creates the form object used to create or edit the given model.
      *
-     * @param object $entity
-     * @param array  $entityProperties
+     * @param object $model
+     * @param array  $properties
      * @param string $view
      *
      * @return FormInterface
      * @throws \Exception
      */
-    protected function createEntityForm($entity, array $entityProperties, $view)
+    protected function createModelForm($model, array $properties, $view)
     {
-        if (method_exists($this, $customMethodName = 'create' . $this->model['name'] . 'EntityForm')) {
-            $form = $this->{$customMethodName}($entity, $entityProperties, $view);
+        if (method_exists($this, $customMethodName = 'create' . $this->model['name'] . 'ModelForm')) {
+            $form = $this->{$customMethodName}($model, $properties, $view);
             if (!$form instanceof FormInterface) {
                 throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormInterface, "%s" given.',
                     $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)));
@@ -557,35 +557,35 @@ class AdminController extends AbstractController
 
             return $form;
         }
-        $formBuilder = $this->executeDynamicMethod('create<EntityName>EntityFormBuilder', [$entity, $view]);
+        $formBuilder = $this->executeDynamicMethod('create<ModelName>ModelFormBuilder', [$model, $view]);
         if (!$formBuilder instanceof FormBuilderInterface) {
             throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormBuilderInterface, "%s" given.',
-                'createEntityForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)));
+                'createModelForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)));
         }
 
         return $formBuilder->getForm();
     }
 
     /**
-     * Creates the form used to delete an entity. It must be a form because
-     * the deletion of the entity are always performed with the 'DELETE' HTTP method,
+     * Creates the form used to delete an model. It must be a form because
+     * the deletion of the model are always performed with the 'DELETE' HTTP method,
      * which requires a form to work in the current browsers.
      *
-     * @param string     $entityName
-     * @param int|string $entityId When reusing the delete form for multiple entities, a pattern string is passed
+     * @param string     $ModelName
+     * @param int|string $ModelId  When reusing the delete form for multiple models, a pattern string is passed
      *                             instead of an integer
      *
      * @return Form|FormInterface
      */
-    protected function createDeleteForm($entityName, $entityId)
+    protected function createDeleteForm($ModelName, $ModelId)
     {
         /** @var FormBuilder $formBuilder */
         $formBuilder = $this->get('form.factory')
             ->createNamedBuilder('delete_form')
             ->setAction($this->generateUrl('admin_model', [
                 'action' => 'delete',
-                'model'  => $entityName,
-                'id'     => $entityId
+                'model'  => $ModelName,
+                'id'     => $ModelId
             ]))
             ->setMethod('DELETE');
         $formBuilder->add('submit', FormTypeHelper::getTypeClass('submit'),
@@ -598,7 +598,7 @@ class AdminController extends AbstractController
 
     /**
      * Utility method that checks if the given action is allowed for
-     * the current entity.
+     * the current model.
      *
      * @param string $actionName
      *
@@ -611,11 +611,11 @@ class AdminController extends AbstractController
 
     /**
      * Given a method name pattern, it looks for the customized version of that
-     * method (based on the entity name) and executes it. If the custom method
+     * method (based on the model name) and executes it. If the custom method
      * does not exist, it executes the regular method.
      * For example:
-     *   executeDynamicMethod('create<EntityName>Entity') and the entity name is 'User'
-     *   if 'createUserEntity()' exists, execute it; otherwise execute 'createEntity()'
+     *   executeDynamicMethod('create<ModelName>model') and the model name is 'User'
+     *   if 'createUserModel()' exists, execute it; otherwise execute 'createModel()'
      *
      * @param string $methodNamePattern The pattern of the method name (dynamic parts are enclosed with <> angle
      *                                  brackets)
@@ -625,9 +625,9 @@ class AdminController extends AbstractController
      */
     protected function executeDynamicMethod($methodNamePattern, array $arguments = [])
     {
-        $methodName = str_replace('<EntityName>', $this->model['name'], $methodNamePattern);
+        $methodName = str_replace('<ModelName>', $this->model['name'], $methodNamePattern);
         if (!\is_callable([$this, $methodName])) {
-            $methodName = str_replace('<EntityName>', '', $methodNamePattern);
+            $methodName = str_replace('<ModelName>', '', $methodNamePattern);
         }
 
         return \call_user_func_array([$this, $methodName], $arguments);

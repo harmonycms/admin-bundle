@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Configuration;
 
-use Harmony\Bundle\AdminBundle\Exception\UndefinedEntityException;
+use Harmony\Bundle\AdminBundle\Exception\UndefinedModelException;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -16,21 +18,32 @@ final class ConfigManager
 
     private const CACHE_KEY = 'harmony_admin.processed_config';
 
-    /** @var array */
+    /** @var array $backendConfig */
     private $backendConfig;
 
+    /** @var bool $debug */
     private $debug;
 
+    /** @var PropertyAccessorInterface $propertyAccessor */
     private $propertyAccessor;
 
+    /** @var CacheItemPoolInterface $cache */
     private $cache;
 
-    /** @var array */
+    /** @var array $originalBackendConfig */
     private $originalBackendConfig;
 
-    /** @var ConfigPassInterface[] */
+    /** @var ConfigPassInterface[] $configPasses */
     private $configPasses;
 
+    /**
+     * ConfigManager constructor.
+     *
+     * @param array                     $originalBackendConfig
+     * @param bool                      $debug
+     * @param PropertyAccessorInterface $propertyAccessor
+     * @param CacheItemPoolInterface    $cache
+     */
     public function __construct(array $originalBackendConfig, bool $debug, PropertyAccessorInterface $propertyAccessor,
                                 CacheItemPoolInterface $cache)
     {
@@ -48,6 +61,11 @@ final class ConfigManager
         $this->configPasses[] = $configPass;
     }
 
+    /**
+     * @param string|null $propertyPath
+     *
+     * @return array|mixed
+     */
     public function getBackendConfig(string $propertyPath = null)
     {
         $this->backendConfig = $this->loadBackendConfig();
@@ -62,46 +80,70 @@ final class ConfigManager
         return $this->propertyAccessor->getValue($this->backendConfig, $propertyPath);
     }
 
-    public function getEntityConfig(string $entityName): array
+    /**
+     * @param string $modelName
+     *
+     * @return array
+     */
+    public function getModelConfig(string $modelName): array
     {
         $backendConfig = $this->getBackendConfig();
-        if (!isset($backendConfig['models'][$entityName])) {
-            throw new UndefinedEntityException(['entity_name' => $entityName]);
+        if (!isset($backendConfig['models'][$modelName])) {
+            throw new UndefinedModelException(['model_name' => $modelName]);
         }
 
-        return $backendConfig['models'][$entityName];
+        return $backendConfig['models'][$modelName];
     }
 
-    public function getEntityConfigByClass(string $fqcn): ?array
+    /**
+     * @param string $fqcn
+     *
+     * @return array|null
+     */
+    public function getModelConfigByClass(string $fqcn): ?array
     {
         $backendConfig = $this->getBackendConfig();
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
-            if ($entityConfig['class'] === $fqcn) {
-                return $entityConfig;
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
+            if ($modelConfig['class'] === $fqcn) {
+                return $modelConfig;
             }
         }
 
         return null;
     }
 
-    public function getActionConfig(string $entityName, string $view, string $action): array
+    /**
+     * @param string $modelName
+     * @param string $view
+     * @param string $action
+     *
+     * @return array
+     */
+    public function getActionConfig(string $modelName, string $view, string $action): array
     {
         try {
-            $entityConfig = $this->getEntityConfig($entityName);
+            $modelConfig = $this->getModelConfig($modelName);
         }
         catch (\Exception $e) {
-            $entityConfig = [];
+            $modelConfig = [];
         }
 
-        return $entityConfig[$view]['actions'][$action] ?? [];
+        return $modelConfig[$view]['actions'][$action] ?? [];
     }
 
-    public function isActionEnabled(string $entityName, string $view, string $action): bool
+    /**
+     * @param string $modelName
+     * @param string $view
+     * @param string $action
+     *
+     * @return bool
+     */
+    public function isActionEnabled(string $modelName, string $view, string $action): bool
     {
-        $entityConfig = $this->getEntityConfig($entityName);
+        $modelConfig = $this->getModelConfig($modelName);
 
-        return !\in_array($action, $entityConfig['disabled_actions'], true) &&
-            array_key_exists($action, $entityConfig[$view]['actions']);
+        return !\in_array($action, $modelConfig['disabled_actions'], true) &&
+            array_key_exists($action, $modelConfig[$view]['actions']);
     }
 
     /**
@@ -121,6 +163,10 @@ final class ConfigManager
         return $backendConfig;
     }
 
+    /**
+     * @return array
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
     private function loadBackendConfig(): array
     {
         if (true === $this->debug) {

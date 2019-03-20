@@ -46,7 +46,7 @@ class FormType extends AbstractType
     {
         $model            = $options['model'];
         $view             = $options['view'];
-        $modelConfig      = $this->configManager->getEntityConfig($model);
+        $modelConfig      = $this->configManager->getModelConfig($model);
         $modelProperties  = $modelConfig[$view]['fields'] ?? [];
         $formTabs         = [];
         $currentFormTab   = null;
@@ -136,7 +136,7 @@ class FormType extends AbstractType
             'allow_extra_fields' => true,
             'data_class'         => function (Options $options) use ($configManager) {
                 $model       = $options['model'];
-                $modelConfig = $configManager->getEntityConfig($model);
+                $modelConfig = $configManager->getModelConfig($model);
 
                 return $modelConfig['class'];
             },

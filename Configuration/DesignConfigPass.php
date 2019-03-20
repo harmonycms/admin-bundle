@@ -3,6 +3,9 @@
 namespace Harmony\Bundle\AdminBundle\Configuration;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use function in_array;
+use function mb_substr;
+use function preg_replace;
 
 /**
  * Processes the custom CSS styles applied to the backend design based on the
@@ -34,6 +37,14 @@ class DesignConfigPass implements ConfigPassInterface
         $this->locale      = $locale;
     }
 
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function process(array $backendConfig)
     {
         $backendConfig = $this->processRtlLanguages($backendConfig);
@@ -42,6 +53,11 @@ class DesignConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     */
     private function processRtlLanguages(array $backendConfig)
     {
         if (!isset($backendConfig['design']['rtl'])) {
@@ -56,6 +72,14 @@ class DesignConfigPass implements ConfigPassInterface
         return $backendConfig;
     }
 
+    /**
+     * @param array $backendConfig
+     *
+     * @return array
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     private function processCustomCss(array $backendConfig)
     {
         $customCssContent = $this->container->get('twig')->render('@HarmonyAdmin/css/harmony_admin.css.twig', [

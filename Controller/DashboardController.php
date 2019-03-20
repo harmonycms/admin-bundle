@@ -45,12 +45,12 @@ class DashboardController extends AbstractController
                         }
                         $dashboard['blocks'][$key]['items'][$k]['count'] = $count;
 
-                        if (!empty($item['entity'])) {
-                            $entity = $item['entity'];
+                        if (!empty($item['model'])) {
+                            $model = $item['model'];
                         } else {
-                            $entity = $this->guessEntityFromClass($item['class']);
+                            $model = $this->guessModelFromClass($item['class']);
                         }
-                        $dashboard['blocks'][$key]['items'][$k]['entity'] = $entity;
+                        $dashboard['blocks'][$key]['items'][$k]['model'] = $model;
                     }
                 }
             }

@@ -9,11 +9,11 @@ namespace Harmony\Bundle\AdminBundle\Configuration;
  * end-user to use shortcuts and syntactic sugar to define the backend configuration.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
- *
  * @internal
  */
 interface ConfigPassInterface
 {
+
     /**
      * @param array $backendConfig
      *

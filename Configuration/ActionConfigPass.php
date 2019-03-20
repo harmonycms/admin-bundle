@@ -1,10 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Harmony\Bundle\AdminBundle\Configuration;
+
+use function array_filter;
+use function array_key_exists;
+use function array_keys;
+use function array_merge;
+use function array_unique;
+use function is_array;
+use function is_string;
+use function mb_strtolower;
+use function mb_substr;
+use function preg_match;
+use function preg_replace;
+use function sprintf;
+use function trim;
+use function ucfirst;
 
 /**
  * Merges all the actions that can be configured in the backend and normalizes
- * them to get the final action configuration for each entity view.
+ * them to get the final action configuration for each model view.
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
@@ -56,12 +73,11 @@ class ActionConfigPass implements ConfigPassInterface
     private function processDisabledActions(array $backendConfig): array
     {
         $actionsDisabledByBackend = $backendConfig['disabled_actions'];
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
-            $actionsDisabledByEntity = isset($entityConfig['disabled_actions']) ? $entityConfig['disabled_actions'] :
-                [];
-            $disabledActions         = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByEntity));
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
+            $actionsDisabledByModel = isset($modelConfig['disabled_actions']) ? $modelConfig['disabled_actions'] : [];
+            $disabledActions        = array_unique(array_merge($actionsDisabledByBackend, $actionsDisabledByModel));
 
-            $backendConfig['models'][$entityName]['disabled_actions'] = $disabledActions;
+            $backendConfig['models'][$modelName]['disabled_actions'] = $disabledActions;
         }
 
         return $backendConfig;
@@ -99,15 +115,15 @@ class ActionConfigPass implements ConfigPassInterface
             $backendConfig[$view]['actions'] = $actionsConfig;
         }
 
-        // second, normalize actions defined for each entity
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
+        // second, normalize actions defined for each model
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             foreach ($this->views as $view) {
-                $actionsConfig = $entityConfig[$view]['actions'];
+                $actionsConfig = $modelConfig[$view]['actions'];
                 $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig,
-                    sprintf('the "%s" view of the "%s" entity', $view, $entityName));
+                    sprintf('the "%s" view of the "%s" model', $view, $modelName));
                 $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
 
-                $backendConfig['models'][$entityName][$view]['actions'] = $actionsConfig;
+                $backendConfig['models'][$modelName][$view]['actions'] = $actionsConfig;
             }
         }
 
@@ -188,7 +204,7 @@ class ActionConfigPass implements ConfigPassInterface
      * the backend and locally in each of the configured models. Local config always
      * wins over the global config (e.g. if backend removes 'delete' action in the
      * 'list' view but some action explicitly adds 'delete' in its 'list' view,
-     * then that entity shows the 'delete' action and the others don't).
+     * then that model shows the 'delete' action and the others don't).
      *
      * @param array $backendConfig
      *
@@ -196,11 +212,11 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function resolveActionInheritance(array $backendConfig): array
     {
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             foreach ($this->views as $view) {
                 $defaultActions = $this->getDefaultActions($view);
                 $backendActions = $backendConfig[$view]['actions'];
-                $entityActions  = $entityConfig[$view]['actions'];
+                $modelActions   = $modelConfig[$view]['actions'];
 
                 // filter actions removed in the global view configuration
                 foreach ($backendActions as $backendAction) {
@@ -209,35 +225,35 @@ class ActionConfigPass implements ConfigPassInterface
 
                         unset($backendActions[$actionName], $backendActions['-' . $actionName]);
 
-                        // unless the entity explicitly adds this globally removed action, remove it from the
-                        // default actions config to avoid adding it to the entity later when merging everything
-                        if (!isset($entityActions[$actionName])) {
+                        // unless the model explicitly adds this globally removed action, remove it from the
+                        // default actions config to avoid adding it to the model later when merging everything
+                        if (!isset($modelActions[$actionName])) {
                             unset($defaultActions[$actionName]);
                         }
                     }
                 }
 
-                // filter actions removed in the local entity configuration
-                foreach ($entityActions as $entityAction) {
-                    if ('-' === $entityAction['name'][0]) {
-                        $actionName = mb_substr($entityAction['name'], 1);
+                // filter actions removed in the local model configuration
+                foreach ($modelActions as $modelAction) {
+                    if ('-' === $modelAction['name'][0]) {
+                        $actionName = mb_substr($modelAction['name'], 1);
 
-                        unset($entityActions[$actionName], $entityActions['-' .
+                        unset($modelActions[$actionName], $modelActions['-' .
                             $actionName], $defaultActions[$actionName], $backendActions[$actionName]);
                     }
                 }
 
-                $actionsConfig = array_merge($defaultActions, $backendActions, $entityActions);
+                $actionsConfig = array_merge($defaultActions, $backendActions, $modelActions);
 
                 // reorder the actions to match the order set by the user in the
-                // entity or in the global backend options
-                if (!empty($entityActions)) {
-                    $actionsConfig = $this->reorderArrayItems($actionsConfig, array_keys($entityActions));
+                // model or in the global backend options
+                if (!empty($modelActions)) {
+                    $actionsConfig = $this->reorderArrayItems($actionsConfig, array_keys($modelActions));
                 } elseif (!empty($backendActions)) {
                     $actionsConfig = $this->reorderArrayItems($actionsConfig, array_keys($backendActions));
                 }
 
-                $backendConfig['models'][$entityName][$view]['actions'] = $actionsConfig;
+                $backendConfig['models'][$modelName][$view]['actions'] = $actionsConfig;
             }
         }
 
@@ -251,14 +267,14 @@ class ActionConfigPass implements ConfigPassInterface
      */
     private function processActionsConfig(array $backendConfig): array
     {
-        foreach ($backendConfig['models'] as $entityName => $entityConfig) {
+        foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             foreach ($this->views as $view) {
-                foreach ($entityConfig[$view]['actions'] as $actionName => $actionConfig) {
+                foreach ($modelConfig[$view]['actions'] as $actionName => $actionConfig) {
                     // 'name' value is used as the class method name or the Symfony route name
                     // check that its value complies with the PHP method name rules
                     if (!$this->isValidMethodName($actionName)) {
-                        throw new \InvalidArgumentException(sprintf('The name of the "%s" action defined in the "%s" view of the "%s" entity contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).',
-                            $actionName, $view, $entityName));
+                        throw new \InvalidArgumentException(sprintf('The name of the "%s" action defined in the "%s" view of the "%s" model contains invalid characters (allowed: letters, numbers, underscores; the first character cannot be a number).',
+                            $actionName, $view, $modelName));
                     }
 
                     if (null === $actionConfig['label']) {
@@ -268,7 +284,7 @@ class ActionConfigPass implements ConfigPassInterface
                     // Add default classes ("action-{actionName}") to each action configuration
                     $actionConfig['css_class'] .= ' action-' . $actionName;
 
-                    $backendConfig['models'][$entityName][$view]['actions'][$actionName] = $actionConfig;
+                    $backendConfig['models'][$modelName][$view]['actions'][$actionName] = $actionConfig;
                 }
             }
         }

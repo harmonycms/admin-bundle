@@ -4,7 +4,7 @@ harmony:
     # Models
     models:
       User:
-        class: App\Document\User
+        class: Symfony\Component\Security\Core\User\UserInterface
         label: 'Users'
         list:
           fields:

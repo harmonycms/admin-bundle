@@ -12,7 +12,11 @@ This bundle is a fork of [EasyAdminBundle] and support both entities and documen
 * New responsive interface.
 * Theme management interface.
 * Extensions management interface.
-  
+
+Documentation
+-------------
+The full documentation of this bundle is available at [https://dev-docs.harmonycms.net/bundles/adminbundle]
+
 License
 -------
 This bundle is part of the [HarmonyCMS] and licensed under the [LGPLv3 License]. 
@@ -21,3 +25,4 @@ This bundle is part of the [HarmonyCMS] and licensed under the [LGPLv3 License].
 [LGPLv3 License]: https://opensource.org/licenses/lgpl-3.0.html
 [KnpMenuBundle]: https://packagist.org/packages/knplabs/knp-menu-bundle
 [EasyAdminBundle]: https://packagist.org/packages/easycorp/easyadmin-bundle
+[https://dev-docs.harmonycms.net/bundles/adminbundle]: https://dev-docs.harmonycms.net/bundles/adminbundle

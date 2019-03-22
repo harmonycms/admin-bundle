@@ -1,9 +1,10 @@
 HarmonyAdminBundle
 ==================
-The HarmonyAdminBundle provide an administration interface to manage HarmonyCMS and its contents.
+The HarmonyAdminBundle provide an administration interface to manage HarmonyCMS and its contents.   
+This bundle is a fork of [EasyAdminBundle] and support both entities and documents.
 
 **Features**
-* **CRUD** operations on Doctrine entities (create, edit, list, delete).
+* **CRUD** operations on Doctrine models (create, edit, list, delete).
 * Full-text **search**, **pagination** and column **sorting**.
 * Translated into tens of languages.
 * **Fast**, **simple** and **smart** where appropriate.
@@ -12,10 +13,6 @@ The HarmonyAdminBundle provide an administration interface to manage HarmonyCMS 
 * Theme management interface.
 * Extensions management interface.
   
-**Requirements**
-* PHP >= 7.1.3
-* Symfony 4.1+
-
 License
 -------
 This bundle is part of the [HarmonyCMS] and licensed under the [LGPLv3 License]. 
@@ -23,3 +20,4 @@ This bundle is part of the [HarmonyCMS] and licensed under the [LGPLv3 License].
 [HarmonyCMS]: https://harmonycms.net
 [LGPLv3 License]: https://opensource.org/licenses/lgpl-3.0.html
 [KnpMenuBundle]: https://packagist.org/packages/knplabs/knp-menu-bundle
+[EasyAdminBundle]: https://packagist.org/packages/easycorp/easyadmin-bundle

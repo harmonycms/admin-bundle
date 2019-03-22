@@ -269,6 +269,12 @@
         <target>Your profile was successfully updated</target>
       </trans-unit>
 
+      <!-- dashboard-->
+      <trans-unit id="dashboard.title">
+        <source>dashboard.title</source>
+        <target>Welcome to your dashboard</target>
+      </trans-unit>
+
       <!-- settings -->
       <trans-unit id="settings.title">
         <source>settings.title</source>

@@ -2,10 +2,7 @@
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
-use Harmony\Bundle\AdminBundle\Exception\ForbiddenActionException;
-use Harmony\Bundle\CoreBundle\DependencyInjection\HarmonyCoreExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,44 +14,48 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends AbstractController
 {
 
-    use InitializeTrait;
+    /** @var array $configAdmin */
+    protected $configAdmin;
+
+    /**
+     * DashboardController constructor.
+     *
+     * @param array $configAdmin
+     */
+    public function __construct(array $configAdmin)
+    {
+        $this->configAdmin = $configAdmin;
+    }
 
     /**
      * @Route("/", name="admin")
-     * @param Request $request
-     *
      * @return Response
-     * @throws ForbiddenActionException
-     * @throws \ErrorException
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $this->initialize($request);
-
-        $dashboard = $this->container->getParameter(HarmonyCoreExtension::ALIAS . '.admin')['dashboard'];
-        if (!empty($dashboard['blocks'])) {
-            foreach ($dashboard['blocks'] as $key => $block) {
-                if (!empty($block['items'])) {
-                    foreach ($block['items'] as $k => $item) {
-                        if (!empty($item['query'])) {
-                            $count = $this->executeCustomQuery($item['class'], $item['query']);
-                        } else {
-                            $count = $this->getBlockCount($item['class'],
-                                !empty($item['dql_filter']) ? $item['dql_filter'] : false);
-                        }
-                        $dashboard['blocks'][$key]['items'][$k]['count'] = $count;
-
-                        if (!empty($item['model'])) {
-                            $model = $item['model'];
-                        } else {
-                            $model = $this->guessModelFromClass($item['class']);
-                        }
-                        $dashboard['blocks'][$key]['items'][$k]['model'] = $model;
-                    }
-                }
-            }
-        }
+        $dashboard = $this->configAdmin['dashboard'];
+//        if (!empty($dashboard['blocks'])) {
+//            foreach ($dashboard['blocks'] as $key => $block) {
+//                if (!empty($block['items'])) {
+//                    foreach ($block['items'] as $k => $item) {
+//                        if (!empty($item['query'])) {
+//                            $count = $this->executeCustomQuery($item['class'], $item['query']);
+//                        } else {
+//                            $count = $this->getBlockCount($item['class'],
+//                                !empty($item['dql_filter']) ? $item['dql_filter'] : false);
+//                        }
+//                        $dashboard['blocks'][$key]['items'][$k]['count'] = $count;
+//
+//                        if (!empty($item['model'])) {
+//                            $model = $item['model'];
+//                        } else {
+//                            $model = $this->guessModelFromClass($item['class']);
+//                        }
+//                        $dashboard['blocks'][$key]['items'][$k]['model'] = $model;
+//                    }
+//                }
+//            }
+//        }
 
         return $this->render('@HarmonyAdmin\dashboard\index.html.twig', [
             'dashboard' => $dashboard

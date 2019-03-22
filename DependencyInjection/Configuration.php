@@ -148,10 +148,6 @@ class Configuration implements ConfigurationInterface
         $node
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('title')
-                    ->defaultValue('Dashboard')
-                    ->info('The title displayed at the top of dashboard page.')
-                ->end()
                 ->arrayNode('blocks')
                     ->normalizeKeys(false)
                     ->useAttributeAsKey('name', false)

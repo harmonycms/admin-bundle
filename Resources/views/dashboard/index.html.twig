@@ -2,38 +2,38 @@
 
 {% block content_title %}
   {% spaceless %}
-    {{ dashboard.title|trans|raw }}
+    {{ 'dashboard.title'|trans|raw }}
   {% endspaceless %}
 {% endblock %}
 
 {% block main %}
-  {% if dashboard.blocks is defined and dashboard.blocks|length > 0 %}
-    <div class="row">
-      {% for block in dashboard.blocks %}
-        {% if block.label is defined %}
-          <div class="col-md-{{ block.size|default('12') }}">
-            <div class="box box-{{ block.css_class|default('solid') }}">
-              <div class="box-header with-border">
-                <h3 class="box-title">{{ block.label }}</h3>
-              </div>
-              <!-- /.box-header -->
-              <div class="box-body">
-                {% for model, item in block.items %}
-                  {{ include(item.template, { item: item}) }}
-                {% endfor %}
-                <!-- /.row -->
-              </div>
-              <!-- ./box-body -->
-            </div>
-          </div>
-          <!-- /.box -->
-        {% else %}
-          {% for model, item in block.items %}
-            {{ include(item.template, { item: item}) }}
-          {% endfor %}
-        {% endif %}
-        <!-- /.col -->
-      {% endfor %}
-    </div>
-  {% endif %}
+  {#{% if dashboard.blocks is defined and dashboard.blocks|length > 0 %}#}
+    {#<div class="row">#}
+      {#{% for block in dashboard.blocks %}#}
+        {#{% if block.label is defined %}#}
+          {#<div class="col-md-{{ block.size|default('12') }}">#}
+            {#<div class="box box-{{ block.css_class|default('solid') }}">#}
+              {#<div class="box-header with-border">#}
+                {#<h3 class="box-title">{{ block.label }}</h3>#}
+              {#</div>#}
+              {#<!-- /.box-header -->#}
+              {#<div class="box-body">#}
+                {#{% for model, item in block.items %}#}
+                  {#{{ include(item.template, { item: item}) }}#}
+                {#{% endfor %}#}
+                {#<!-- /.row -->#}
+              {#</div>#}
+              {#<!-- ./box-body -->#}
+            {#</div>#}
+          {#</div>#}
+          {#<!-- /.box -->#}
+        {#{% else %}#}
+          {#{% for model, item in block.items %}#}
+            {#{{ include(item.template, { item: item}) }}#}
+          {#{% endfor %}#}
+        {#{% endif %}#}
+        {#<!-- /.col -->#}
+      {#{% endfor %}#}
+    {#</div>#}
+  {#{% endif %}#}
 {% endblock %}

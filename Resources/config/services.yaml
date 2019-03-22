@@ -6,6 +6,7 @@ services:
     bind:
       $debug: '%kernel.debug%'
       $configManager: '@Harmony\Bundle\AdminBundle\Configuration\ConfigManager'
+      $configAdmin: '%harmony.admin%'
 
   Harmony\Bundle\AdminBundle\Controller\:
     resource: '../../Controller'

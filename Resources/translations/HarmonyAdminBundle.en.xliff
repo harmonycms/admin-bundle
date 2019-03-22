@@ -1,310 +1,308 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-  <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
-    <body>
-      <!-- page titles -->
-      <trans-unit id="new.page_title">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en">
+  <file id="HarmonyAdminBundle.en">
+    <unit id="page_title">
+      <segment>
         <source>new.page_title</source>
         <target>Create %model_name%</target>
-      </trans-unit>
-      <trans-unit id="show.page_title">
+      </segment>
+      <segment>
         <source>show.page_title</source>
         <target>%model_name% (#%model_id%)</target>
-      </trans-unit>
-      <trans-unit id="edit.page_title">
+      </segment>
+      <segment>
         <source>edit.page_title</source>
         <target>Edit %model_name% (#%model_id%)</target>
-      </trans-unit>
-      <trans-unit id="list.page_title">
+      </segment>
+      <segment>
         <source>list.page_title</source>
         <target>%model_name%</target>
-      </trans-unit>
-      <trans-unit id="search.page_title">
+      </segment>
+      <segment>
         <source>search.page_title</source>
         <target>
           <![CDATA[{0} No results found|{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
-      </trans-unit>
-
-      <!-- 'search' view -->
-      <trans-unit id="search.no_results">
+      </segment>
+    </unit>
+    <unit id="search">
+      <segment>
         <source>search.no_results</source>
         <target>No results found.</target>
-      </trans-unit>
-
-      <!-- 'list' view -->
-      <trans-unit id="list.row_actions">
+      </segment>
+    </unit>
+    <unit id="list">
+      <segment>
         <source>list.row_actions</source>
         <target>Actions</target>
-      </trans-unit>
-
-      <!-- paginator -->
-      <trans-unit id="paginator.first">
+      </segment>
+    </unit>
+    <unit id="paginator">
+      <segment>
         <source>paginator.first</source>
         <target>First</target>
-      </trans-unit>
-      <trans-unit id="paginator.previous">
+      </segment>
+      <segment>
         <source>paginator.previous</source>
         <target>Previous</target>
-      </trans-unit>
-      <trans-unit id="paginator.next">
+      </segment>
+      <segment>
         <source>paginator.next</source>
         <target>Next</target>
-      </trans-unit>
-      <trans-unit id="paginator.last">
+      </segment>
+      <segment>
         <source>paginator.last</source>
         <target>Last</target>
-      </trans-unit>
-      <trans-unit id="paginator.counter">
+      </segment>
+      <segment>
         <source>paginator.counter</source>
         <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
-      </trans-unit>
-
-      <!-- labels -->
-      <trans-unit id="label.true">
+      </segment>
+    </unit>
+    <unit id="label">
+      <segment>
         <source>label.true</source>
         <target>Yes</target>
-      </trans-unit>
-      <trans-unit id="label.false">
+      </segment>
+      <segment>
         <source>label.false</source>
         <target>No</target>
-      </trans-unit>
-      <trans-unit id="label.empty">
+      </segment>
+      <segment>
         <source>label.empty</source>
         <target>Empty</target>
-      </trans-unit>
-      <trans-unit id="label.null">
+      </segment>
+      <segment>
         <source>label.null</source>
         <target>Null</target>
-      </trans-unit>
-      <trans-unit id="label.nullable_field">
+      </segment>
+      <segment>
         <source>label.nullable_field</source>
         <target>Leave empty</target>
-      </trans-unit>
-      <trans-unit id="label.object">
+      </segment>
+      <segment>
         <source>label.object</source>
         <target>PHP Object</target>
-      </trans-unit>
-      <trans-unit id="label.inaccessible">
+      </segment>
+      <segment>
         <source>label.inaccessible</source>
         <target>Inaccessible</target>
-      </trans-unit>
-      <trans-unit id="label.inaccessible.explanation">
+      </segment>
+      <segment>
         <source>label.inaccessible.explanation</source>
         <target>Getter method does not exist for this field or the property is not public</target>
-      </trans-unit>
-
-      <!-- user -->
-      <trans-unit id="user.administrator">
+      </segment>
+    </unit>
+    <unit id="user">
+      <segment>
         <source>user.administrator</source>
         <target>Administrator</target>
-      </trans-unit>
-      <trans-unit id="user">
+      </segment>
+      <segment>
         <source>user</source>
         <target>User</target>
-      </trans-unit>
-      <trans-unit id="user.logged_in_as">
+      </segment>
+      <segment>
         <source>user.logged_in_as</source>
         <target>Logged in as</target>
-      </trans-unit>
-      <trans-unit id="user.unnamed">
+      </segment>
+      <segment>
         <source>user.unnamed</source>
         <target>Unnamed User</target>
-      </trans-unit>
-      <trans-unit id="user.anonymous">
+      </segment>
+      <segment>
         <source>user.anonymous</source>
         <target>Anonymous User</target>
-      </trans-unit>
-      <trans-unit id="user.signout">
+      </segment>
+      <segment>
         <source>user.signout</source>
         <target>Sign out</target>
-      </trans-unit>
-      <trans-unit id="user.exit_impersonation">
+      </segment>
+      <segment>
         <source>user.exit_impersonation</source>
         <target>Exit impersonation</target>
-      </trans-unit>
-      <trans-unit id="user.profile">
+      </segment>
+      <segment>
         <source>user.profile</source>
         <target>Profile</target>
-      </trans-unit>
-
-      <!-- misc. elements -->
-      <trans-unit id="toggle_navigation">
+      </segment>
+    </unit>
+    <unit id="misc">
+      <segment>
         <source>toggle_navigation</source>
         <target>Toggle navigation</target>
-      </trans-unit>
-      <trans-unit id="delete_modal.title">
+      </segment>
+      <segment>
         <source>delete_modal.title</source>
         <target>Do you really want to delete this item?</target>
-      </trans-unit>
-      <trans-unit id="delete_modal.content">
+      </segment>
+      <segment>
         <source>delete_modal.content</source>
         <target>There is no undo for this operation.</target>
-      </trans-unit>
-      <trans-unit id="delete_modal.action">
+      </segment>
+      <segment>
         <source>delete_modal.action</source>
         <target>Delete</target>
-      </trans-unit>
-      <trans-unit id="action.add_new_item">
+      </segment>
+      <segment>
         <source>action.add_new_item</source>
         <target>Add a new item</target>
-      </trans-unit>
-      <trans-unit id="action.add_another_item">
+      </segment>
+      <segment>
         <source>action.add_another_item</source>
         <target>Add another item</target>
-      </trans-unit>
-      <trans-unit id="action.remove_item">
+      </segment>
+      <segment>
         <source>action.remove_item</source>
         <target>Remove the item</target>
-      </trans-unit>
-      <trans-unit id="errors">
+      </segment>
+      <segment>
         <source>errors</source>
         <target>Error|Errors</target>
-      </trans-unit>
-      <trans-unit id="form.are_you_sure">
+      </segment>
+      <segment>
         <source>form.are_you_sure</source>
         <target>You haven't saved the changes made on this form.</target>
-      </trans-unit>
-      <trans-unit id="form.tab.error_badge_title">
+      </segment>
+      <segment>
         <source>form.tab.error_badge_title</source>
         <target>One invalid input|%count% invalid inputs</target>
-      </trans-unit>
-      <trans-unit id="show.remaining_items">
+      </segment>
+      <segment>
         <source>show.remaining_items</source>
         <target>
           <![CDATA[{1} there is another item not displayed in this listing|]1,Inf] %count% other items are not displayed in this listing]]></target>
-      </trans-unit>
-
-      <!-- generic actions displayed on buttons and links -->
-      <trans-unit id="action.new">
+      </segment>
+    </unit>
+    <unit id="action">
+      <segment>
         <source>action.new</source>
         <target>Add %model_name%</target>
-      </trans-unit>
-      <trans-unit id="action.show">
+      </segment>
+      <segment>
         <source>action.show</source>
         <target>Show</target>
-      </trans-unit>
-      <trans-unit id="action.edit">
+      </segment>
+      <segment>
         <source>action.edit</source>
         <target>Edit</target>
-      </trans-unit>
-      <trans-unit id="action.search">
+      </segment>
+      <segment>
         <source>action.search</source>
         <target>Search</target>
-      </trans-unit>
-      <trans-unit id="action.delete">
+      </segment>
+      <segment>
         <source>action.delete</source>
         <target>Delete</target>
-      </trans-unit>
-      <trans-unit id="action.save">
+      </segment>
+      <segment>
         <source>action.save</source>
         <target>Save changes</target>
-      </trans-unit>
-      <trans-unit id="action.cancel">
+      </segment>
+      <segment>
         <source>action.cancel</source>
         <target>Cancel</target>
-      </trans-unit>
-      <trans-unit id="action.list">
+      </segment>
+      <segment>
         <source>action.list</source>
         <target>Back to listing</target>
-      </trans-unit>
-      <trans-unit id="label.form.empty_value">
+      </segment>
+      <segment>
         <source>label.form.empty_value</source>
         <target>None</target>
-      </trans-unit>
-
-      <!-- exceptions -->
-      <trans-unit id="exception.model_not_found">
+      </segment>
+    </unit>
+    <unit id="exception">
+      <segment>
         <source>exception.model_not_found</source>
         <target>This item is no longer available.</target>
-      </trans-unit>
-      <trans-unit id="exception.model_remove">
+      </segment>
+      <segment>
         <source>exception.model_remove</source>
         <target>This item can't be deleted because other items depend on it.</target>
-      </trans-unit>
-      <trans-unit id="exception.forbidden_action">
+      </segment>
+      <segment>
         <source>exception.forbidden_action</source>
         <target>The requested action can't be performed on this item.</target>
-      </trans-unit>
-      <trans-unit id="exception.no_entities_configured">
+      </segment>
+      <segment>
         <source>exception.no_entities_configured</source>
         <target>The application is not properly configured.</target>
-      </trans-unit>
-      <trans-unit id="exception.undefined_model">
+      </segment>
+      <segment>
         <source>exception.undefined_model</source>
         <target>The application is not properly configured for this kind of items.</target>
-      </trans-unit>
-
-      <!-- forms -->
-      <trans-unit id="form.label.collections">
+      </segment>
+    </unit>
+    <unit id="form">
+      <segment>
         <!-- don't change this "translation" -->
         <source>__name__label__</source>
         <target>__name__label__</target>
-      </trans-unit>
-
-      <!-- security -->
-      <trans-unit id="form.username">
+      </segment>
+    </unit>
+    <unit id="security">
+      <segment>
         <source>form.username</source>
         <target>Username</target>
-      </trans-unit>
-      <trans-unit id="form.email">
+      </segment>
+      <segment>
         <source>form.email</source>
         <target>Email</target>
-      </trans-unit>
-      <trans-unit id="form.new_password">
+      </segment>
+      <segment>
         <source>form.new_password</source>
         <target>New password</target>
-      </trans-unit>
-      <trans-unit id="form.new_password_confirmation">
+      </segment>
+      <segment>
         <source>form.new_password_confirmation</source>
         <target>Repeat new password</target>
-      </trans-unit>
-      <trans-unit id="form.password_invalid">
+      </segment>
+      <segment>
         <source>form.password_invalid</source>
         <target>The password fields must match.</target>
-      </trans-unit>
-
-      <!-- messages -->
-      <trans-unit id="flash.profile_success">
+      </segment>
+    </unit>
+    <unit id="message">
+      <segment>
         <source>flash.profile_success</source>
         <target>Your profile was successfully updated</target>
-      </trans-unit>
-
-      <!-- dashboard-->
-      <trans-unit id="dashboard.title">
+      </segment>
+    </unit>
+    <unit id="dashboard">
+      <segment>
         <source>dashboard.title</source>
         <target>Welcome to your dashboard</target>
-      </trans-unit>
-
-      <!-- settings -->
-      <trans-unit id="settings.title">
+      </segment>
+    </unit>
+    <unit id="setting">
+      <segment>
         <source>settings.title</source>
         <target>Settings</target>
-      </trans-unit>
-      <trans-unit id="general_settings.title">
+      </segment>
+      <segment>
         <source>general_settings.title</source>
         <target>General settings</target>
-      </trans-unit>
-      <trans-unit id="seo_settings.title">
+      </segment>
+      <segment>
         <source>seo_settings.title</source>
         <target>SEO settings</target>
-      </trans-unit>
-
-      <!-- themes -->
-      <trans-unit id="themes.title">
+      </segment>
+    </unit>
+    <unit id="theme">
+      <segment>
         <source>themes.title</source>
         <target>Themes</target>
-      </trans-unit>
-
-      <!-- extensions -->
-      <trans-unit id="modules.title">
+      </segment>
+    </unit>
+    <unit id="extension">
+      <segment>
         <source>modules.title</source>
         <target>Modules</target>
-      </trans-unit>
-      <trans-unit id="plugins.title">
+      </segment>
+      <segment>
         <source>plugins.title</source>
         <target>Plugins</target>
-      </trans-unit>
-
-    </body>
+      </segment>
+    </unit>
   </file>
 </xliff>

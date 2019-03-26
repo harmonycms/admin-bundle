@@ -3,7 +3,7 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\AdminBundle\Form\Type\ProfileType;
-use Harmony\Bundle\UserBundle\Model\UserManager;
+use Harmony\Bundle\UserBundle\Manager\UserManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,15 +17,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
 
-    /** @var UserManager $userManager */
+    /** @var UserManagerInterface $userManager */
     protected $userManager;
 
     /**
      * UserController constructor.
      *
-     * @param UserManager $userManager
+     * @param UserManagerInterface $userManager
      */
-    public function __construct(UserManager $userManager)
+    public function __construct(UserManagerInterface $userManager)
     {
         $this->userManager = $userManager;
     }
@@ -43,7 +43,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
-            $this->userManager->updateUser($user);
+            $this->userManager->update($user);
 
             $this->addFlash('success', 'flash.profile_success');
 

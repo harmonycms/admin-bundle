@@ -123,11 +123,10 @@
                 </div>
               {% endif %}
               {% block main_menu_wrapper %}
-                {% set admin_menu = knp_menu_get('admin_menu', []) %}
-                {% do admin_menu.setChildrenAttribute('class', 'side-menu metismenu') %}
-                {% do admin_menu.setChildrenAttribute('data-widget', 'tree') %}
-                {% do admin_menu.setChildrenAttribute('data-animation-speed', 250) %}
-                {{ knp_menu_render(admin_menu, { template: '@HarmonyAdmin/default/menu.html.twig' } ) }}
+                {{ menu_render('admin_menu', {
+                  'childrenAttributes': { 'class': 'side-menu metismenu', 'data-widget': 'tree', 'data-animation-speed': 250 },
+                  'template': '@HarmonyAdmin/default/menu.html.twig'
+                }) }}
               {% endblock main_menu_wrapper %}
             </div>
           {% endblock sidebar %}

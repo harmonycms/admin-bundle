@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Harmony\Bundle\AdminBundle\DependencyInjection;
 
 use Harmony\Bundle\AdminBundle\Configuration\DesignConfigPass;
-use Harmony\Bundle\CoreBundle\DependencyInjection\HarmonyCoreExtension;
 use Rollerworks\Bundle\RouteAutowiringBundle\RouteImporter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -40,10 +39,11 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
     public function load(array $configs, ContainerBuilder $container)
     {
         // process the configuration
-        $configs = $container->getExtensionConfig(HarmonyCoreExtension::ALIAS);
+        $configs = $container->getParameter('harmony_admin.config');
         $configs = $this->processConfigFiles($configs);
         // use the Configuration class to generate a config array
         $config = $this->processConfiguration(new Configuration(), $configs);
+        // set parameters
         $container->setParameter('harmony_admin.config', $config);
         $container->setParameter('harmony_admin.cache.dir',
             $container->getParameter('kernel.cache_dir') . '/harmony_admin');
@@ -81,7 +81,6 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         $bundles = $container->getParameter('kernel.bundles');
 
         $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
-        $loader->load('admin.yaml');
 
         if (isset($bundles['WebpackEncoreBundle'])) {
             $loader->load('webpack_encore.yaml');

@@ -28,46 +28,41 @@
 {% block body_id 'harmony_admin-list-' ~ _model_config.name %}
 {% block body_class 'list list-' ~ _model_config.name|lower %}
 
-{% block content_title %}
-  {% spaceless %}
-    {% if 'search' == app.request.get('action') %}
-      {% set _default_title = 'search.page_title'|transchoice(paginator.nbResults, {}, 'HarmonyAdminBundle') %}
-      {{ (_model_config.search.title is defined ? _model_config.search.title|transchoice(paginator.nbResults) : _default_title)|raw }}
-    {% else %}
-      {% set _default_title = 'list.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
-      {{ (_model_config.list.title is defined ? _model_config.list.title|trans(_trans_parameters) : _default_title)|raw }}
-    {% endif %}
-  {% endspaceless %}
-{% endblock %}
+{%- block content_title %}
+  {%- if 'search' == app.request.get('action') %}
+    {%- set _default_title = 'search.page_title'|transchoice(paginator.nbResults, {}, 'HarmonyAdminBundle') %}
+    {{ (_model_config.search.title is defined ? _model_config.search.title|transchoice(paginator.nbResults) : _default_title)|raw }}
+  {%- else %}
+    {%- set _default_title = 'list.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
+    {{ (_model_config.label is defined ? _model_config.label|trans(_trans_parameters) : _default_title)|raw }}
+  {%- endif %}
+{%- endblock %}
 
 {% block content_header %}
-  <div class="row mb-3">
-    <div class="col-sm-5">
-      {% block content_title_wrapper %}
-        <h1 class="page-title">{{ block('content_title') }}</h1>
-      {% endblock %}
-    </div>
+  {% block content_title_wrapper %}
+    <h1 class="page-title">{{ block('content_title') }}</h1>
+  {% endblock %}
+  <div class="ml-auto">
+    <div class="row mt-4 ml-0 mr-0">
+      {% block global_actions %}
+        {% if harmony_admin_action_is_enabled_for_list_view('search', _model_config.name) %}
+          {% set _action = harmony_admin_get_action_for_list_view('search', _model_config.name) %}
 
-    <div class="col-sm-7">
-      <div class="row mt-4 ml-0 mr-0">
-        {% block global_actions %}
-          {% if harmony_admin_action_is_enabled_for_list_view('search', _model_config.name) %}
-            {% set _action = harmony_admin_get_action_for_list_view('search', _model_config.name) %}
-
-            {% block search_action %}
-              <div class="col {{ _action.css_class|default('') }}">
-                <form method="get" action="{{ path('admin_model', { model: _request_parameters.model, action: 'search' }) }}">
-                  {% block search_form %}
-                    <input type="hidden" name="sortField"
-                           value="{{ _model_config.search.sort.field|default(_request_parameters.sortField) }}">
-                    <input type="hidden" name="sortDirection"
-                           value="{{ _model_config.search.sort.direction|default(_request_parameters.sortDirection) }}">
-                    <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
-                    <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
-                    <div class="input-group">
-                      <input class="form-control" type="search" name="query"
-                             value="{{ app.request.get('query')|default('') }}">
-                      <span class="input-group-btn">
+          {% block search_action %}
+            <div class="col {{ _action.css_class|default('') }}">
+              <form method="get"
+                    action="{{ path('admin_model', { model: _request_parameters.model, action: 'search' }) }}">
+                {% block search_form %}
+                  <input type="hidden" name="sortField"
+                         value="{{ _model_config.search.sort.field|default(_request_parameters.sortField) }}">
+                  <input type="hidden" name="sortDirection"
+                         value="{{ _model_config.search.sort.direction|default(_request_parameters.sortDirection) }}">
+                  <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
+                  <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
+                  <div class="input-group">
+                    <input class="form-control" type="search" name="query"
+                           value="{{ app.request.get('query')|default('') }}">
+                    <span class="input-group-btn">
                         <button class="btn" type="submit" formtarget="{{ _action.target }}">
                             <i class="fa fa-search"></i>
                             <span class="hidden-xs hidden-sm">
@@ -75,28 +70,27 @@
                             </span>
                         </button>
                       </span>
-                    </div>
-                  {% endblock %}
-                </form>
-              </div>
-            {% endblock search_action %}
-          {% endif %}
+                  </div>
+                {% endblock %}
+              </form>
+            </div>
+          {% endblock search_action %}
+        {% endif %}
 
-          {% if harmony_admin_action_is_enabled_for_list_view('new', _model_config.name) %}
-            {% set _action = harmony_admin_get_action_for_list_view('new', _model_config.name) %}
-            {% block new_action %}
-              <div>
-                <a class="{{ _action.css_class|default('') }}"
-                   href="{{ path('admin_model', _request_parameters|merge({ action: _action.name })) }}"
-                   target="{{ _action.target }}">
-                  {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                  {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
-                </a>
-              </div>
-            {% endblock new_action %}
-          {% endif %}
-        {% endblock global_actions %}
-      </div>
+        {% if harmony_admin_action_is_enabled_for_list_view('new', _model_config.name) %}
+          {% set _action = harmony_admin_get_action_for_list_view('new', _model_config.name) %}
+          {% block new_action %}
+            <div>
+              <a class="{{ _action.css_class|default('') }}"
+                 href="{{ path('admin_model', _request_parameters|merge({ action: _action.name })) }}"
+                 target="{{ _action.target }}">
+                {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
+                {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
+              </a>
+            </div>
+          {% endblock new_action %}
+        {% endif %}
+      {% endblock global_actions %}
     </div>
   </div>
 {% endblock content_header %}

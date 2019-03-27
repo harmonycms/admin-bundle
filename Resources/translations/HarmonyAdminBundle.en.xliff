@@ -1,308 +1,313 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en">
-  <file id="HarmonyAdminBundle.en">
-    <unit id="page_title">
-      <segment>
-        <source>new.page_title</source>
-        <target>Create %model_name%</target>
-      </segment>
-      <segment>
-        <source>show.page_title</source>
-        <target>%model_name% (#%model_id%)</target>
-      </segment>
-      <segment>
-        <source>edit.page_title</source>
-        <target>Edit %model_name% (#%model_id%)</target>
-      </segment>
-      <segment>
-        <source>list.page_title</source>
-        <target>%model_name%</target>
-      </segment>
-      <segment>
-        <source>search.page_title</source>
-        <target>
-          <![CDATA[{0} No results found|{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
-      </segment>
-    </unit>
-    <unit id="search">
-      <segment>
-        <source>search.no_results</source>
-        <target>No results found.</target>
-      </segment>
-    </unit>
-    <unit id="list">
-      <segment>
-        <source>list.row_actions</source>
-        <target>Actions</target>
-      </segment>
-    </unit>
-    <unit id="paginator">
-      <segment>
-        <source>paginator.first</source>
-        <target>First</target>
-      </segment>
-      <segment>
-        <source>paginator.previous</source>
-        <target>Previous</target>
-      </segment>
-      <segment>
-        <source>paginator.next</source>
-        <target>Next</target>
-      </segment>
-      <segment>
-        <source>paginator.last</source>
-        <target>Last</target>
-      </segment>
-      <segment>
-        <source>paginator.counter</source>
-        <target><![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
-      </segment>
-    </unit>
-    <unit id="label">
-      <segment>
-        <source>label.true</source>
-        <target>Yes</target>
-      </segment>
-      <segment>
-        <source>label.false</source>
-        <target>No</target>
-      </segment>
-      <segment>
-        <source>label.empty</source>
-        <target>Empty</target>
-      </segment>
-      <segment>
-        <source>label.null</source>
-        <target>Null</target>
-      </segment>
-      <segment>
-        <source>label.nullable_field</source>
-        <target>Leave empty</target>
-      </segment>
-      <segment>
-        <source>label.object</source>
-        <target>PHP Object</target>
-      </segment>
-      <segment>
-        <source>label.inaccessible</source>
-        <target>Inaccessible</target>
-      </segment>
-      <segment>
-        <source>label.inaccessible.explanation</source>
-        <target>Getter method does not exist for this field or the property is not public</target>
-      </segment>
-    </unit>
-    <unit id="user">
-      <segment>
-        <source>user.administrator</source>
-        <target>Administrator</target>
-      </segment>
-      <segment>
-        <source>user</source>
-        <target>User</target>
-      </segment>
-      <segment>
-        <source>user.logged_in_as</source>
-        <target>Logged in as</target>
-      </segment>
-      <segment>
-        <source>user.unnamed</source>
-        <target>Unnamed User</target>
-      </segment>
-      <segment>
-        <source>user.anonymous</source>
-        <target>Anonymous User</target>
-      </segment>
-      <segment>
-        <source>user.signout</source>
-        <target>Sign out</target>
-      </segment>
-      <segment>
-        <source>user.exit_impersonation</source>
-        <target>Exit impersonation</target>
-      </segment>
-      <segment>
-        <source>user.profile</source>
-        <target>Profile</target>
-      </segment>
-    </unit>
-    <unit id="misc">
-      <segment>
-        <source>toggle_navigation</source>
-        <target>Toggle navigation</target>
-      </segment>
-      <segment>
-        <source>delete_modal.title</source>
-        <target>Do you really want to delete this item?</target>
-      </segment>
-      <segment>
-        <source>delete_modal.content</source>
-        <target>There is no undo for this operation.</target>
-      </segment>
-      <segment>
-        <source>delete_modal.action</source>
-        <target>Delete</target>
-      </segment>
-      <segment>
-        <source>action.add_new_item</source>
-        <target>Add a new item</target>
-      </segment>
-      <segment>
-        <source>action.add_another_item</source>
-        <target>Add another item</target>
-      </segment>
-      <segment>
-        <source>action.remove_item</source>
-        <target>Remove the item</target>
-      </segment>
-      <segment>
-        <source>errors</source>
-        <target>Error|Errors</target>
-      </segment>
-      <segment>
-        <source>form.are_you_sure</source>
-        <target>You haven't saved the changes made on this form.</target>
-      </segment>
-      <segment>
-        <source>form.tab.error_badge_title</source>
-        <target>One invalid input|%count% invalid inputs</target>
-      </segment>
-      <segment>
-        <source>show.remaining_items</source>
-        <target>
-          <![CDATA[{1} there is another item not displayed in this listing|]1,Inf] %count% other items are not displayed in this listing]]></target>
-      </segment>
-    </unit>
-    <unit id="action">
-      <segment>
-        <source>action.new</source>
-        <target>Add %model_name%</target>
-      </segment>
-      <segment>
-        <source>action.show</source>
-        <target>Show</target>
-      </segment>
-      <segment>
-        <source>action.edit</source>
-        <target>Edit</target>
-      </segment>
-      <segment>
-        <source>action.search</source>
-        <target>Search</target>
-      </segment>
-      <segment>
-        <source>action.delete</source>
-        <target>Delete</target>
-      </segment>
-      <segment>
-        <source>action.save</source>
-        <target>Save changes</target>
-      </segment>
-      <segment>
-        <source>action.cancel</source>
-        <target>Cancel</target>
-      </segment>
-      <segment>
-        <source>action.list</source>
-        <target>Back to listing</target>
-      </segment>
-      <segment>
-        <source>label.form.empty_value</source>
-        <target>None</target>
-      </segment>
-    </unit>
-    <unit id="exception">
-      <segment>
-        <source>exception.model_not_found</source>
-        <target>This item is no longer available.</target>
-      </segment>
-      <segment>
-        <source>exception.model_remove</source>
-        <target>This item can't be deleted because other items depend on it.</target>
-      </segment>
-      <segment>
-        <source>exception.forbidden_action</source>
-        <target>The requested action can't be performed on this item.</target>
-      </segment>
-      <segment>
-        <source>exception.no_entities_configured</source>
-        <target>The application is not properly configured.</target>
-      </segment>
-      <segment>
-        <source>exception.undefined_model</source>
-        <target>The application is not properly configured for this kind of items.</target>
-      </segment>
-    </unit>
-    <unit id="form">
-      <segment>
-        <!-- don't change this "translation" -->
-        <source>__name__label__</source>
-        <target>__name__label__</target>
-      </segment>
-    </unit>
-    <unit id="security">
-      <segment>
-        <source>form.username</source>
-        <target>Username</target>
-      </segment>
-      <segment>
-        <source>form.email</source>
-        <target>Email</target>
-      </segment>
-      <segment>
-        <source>form.new_password</source>
-        <target>New password</target>
-      </segment>
-      <segment>
-        <source>form.new_password_confirmation</source>
-        <target>Repeat new password</target>
-      </segment>
-      <segment>
-        <source>form.password_invalid</source>
-        <target>The password fields must match.</target>
-      </segment>
-    </unit>
-    <unit id="message">
-      <segment>
-        <source>flash.profile_success</source>
-        <target>Your profile was successfully updated</target>
-      </segment>
-    </unit>
-    <unit id="dashboard">
-      <segment>
-        <source>dashboard.title</source>
-        <target>Welcome to your dashboard</target>
-      </segment>
-    </unit>
-    <unit id="setting">
-      <segment>
-        <source>settings.title</source>
-        <target>Settings</target>
-      </segment>
-      <segment>
-        <source>general_settings.title</source>
-        <target>General settings</target>
-      </segment>
-      <segment>
-        <source>seo_settings.title</source>
-        <target>SEO settings</target>
-      </segment>
-    </unit>
-    <unit id="theme">
-      <segment>
-        <source>themes.title</source>
-        <target>Themes</target>
-      </segment>
-    </unit>
-    <unit id="extension">
-      <segment>
-        <source>modules.title</source>
-        <target>Modules</target>
-      </segment>
-      <segment>
-        <source>plugins.title</source>
-        <target>Plugins</target>
-      </segment>
-    </unit>
-  </file>
+    <file id="HarmonyAdminBundle.en">
+        <unit id="page_title">
+            <segment>
+                <source>new.page_title</source>
+                <target>Create %model_name%</target>
+            </segment>
+            <segment>
+                <source>show.page_title</source>
+                <target>%model_name% (#%model_id%)</target>
+            </segment>
+            <segment>
+                <source>edit.page_title</source>
+                <target>Edit %model_name% (#%model_id%)</target>
+            </segment>
+            <segment>
+                <source>list.page_title</source>
+                <target>%model_name%</target>
+            </segment>
+            <segment>
+                <source>search.page_title</source>
+                <target>
+                    <![CDATA[{0} No results found|{1} <strong>1</strong> result found|]1,Inf] <strong>%count%</strong> results found]]></target>
+            </segment>
+        </unit>
+        <unit id="search">
+            <segment>
+                <source>search.no_results</source>
+                <target>No results found.</target>
+            </segment>
+        </unit>
+        <unit id="list">
+            <segment>
+                <source>list.row_actions</source>
+                <target>Actions</target>
+            </segment>
+        </unit>
+        <unit id="paginator">
+            <segment>
+                <source>paginator.first</source>
+                <target>First</target>
+            </segment>
+            <segment>
+                <source>paginator.previous</source>
+                <target>Previous</target>
+            </segment>
+            <segment>
+                <source>paginator.next</source>
+                <target>Next</target>
+            </segment>
+            <segment>
+                <source>paginator.last</source>
+                <target>Last</target>
+            </segment>
+            <segment>
+                <source>paginator.counter</source>
+                <target>
+                    <![CDATA[<strong>%start%</strong> - <strong>%end%</strong> of <strong>%results%</strong>]]></target>
+            </segment>
+        </unit>
+        <unit id="label">
+            <segment>
+                <source>label.true</source>
+                <target>Yes</target>
+            </segment>
+            <segment>
+                <source>label.false</source>
+                <target>No</target>
+            </segment>
+            <segment>
+                <source>label.empty</source>
+                <target>Empty</target>
+            </segment>
+            <segment>
+                <source>label.null</source>
+                <target>Null</target>
+            </segment>
+            <segment>
+                <source>label.nullable_field</source>
+                <target>Leave empty</target>
+            </segment>
+            <segment>
+                <source>label.object</source>
+                <target>PHP Object</target>
+            </segment>
+            <segment>
+                <source>label.inaccessible</source>
+                <target>Inaccessible</target>
+            </segment>
+            <segment>
+                <source>label.inaccessible.explanation</source>
+                <target>Getter method does not exist for this field or the property is not public</target>
+            </segment>
+        </unit>
+        <unit id="user">
+            <segment>
+                <source>user.administrator</source>
+                <target>Administrator</target>
+            </segment>
+            <segment>
+                <source>user</source>
+                <target>User</target>
+            </segment>
+            <segment>
+                <source>users</source>
+                <target>Users</target>
+            </segment>
+            <segment>
+                <source>user.logged_in_as</source>
+                <target>Logged in as</target>
+            </segment>
+            <segment>
+                <source>user.unnamed</source>
+                <target>Unnamed User</target>
+            </segment>
+            <segment>
+                <source>user.anonymous</source>
+                <target>Anonymous User</target>
+            </segment>
+            <segment>
+                <source>user.signout</source>
+                <target>Sign out</target>
+            </segment>
+            <segment>
+                <source>user.exit_impersonation</source>
+                <target>Exit impersonation</target>
+            </segment>
+            <segment>
+                <source>user.profile</source>
+                <target>Profile</target>
+            </segment>
+        </unit>
+        <unit id="misc">
+            <segment>
+                <source>toggle_navigation</source>
+                <target>Toggle navigation</target>
+            </segment>
+            <segment>
+                <source>delete_modal.title</source>
+                <target>Do you really want to delete this item?</target>
+            </segment>
+            <segment>
+                <source>delete_modal.content</source>
+                <target>There is no undo for this operation.</target>
+            </segment>
+            <segment>
+                <source>delete_modal.action</source>
+                <target>Delete</target>
+            </segment>
+            <segment>
+                <source>action.add_new_item</source>
+                <target>Add a new item</target>
+            </segment>
+            <segment>
+                <source>action.add_another_item</source>
+                <target>Add another item</target>
+            </segment>
+            <segment>
+                <source>action.remove_item</source>
+                <target>Remove the item</target>
+            </segment>
+            <segment>
+                <source>errors</source>
+                <target>Error|Errors</target>
+            </segment>
+            <segment>
+                <source>form.are_you_sure</source>
+                <target>You haven't saved the changes made on this form.</target>
+            </segment>
+            <segment>
+                <source>form.tab.error_badge_title</source>
+                <target>One invalid input|%count% invalid inputs</target>
+            </segment>
+            <segment>
+                <source>show.remaining_items</source>
+                <target>
+                    <![CDATA[{1} there is another item not displayed in this listing|]1,Inf] %count% other items are not displayed in this listing]]></target>
+            </segment>
+        </unit>
+        <unit id="action">
+            <segment>
+                <source>action.new</source>
+                <target>Add %model_name%</target>
+            </segment>
+            <segment>
+                <source>action.show</source>
+                <target>Show</target>
+            </segment>
+            <segment>
+                <source>action.edit</source>
+                <target>Edit</target>
+            </segment>
+            <segment>
+                <source>action.search</source>
+                <target>Search</target>
+            </segment>
+            <segment>
+                <source>action.delete</source>
+                <target>Delete</target>
+            </segment>
+            <segment>
+                <source>action.save</source>
+                <target>Save changes</target>
+            </segment>
+            <segment>
+                <source>action.cancel</source>
+                <target>Cancel</target>
+            </segment>
+            <segment>
+                <source>action.list</source>
+                <target>Back to listing</target>
+            </segment>
+            <segment>
+                <source>label.form.empty_value</source>
+                <target>None</target>
+            </segment>
+        </unit>
+        <unit id="exception">
+            <segment>
+                <source>exception.model_not_found</source>
+                <target>This item is no longer available.</target>
+            </segment>
+            <segment>
+                <source>exception.model_remove</source>
+                <target>This item can't be deleted because other items depend on it.</target>
+            </segment>
+            <segment>
+                <source>exception.forbidden_action</source>
+                <target>The requested action can't be performed on this item.</target>
+            </segment>
+            <segment>
+                <source>exception.no_entities_configured</source>
+                <target>The application is not properly configured.</target>
+            </segment>
+            <segment>
+                <source>exception.undefined_model</source>
+                <target>The application is not properly configured for this kind of items.</target>
+            </segment>
+        </unit>
+        <unit id="form">
+            <segment>
+                <!-- don't change this "translation" -->
+                <source>__name__label__</source>
+                <target>__name__label__</target>
+            </segment>
+        </unit>
+        <unit id="security">
+            <segment>
+                <source>form.username</source>
+                <target>Username</target>
+            </segment>
+            <segment>
+                <source>form.email</source>
+                <target>Email</target>
+            </segment>
+            <segment>
+                <source>form.new_password</source>
+                <target>New password</target>
+            </segment>
+            <segment>
+                <source>form.new_password_confirmation</source>
+                <target>Repeat new password</target>
+            </segment>
+            <segment>
+                <source>form.password_invalid</source>
+                <target>The password fields must match.</target>
+            </segment>
+        </unit>
+        <unit id="message">
+            <segment>
+                <source>flash.profile_success</source>
+                <target>Your profile was successfully updated</target>
+            </segment>
+        </unit>
+        <unit id="dashboard">
+            <segment>
+                <source>dashboard.title</source>
+                <target>Welcome to your dashboard</target>
+            </segment>
+        </unit>
+        <unit id="setting">
+            <segment>
+                <source>settings.title</source>
+                <target>Settings</target>
+            </segment>
+            <segment>
+                <source>general_settings.title</source>
+                <target>General settings</target>
+            </segment>
+            <segment>
+                <source>seo_settings.title</source>
+                <target>SEO settings</target>
+            </segment>
+        </unit>
+        <unit id="theme">
+            <segment>
+                <source>themes.title</source>
+                <target>Themes</target>
+            </segment>
+        </unit>
+        <unit id="extension">
+            <segment>
+                <source>modules.title</source>
+                <target>Modules</target>
+            </segment>
+            <segment>
+                <source>plugins.title</source>
+                <target>Plugins</target>
+            </segment>
+        </unit>
+    </file>
 </xliff>

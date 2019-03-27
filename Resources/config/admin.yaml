@@ -1,33 +1,20 @@
 harmony:
-  admin:
-    site_name: 'HarmonyCMS'
-    # Models
-    models:
-      User:
-        class: Symfony\Component\Security\Core\User\UserInterface
-        label: 'users'
-        list:
-          fields:
-            - 'username'
-            - 'email'
-            - 'roles'
-            - 'isLocked'
-        form:
-          fields:
-            - 'username'
-            - 'email'
-            - { property: 'plainPassword', type: 'text', type_options: { required: false } }
-            - { property: 'roles' }
-    # Dashboard
-    dashboard:
-      blocks:
-        Bloc1:
-          items:
-            Item1:
-              label: "Registered users"
-              template: '@HarmonyAdmin/dashboard/_item.v1.html.twig'
-              size: 3
-              css_class: 'success'
-              class: App\Entity\User
-              icon:  'fas fa-users'
-              link_label: "User list"
+    admin:
+        site_name: 'HarmonyCMS'
+        # Models
+        models:
+            User:
+                class: Symfony\Component\Security\Core\User\UserInterface
+                label: 'users'
+                list:
+                    fields:
+                        - 'username'
+                        - 'email'
+                        - 'roles'
+                        - 'isLocked'
+                form:
+                    fields:
+                        - 'username'
+                        - 'email'
+                        - { property: 'plainPassword', type: Symfony\Component\Form\Extension\Core\Type\TextType, type_options: { required: false } }
+                        - { property: 'roles' }

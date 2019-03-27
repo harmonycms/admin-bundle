@@ -83,7 +83,7 @@ class DoctrineOrmBuilder
         $classMetadata = $manager->getClassMetadata($config['class']);
 
         /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = $manager->createQueryBuilder()->select('entity');
+        $queryBuilder = $manager->createQueryBuilder()->select('entity')->from($config['class'], 'entity');
 
         $isSearchQueryNumeric      = is_numeric($searchQuery);
         $isSearchQuerySmallInteger = (is_int($searchQuery) || ctype_digit($searchQuery)) && $searchQuery >= - 32768 &&

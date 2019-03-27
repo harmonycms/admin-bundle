@@ -39,7 +39,12 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        // process bundle's configuration parameters
+        // process the configuration
+        $configs = $container->getExtensionConfig(HarmonyCoreExtension::ALIAS);
+        $configs = $this->processConfigFiles($configs);
+        // use the Configuration class to generate a config array
+        $config = $this->processConfiguration(new Configuration(), $configs);
+        $container->setParameter('harmony_admin.config', $config);
         $container->setParameter('harmony_admin.cache.dir',
             $container->getParameter('kernel.cache_dir') . '/harmony_admin');
 
@@ -76,24 +81,10 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
         $bundles = $container->getParameter('kernel.bundles');
 
         $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
-
-        // determine if HarmonyAdminBundle is registered before loading configuration
-        if (isset($bundles['HarmonyCoreBundle'])) {
-            $loader->load('admin.yaml');
-        }
+        $loader->load('admin.yaml');
 
         if (isset($bundles['WebpackEncoreBundle'])) {
             $loader->load('webpack_encore.yaml');
-        }
-
-        // process the configuration
-        $configs = $container->getExtensionConfig(HarmonyCoreExtension::ALIAS);
-        $configs = $this->processConfigFiles($configs);
-        // use the Configuration class to generate a config array
-        $config = $this->processConfiguration(new Configuration(), $configs);
-        $container->setParameter('harmony_admin.config', $config['admin']);
-        foreach ($config as $key => $value) {
-            $container->setParameter(HarmonyCoreExtension::ALIAS . '.' . $key, $value);
         }
 
         // allow twig override of HarmonyUserBundle
@@ -115,16 +106,16 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
     {
         $existingModelNames = [];
         foreach ($configs as $i => $config) {
-            if (array_key_exists('admin', $config) && array_key_exists('models', $config['admin'])) {
+            if (array_key_exists('models', $config)) {
                 $processedConfig = [];
-                foreach ($config['admin']['models'] as $key => $value) {
+                foreach ($config['models'] as $key => $value) {
                     $modelConfig                 = $this->normalizeModelConfig($key, $value);
                     $modelName                   = $this->getUniqueModelName($key, $modelConfig, $existingModelNames);
                     $modelConfig['name']         = $modelName;
                     $processedConfig[$modelName] = $modelConfig;
                     $existingModelNames[]        = $modelName;
                 }
-                $config['admin']['models'] = $processedConfig;
+                $config['models'] = $processedConfig;
             }
             $configs[$i] = $config;
         }

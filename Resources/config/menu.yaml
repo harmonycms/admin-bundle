@@ -1,34 +1,33 @@
 admin_menu:
-  childrenAttributes: { class: 'side-menu metismenu', data-widget: 'tree', data-animation-speed: 250 }
-  tree:
-    dashboard:
-      label: 'Dashboard'
-      extras: { icon: 'fa fa-th-large' }
-      route: 'admin'
-    _features:
-      label: 'FEATURES'
-      extras: { separator: true }
-    user_management:
-      label: 'User management'
-      extras: { icon: 'fas fa-user-cog' }
-      children:
-        - { label: 'Users', route: 'admin_model', routeParameters: { model: 'User' } }
-    settings:
-      label: 'Settings'
-      extras: { icon: 'fas fa-cogs' }
-      children:
-        - { label: 'General', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'general' } }
-    themes:
-      label: 'Themes'
-      extras: { icon: 'fas fa-palette' }
-      children:
-        - { label: 'View all', route: 'admin_theme_index' }
-    extensions:
-      label: 'Extensions'
-      extras: { icon: 'fas fa-puzzle-piece' }
-      children:
-        - { label: 'Modules', route: 'admin_extension_modules' }
-        - { label: 'Plugins', route: 'admin_extension_plugins' }
-    _extensions:
-      label: 'EXTENSIONS'
-      extras: { separator: true }
+    tree:
+        dashboard:
+            label: 'dashboard'
+            extras: { icon: 'fa fa-th-large', translation_domain: 'HarmonyAdminBundle' }
+            route: 'admin'
+        _features:
+            label: 'features'
+            extras: { separator: true, translation_domain: 'HarmonyAdminBundle' }
+        user_management:
+            label: 'User management'
+            extras: { icon: 'fas fa-user-cog' }
+            children:
+                - { label: 'Users', route: 'admin_model', routeParameters: { model: 'User' } }
+        settings:
+            label: 'Settings'
+            extras: { icon: 'fas fa-cogs' }
+            children:
+                - { label: 'General', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'general' } }
+        themes:
+            label: 'Themes'
+            extras: { icon: 'fas fa-palette' }
+            children:
+                - { label: 'View all', route: 'admin_theme_index' }
+        extensions:
+            label: 'Extensions'
+            extras: { icon: 'fas fa-puzzle-piece' }
+            children:
+                - { label: 'Modules', route: 'admin_extension_modules' }
+                - { label: 'Plugins', route: 'admin_extension_plugins' }
+        _extensions:
+            label: 'extensions'
+            extras: { separator: true, translation_domain: 'HarmonyAdminBundle' }

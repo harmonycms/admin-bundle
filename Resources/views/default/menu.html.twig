@@ -45,7 +45,7 @@
     {# displaying the item #}
     <li{{ knp_menu.attributes(attributes) }}>
       {%- if item.getExtra('separator') %}
-        {{ item.label|raw }}
+        {{ item.label|trans({}, item.getExtra('translation_domain')) }}
       {%- elseif item.uri is not empty and (not matcher.isCurrent(item) or options.currentAsLink) %}
         {{ block('linkElement') }}
       {%- else %}
@@ -64,8 +64,6 @@
 
 {% block label %}
   {% if item.extras.icon is defined %}<i class="sidebar-item-icon {{ item.extras.icon }}"></i>{% endif %}
-  <span class="nav-label">
-    {% if options.allow_safe_labels and item.getExtra('safe_label', false) %}{{ item.label|raw }}{% else %}{{ item.label }}{% endif %}
-  </span>
+  <span class="nav-label">{{ item.label|trans({}, item.getExtra('translation_domain')) }}</span>
   {% if item.children|default([]) is not empty %}<i class="fa fa-angle-left arrow"></i>{% endif %}
 {% endblock %}

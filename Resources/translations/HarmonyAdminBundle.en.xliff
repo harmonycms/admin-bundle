@@ -309,5 +309,19 @@
                 <target>Plugins</target>
             </segment>
         </unit>
+        <unit id="menu">
+            <segment>
+                <source>dashboard</source>
+                <target>Dashboard</target>
+            </segment>
+            <segment>
+                <source>features</source>
+                <target>FEATURES</target>
+            </segment>
+            <segment>
+                <source>extensions</source>
+                <target>EXTENSIONS</target>
+            </segment>
+        </unit>
     </file>
 </xliff>

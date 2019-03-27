@@ -1,0 +1,23 @@
+{% extends '@HarmonyAdmin/default/layout.html.twig' %}
+
+{% block body %}
+  <body class="bg-silver-300">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto mt-5">
+          <div class="text-center">
+            <h1 class="font-bold">HarmonyAdmin</h1>
+          </div>
+          <div class="card my-5">
+            <div class="card-body">
+              <h2 class="card-title">Password reset</h2>
+              <p class="m-b-20">
+                {{ 'password.request.sent'|trans({'{email}': email, '{ttl}': ttl}, 'UserBundle')|raw }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+{% endblock body %}

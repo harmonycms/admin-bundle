@@ -11,7 +11,7 @@ admin_menu:
             label: 'User management'
             extras: { icon: 'fas fa-user-cog' }
             children:
-                - { label: 'Users', route: 'admin_model', routeParameters: { model: 'User' } }
+                - { label: 'Users', route: 'admin_model', routeParameters: { model: 'user' } }
         settings:
             label: 'Settings'
             extras: { icon: 'fas fa-cogs' }

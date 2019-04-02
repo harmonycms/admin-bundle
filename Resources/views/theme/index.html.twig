@@ -2,11 +2,9 @@
 
 {% trans_default_domain 'HarmonyAdminBundle' %}
 
-{% block content_title %}
-  {% spaceless %}
-    {{ 'themes.title'|trans|raw }}
-  {% endspaceless %}
-{% endblock %}
+{% block content_title -%}
+  {{ 'themes.title'|trans|raw }}
+{%- endblock %}
 
 {% block main %}
   <div class="row">

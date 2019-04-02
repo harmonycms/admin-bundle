@@ -9,12 +9,10 @@
 {% block body_id 'harmony_admin-new-' ~ _model_config.name %}
 {% block body_class 'new new-' ~ _model_config.name|lower %}
 
-{% block content_title %}
-  {% spaceless %}
-    {% set _default_title = 'new.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
-    {{ _model_config.new.title is defined ? _model_config.new.title|trans(_trans_parameters) : _default_title }}
-  {% endspaceless %}
-{% endblock %}
+{% block content_title -%}
+  {% set _default_title = 'new.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
+  {{ _model_config.new.title is defined ? _model_config.new.title|trans(_trans_parameters) : _default_title }}
+{%- endblock %}
 
 {% block main %}
   {% block model_form %}

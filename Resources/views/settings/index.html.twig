@@ -4,11 +4,9 @@
 
 {% trans_default_domain 'HarmonyAdminBundle' %}
 
-{% block content_title %}
-  {% spaceless %}
-    {{ (tag ~ '_settings.title')|trans|raw }}
-  {% endspaceless %}
-{% endblock %}
+{% block content_title -%}
+  {{ (tag ~ '_settings.title')|trans|raw }}
+{%- endblock %}
 
 {% block main %}
   {% block model_form %}

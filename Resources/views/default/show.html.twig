@@ -9,12 +9,10 @@
 {% block body_id 'harmony_admin-show-' ~ _model_config.name ~ '-' ~ _model_id %}
 {% block body_class 'show show-' ~ _model_config.name|lower %}
 
-{% block content_title %}
-{% spaceless %}
-    {% set _default_title = 'show.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
-    {{ _model_config.show.title is defined ? _model_config.show.title|trans(_trans_parameters) : _default_title }}
-{% endspaceless %}
-{% endblock %}
+{% block content_title -%}
+  {% set _default_title = 'show.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
+  {{ _model_config.show.title is defined ? _model_config.show.title|trans(_trans_parameters) : _default_title }}
+{%- endblock %}
 
 {% block main %}
     <div class="form-horizontal">

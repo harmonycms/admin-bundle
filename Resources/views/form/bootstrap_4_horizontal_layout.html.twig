@@ -8,14 +8,12 @@
 {# Labels #}
 
 {% block form_label -%}
-  {% spaceless %}
-    {% if label is same as(false) %}
-      <div class="{{ block('form_label_class') }}"></div>
-    {% else %}
-      {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ block('form_label_class'))|trim}) %}
-      {{- parent() -}}
-    {% endif %}
-  {% endspaceless %}
+  {% if label is same as(false) %}
+    <div class="{{ block('form_label_class') }}"></div>
+  {% else %}
+    {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ block('form_label_class'))|trim}) %}
+    {{- parent() -}}
+  {% endif %}
 {%- endblock form_label %}
 
 {% block form_label_class 'col-sm-2' %}
@@ -23,31 +21,29 @@
 {# Rows #}
 
 {% block form_row -%}
-  {% spaceless %}
-    {% set _field_type = harmony_admin.field.fieldType|default('default') %}
-    <div
-        class="form-group row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
-      {{ form_label(form) }}
-      <div class="{{ block('form_group_class') }}">
-        {{ form_widget(form) }}
+  {% set _field_type = harmony_admin.field.fieldType|default('default') %}
+  <div
+      class="form-group row{% if (not compound or force_error|default(false)) and not valid %} has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
+    {{ form_label(form) }}
+    <div class="{{ block('form_group_class') }}">
+      {{ form_widget(form) }}
 
-        {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and harmony_admin.field.nullable|default(false) %}
-          <div class="nullable-control">
-            <label>
-              <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
-              {{ 'label.nullable_field'|trans({}, 'HarmonyAdminBundle') }}
-            </label>
-          </div>
-        {% endif %}
+      {% if _field_type in ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'dateinterval', 'time', 'time_immutable', 'birthday'] and harmony_admin.field.nullable|default(false) %}
+        <div class="nullable-control">
+          <label>
+            <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
+            {{ 'label.nullable_field'|trans({}, 'HarmonyAdminBundle') }}
+          </label>
+        </div>
+      {% endif %}
 
-        {{ form_errors(form) }}
+      {{ form_errors(form) }}
 
-        {% if form.vars.help ?? false %}
-          <span class="help-block"><i class="fas fa-info-circle"></i> {{ form.vars.help|raw }}</span>
-        {% endif %}
-      </div>
+      {% if form.vars.help ?? false %}
+        <span class="help-block"><i class="fas fa-info-circle"></i> {{ form.vars.help|raw }}</span>
+      {% endif %}
     </div>
-  {% endspaceless %}
+  </div>
 {%- endblock form_row %}
 
 {% block checkbox_row -%}
@@ -59,42 +55,36 @@
 {%- endblock radio_row %}
 
 {% block checkbox_radio_row -%}
-  {% spaceless %}
-    <div class="form-group row{% if not valid %} has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
-      <div class="{{ block('form_label_class') }}"></div>
-      <div class="{{ block('form_group_class') }}">
-        {{ form_widget(form) }}
-        {{ form_errors(form) }}
+  <div class="form-group row{% if not valid %} has-error{% endif %} field-{{ block_prefixes|slice(-2)|first }}">
+    <div class="{{ block('form_label_class') }}"></div>
+    <div class="{{ block('form_group_class') }}">
+      {{ form_widget(form) }}
+      {{ form_errors(form) }}
 
-        {% if harmony_admin.field.help|default('') != '' %}
-          <span class="help-block"><i
-                class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.model.translation_domain)|raw }}</span>
-        {% endif %}
-      </div>
+      {% if harmony_admin.field.help|default('') != '' %}
+        <span class="help-block"><i
+              class="fa fa-info-circle"></i> {{ harmony_admin.field.help|trans(domain = harmony_admin.model.translation_domain)|raw }}</span>
+      {% endif %}
     </div>
-  {% endspaceless %}
+  </div>
 {%- endblock checkbox_radio_row %}
 
 {% block submit_row -%}
-  {% spaceless %}
-    <div class="form-group row field-{{ block_prefixes|slice(-2)|first }}">
-      <div class="{{ block('form_label_class') }}"></div>
-      <div class="{{ block('form_group_class') }}">
-        {{ form_widget(form) }}
-      </div>
+  <div class="form-group row field-{{ block_prefixes|slice(-2)|first }}">
+    <div class="{{ block('form_label_class') }}"></div>
+    <div class="{{ block('form_group_class') }}">
+      {{ form_widget(form) }}
     </div>
-  {% endspaceless %}
+  </div>
 {% endblock submit_row %}
 
 {% block reset_row -%}
-  {% spaceless %}
-    <div class="form-group row">
-      <div class="{{ block('form_label_class') }}"></div>
-      <div class="{{ block('form_group_class') }}">
-        {{ form_widget(form) }}
-      </div>
+  <div class="form-group row">
+    <div class="{{ block('form_label_class') }}"></div>
+    <div class="{{ block('form_group_class') }}">
+      {{ form_widget(form) }}
     </div>
-  {% endspaceless %}
+  </div>
 {% endblock reset_row %}
 
 {% block form_group_class 'col-sm-10' %}

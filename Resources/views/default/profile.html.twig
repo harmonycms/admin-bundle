@@ -2,11 +2,9 @@
 
 {% trans_default_domain 'HarmonyAdminBundle' %}
 
-{% block content_title %}
-  {% spaceless %}
-    {{ 'user.profile'|trans }}
-  {% endspaceless %}
-{% endblock %}
+{% block content_title -%}
+  {{ 'user.profile'|trans }}
+{%- endblock %}
 
 {% block main %}
   <div class="row">

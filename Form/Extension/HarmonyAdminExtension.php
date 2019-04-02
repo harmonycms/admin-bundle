@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Harmony\Bundle\AdminBundle\Form\Extension;
 
-use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * render the form.
  *
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
- * @method iterable getExtendedTypes()
  */
 class HarmonyAdminExtension extends AbstractTypeExtension
 {
@@ -36,11 +35,11 @@ class HarmonyAdminExtension extends AbstractTypeExtension
      * This method is called after the extended type has finished the view to
      * further modify it.
      *
-     * @see FormTypeInterface::finishView()
-     *
      * @param FormView      $view
      * @param FormInterface $form
      * @param array         $options
+     *
+     * @see FormTypeInterface::finishView()
      */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
@@ -80,13 +79,8 @@ class HarmonyAdminExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function getExtendedType()
+    public static function getExtendedTypes()
     {
-        return FormTypeHelper::getTypeClass('form');
-    }
-
-    public function __call($name, $arguments)
-    {
-        // TODO: Implement @method iterable getExtendedTypes()
+        return [FormType::class];
     }
 }

@@ -30,8 +30,8 @@
 
 {%- block content_title %}
   {%- if 'search' == app.request.get('action') %}
-    {%- set _default_title = 'search.page_title'|transchoice(paginator.nbResults, {}, 'HarmonyAdminBundle') %}
-    {{ (_model_config.search.title is defined ? _model_config.search.title|transchoice(paginator.nbResults) : _default_title)|raw }}
+    {%- set _default_title = 'search.page_title'|trans({ '%count%': paginator.nbResults}, 'HarmonyAdminBundle') %}
+    {{ (_model_config.search.title is defined ? _model_config.search.title|trans({ '%count%': paginator.nbResults }) : _default_title)|raw }}
   {%- else %}
     {%- set _default_title = 'list.page_title'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
     {{ (_model_config.label is defined ? _model_config.label|trans(_trans_parameters) : _default_title)|raw }}

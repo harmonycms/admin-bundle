@@ -367,7 +367,7 @@
   {% set error_count = errors|length %}
   {% if error_count >= 1 %}
     <div class="error-block">
-      <span class="label label-danger">{{ 'errors'|transchoice(error_count, {}, 'HarmonyAdminBundle') }}</span>
+      <span class="label label-danger">{{ 'errors'|trans({ '%count%': error_count }, 'HarmonyAdminBundle') }}</span>
       {% if error_count == 1 %}
         {{ errors|first.message }}
       {% else %}
@@ -516,9 +516,9 @@
                   {{ tab_config['label']|trans(domain = _translation_domain) }}
                   {% if tab_config.errors > 0 %}
                     <span class="label label-danger"
-                          title="{{ 'form.tab.error_badge_title'|transchoice(tab_config.errors, {}, 'HarmonyAdminBundle') }}">
-                                            {{ tab_config.errors }}
-                                        </span>
+                          title="{{ 'form.tab.error_badge_title'|trans({ '%count%': tab_config.errors }, 'HarmonyAdminBundle') }}">
+                      {{ tab_config.errors }}
+                    </span>
                   {% endif %}
                 </a>
               </li>

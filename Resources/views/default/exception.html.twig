@@ -6,7 +6,7 @@
 ] %}
 
 {% block body_class 'error' %}
-{% block page_title %}{{ 'errors'|transchoice(1, {}, 'HarmonyAdminBundle') }}{% endblock %}
+{% block page_title %}{{ 'errors'|trans({ '%count%': 1 }, 'HarmonyAdminBundle') }}{% endblock %}
 
 {% block content %}
     <section id="main" class="content">

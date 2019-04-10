@@ -6,9 +6,13 @@ import 'bootstrap';
 import 'metismenu';
 // DataTable
 import 'datatables';
+//Select2
+import 'select2';
 
 $(function () {
   $(".metismenu").metisMenu();
 
   $('[data-toggle="dataTable"]').dataTable();
+
+  $('body').find('form select[multiple="multiple"]').select2();
 });

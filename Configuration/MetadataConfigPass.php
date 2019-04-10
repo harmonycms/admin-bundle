@@ -40,11 +40,7 @@ class MetadataConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             try {
-                // TODO: Need to be tested in both ORM and ODM, seems to works only for ORM!!!
-                $modelConfig['class'] = $this->registry->getManager()
-                    ->getMetadataFactory()
-                    ->getMetadataFor($modelConfig['class'])
-                    ->getName();
+                $modelConfig['class'] = $this->registry->getManager()->getClassMetadata($modelConfig['class'])->getName();
                 $objectManager        = $this->registry->getManagerForClass($modelConfig['class']);
             }
             catch (\ReflectionException $e) {

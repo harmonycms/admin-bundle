@@ -14,5 +14,5 @@ $(function () {
 
   $('[data-toggle="dataTable"]').dataTable();
 
-  $('body').find('form select[multiple="multiple"]').select2();
+  $('body').find('select[multiple="multiple"]').select2({ width: '100%' });
 });

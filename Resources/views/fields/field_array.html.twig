@@ -1,15 +1,17 @@
-{% if view == 'show' %}
-    {% if value|length > 0 %}
-        <ul>
-            {% for element in value %}
-                <li>{{ element }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <div class="empty collection-empty">
-            {{ include(model_config.templates.label_empty) }}
-        </div>
-    {% endif %}
-{% else %}
-    {{ value|join(', ')|harmony_admin_truncate }}
-{% endif %}
+{%- if view == 'show' %}
+  {%- if value|length > 0 %}
+    <ul>
+      {%- for element in value %}
+        <li>{{ element }}</li>
+      {%- endfor %}
+    </ul>
+  {%- else %}
+    <div class="empty collection-empty">
+      {{ include(model_config.templates.label_empty) }}
+    </div>
+  {%- endif %}
+{%- else %}
+  {%- for val in value %}
+    <span class="badge badge-default m-r-5 m-b-5">{{ val }}</span>
+  {%- endfor %}
+{%- endif %}

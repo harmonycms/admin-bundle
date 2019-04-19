@@ -311,15 +311,51 @@
         </unit>
         <unit id="menu">
             <segment>
-                <source>dashboard</source>
+                <source>menu.dashboard</source>
                 <target>Dashboard</target>
             </segment>
             <segment>
-                <source>features</source>
+                <source>menu._features</source>
                 <target>FEATURES</target>
             </segment>
             <segment>
-                <source>extensions</source>
+                <source>menu.user_management</source>
+                <target>User management</target>
+            </segment>
+            <segment>
+                <source>menu.user_management.users</source>
+                <target>Users</target>
+            </segment>
+            <segment>
+                <source>menu.settings</source>
+                <target>Settings</target>
+            </segment>
+            <segment>
+                <source>menu.settings.general</source>
+                <target>General</target>
+            </segment>
+            <segment>
+                <source>menu.themes</source>
+                <target>Themes</target>
+            </segment>
+            <segment>
+                <source>menu.themes.view_all</source>
+                <target>View all</target>
+            </segment>
+            <segment>
+                <source>menu.extensions</source>
+                <target>Extensions</target>
+            </segment>
+            <segment>
+                <source>menu.extensions.modules</source>
+                <target>Modules</target>
+            </segment>
+            <segment>
+                <source>menu.extensions.plugins</source>
+                <target>Plugins</target>
+            </segment>
+            <segment>
+                <source>menu._extensions</source>
                 <target>EXTENSIONS</target>
             </segment>
         </unit>

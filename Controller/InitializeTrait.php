@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use function array_key_exists;
 use function array_replace;
 use function count;
@@ -56,21 +57,27 @@ trait InitializeTrait
     /** @var SearchPaginator $searchPaginator */
     protected $searchPaginator;
 
+    /** @var PropertyAccessorInterface $propertyAccessor */
+    protected $propertyAccessor;
+
     /**
      * InitializeTrait constructor.
      *
-     * @param EventDispatcherInterface $dispatcher
-     * @param ConfigManager            $configManager
-     * @param DoctrineBuilderRegistry  $builderRegistry
-     * @param SearchPaginator          $searchPaginator
+     * @param EventDispatcherInterface  $dispatcher
+     * @param ConfigManager             $configManager
+     * @param DoctrineBuilderRegistry   $builderRegistry
+     * @param SearchPaginator           $searchPaginator
+     * @param PropertyAccessorInterface $propertyAccessor
      */
     public function __construct(EventDispatcherInterface $dispatcher, ConfigManager $configManager,
-                                DoctrineBuilderRegistry $builderRegistry, SearchPaginator $searchPaginator)
+                                DoctrineBuilderRegistry $builderRegistry, SearchPaginator $searchPaginator,
+                                PropertyAccessorInterface $propertyAccessor)
     {
-        $this->dispatcher      = $dispatcher;
-        $this->configManager   = $configManager;
-        $this->builderRegistry = $builderRegistry;
-        $this->searchPaginator = $searchPaginator;
+        $this->dispatcher       = $dispatcher;
+        $this->configManager    = $configManager;
+        $this->builderRegistry  = $builderRegistry;
+        $this->searchPaginator  = $searchPaginator;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     /**

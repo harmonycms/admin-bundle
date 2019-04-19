@@ -1,0 +1,1 @@
+{"base_url":"","routes":{"admin_model":{"tokens":[["variable","\/","[^\/]++","action",true],["variable","\/","[^\/]++","model",true],["text","\/admin\/model"]],"defaults":{"action":"list"},"requirements":[],"hosttokens":[],"methods":[],"schemes":[]}},"prefix":"","host":"localhost","port":"","scheme":"http"}

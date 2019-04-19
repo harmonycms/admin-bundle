@@ -94,10 +94,6 @@ services:
     tags:
       - { name: harmony_admin.config_pass, priority: 10 }
 
-  harmony_admin.property_accessor:
-    alias: 'property_accessor'
-    public: true
-
   Harmony\Bundle\AdminBundle\EventListener\MenuListener:
     tags:
       - { name: kernel.event_listener, event: harmony_menu_configure, method: onMenuConfigure }

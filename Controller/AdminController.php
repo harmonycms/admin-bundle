@@ -32,7 +32,7 @@ class AdminController extends AbstractController
     use InitializeTrait;
 
     /**
-     * @Route("/model/{model}/{action}", name="admin_model")
+     * @Route("/model/{model}/{action}", name="admin_model", options={"expose"=true})
      * @param Request $request
      * @param string  $model
      * @param string  $action
@@ -304,11 +304,11 @@ class AdminController extends AbstractController
     protected function updateModelProperty($model, $property, $value)
     {
         $modelConfig = $this->model;
-        if (!$this->get('harmony_admin.property_accessor')->isWritable($model, $property)) {
+        if (!$this->propertyAccessor->isWritable($model, $property)) {
             throw new \RuntimeException(sprintf('The "%s" property of the "%s" model is not writable.', $property,
                 $modelConfig['name']));
         }
-        $this->get('harmony_admin.property_accessor')->setValue($model, $property, $value);
+        $this->propertyAccessor->setValue($model, $property, $value);
         $this->dispatch(HarmonyAdminEvents::PRE_UPDATE, ['model' => $model, 'newValue' => $value]);
         $this->executeDynamicMethod('update<ModelName>Model', [$model]);
         $this->dispatch(HarmonyAdminEvents::POST_UPDATE, ['model' => $model, 'newValue' => $value]);

@@ -19,16 +19,3 @@
     {{ form(form, { 'attr': { 'class': 'card' } }) }}
   {% endblock model_form %}
 {% endblock %}
-
-{% block body_javascript %}
-  {{ parent() }}
-  <script src="{{ asset('bundles/harmonyadmin/javascript/jquery.are-you-sure.min.js') }}"></script>
-  <script type="text/javascript">
-    $(function () {
-      $('.new-form').areYouSure({'message': '{{ 'form.are_you_sure'|trans({}, 'HarmonyAdminBundle')|e('js') }}'});
-
-      // $('.form-actions').harmonyAdminSticky();
-    });
-  </script>
-  {{ include('@HarmonyAdmin/default/includes/_select2_widget.html.twig') }}
-{% endblock %}

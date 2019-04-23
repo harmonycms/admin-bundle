@@ -292,11 +292,27 @@
                 <source>seo_settings.title</source>
                 <target>SEO settings</target>
             </segment>
+            <segment>
+                <source>setting.updated_success</source>
+                <target>Settings has been updated successfully.</target>
+            </segment>
         </unit>
         <unit id="theme">
             <segment>
-                <source>themes.title</source>
+                <source>theme.title</source>
                 <target>Themes</target>
+            </segment>
+            <segment>
+                <source>theme.error_message</source>
+                <target>Oups!!! Something went wrong</target>
+            </segment>
+            <segment>
+                <source>theme.activated_success</source>
+                <target>Theme %name% successfully activated</target>
+            </segment>
+            <segment>
+                <source>theme.deactivated_success</source>
+                <target>Theme %name% successfully deactivated</target>
             </segment>
         </unit>
         <unit id="extension">

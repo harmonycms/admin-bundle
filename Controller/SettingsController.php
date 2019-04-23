@@ -3,12 +3,13 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\SettingsManagerBundle\Form\Type\SettingsType;
-use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsManager;
 use Harmony\Bundle\SettingsManagerBundle\Model\Setting;
+use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class SettingsController
@@ -22,14 +23,19 @@ class SettingsController extends AbstractController
     /** @var SettingsManager $settingsManager */
     protected $settingsManager;
 
+    /** @var TranslatorInterface $translator */
+    protected $translator;
+
     /**
      * SettingsController constructor.
      *
-     * @param SettingsManager $settingsManager
+     * @param SettingsManager     $settingsManager
+     * @param TranslatorInterface $translator
      */
-    public function __construct(SettingsManager $settingsManager)
+    public function __construct(SettingsManager $settingsManager, TranslatorInterface $translator)
     {
         $this->settingsManager = $settingsManager;
+        $this->translator      = $translator;
     }
 
     /**
@@ -57,7 +63,7 @@ class SettingsController extends AbstractController
                 }
             }
 
-            $this->addFlash('success', 'Settings has been updated successfully.');
+            $this->addFlash('success', $this->translator->trans('setting.updated_success', [], 'HarmonyAdminBundle'));
 
             return $this->redirectToRoute('admin_settings_index', array_merge([
                 'domainName' => $domainName,

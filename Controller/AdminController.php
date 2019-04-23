@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace Harmony\Bundle\AdminBundle\Controller;
 
+use Doctrine\MongoDB\Query\Builder;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
+use ErrorException;
+use Exception;
 use Harmony\Bundle\AdminBundle\Event\HarmonyAdminEvents;
 use Harmony\Bundle\AdminBundle\Exception\ForbiddenActionException;
 use Harmony\Bundle\AdminBundle\Exception\ModelRemoveException;
 use Harmony\Bundle\AdminBundle\Form\Util\FormTypeHelper;
+use MongoException;
 use Pagerfanta\Pagerfanta;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -20,6 +28,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Annotation\Route;
+use UnexpectedValueException;
+use function call_user_func_array;
+use function get_class;
+use function gettype;
+use function in_array;
+use function is_callable;
+use function is_object;
 
 /**
  * Class AdminController
@@ -106,8 +121,8 @@ class AdminController extends AbstractController
      * The method that is executed when the user performs a 'edit' action on an model.
      *
      * @return Response|RedirectResponse
-     * @throws \RuntimeException
-     * @throws \ErrorException
+     * @throws RuntimeException
+     * @throws ErrorException
      */
     protected function edit()
     {
@@ -119,7 +134,7 @@ class AdminController extends AbstractController
             $newValue       = 'true' === mb_strtolower($this->request->query->get('newValue'));
             $fieldsMetadata = $this->model['list']['fields'];
             if (!isset($fieldsMetadata[$property]) || 'toggle' !== $fieldsMetadata[$property]['dataType']) {
-                throw new \RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
+                throw new RuntimeException(sprintf('The type of the "%s" property is not "toggle".', $property));
             }
             $this->updateModelProperty($item, $property, $newValue);
 
@@ -181,7 +196,7 @@ class AdminController extends AbstractController
      * The method that is executed when the user performs a 'new' action on an model.
      *
      * @return Response|RedirectResponse
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     protected function new()
     {
@@ -221,7 +236,7 @@ class AdminController extends AbstractController
      *
      * @return Response
      * @throws ModelRemoveException
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     protected function delete()
     {
@@ -239,7 +254,7 @@ class AdminController extends AbstractController
             try {
                 $this->executeDynamicMethod('remove<ModelName>Model', [$item, $form]);
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
                 throw new ModelRemoveException([
                     'model_name' => $this->model['name'],
                     'message'    => $e->getMessage()
@@ -299,13 +314,13 @@ class AdminController extends AbstractController
      * @param string $property The name of the property to change
      * @param bool   $value    The new value of the property
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function updateModelProperty($model, $property, $value)
     {
         $modelConfig = $this->model;
         if (!$this->propertyAccessor->isWritable($model, $property)) {
-            throw new \RuntimeException(sprintf('The "%s" property of the "%s" model is not writable.', $property,
+            throw new RuntimeException(sprintf('The "%s" property of the "%s" model is not writable.', $property,
                 $modelConfig['name']));
         }
         $this->propertyAccessor->setValue($model, $property, $value);
@@ -335,8 +350,8 @@ class AdminController extends AbstractController
      *
      * @param object $model
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     protected function persistModel($model)
     {
@@ -350,8 +365,8 @@ class AdminController extends AbstractController
      *
      * @param object $model
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     protected function updateModel($model)
     {
@@ -365,8 +380,8 @@ class AdminController extends AbstractController
      *
      * @param object $model
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     protected function removeModel($model)
     {
@@ -390,7 +405,7 @@ class AdminController extends AbstractController
     protected function findAll($class, $page = 1, $maxPerPage = 15, $sortField = null, $sortDirection = null,
                                $dqlFilter = null)
     {
-        if (!\in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
+        if (!in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
             $sortDirection = 'DESC';
         }
         $queryBuilder = $this->executeDynamicMethod('create<ModelName>ListQueryBuilder',
@@ -412,7 +427,7 @@ class AdminController extends AbstractController
      * @param string|null $sortField
      * @param string|null $dqlFilter
      *
-     * @return \Doctrine\MongoDB\Query\Builder|\Doctrine\ORM\QueryBuilder Query Builder instance
+     * @return Builder|QueryBuilder Query Builder instance
      */
     protected function createListQueryBuilder($class, $sortDirection, $sortField = null, $dqlFilter = null)
     {
@@ -461,8 +476,8 @@ class AdminController extends AbstractController
      * @param string|null $sortDirection
      * @param string|null $dqlFilter
      *
-     * @return \Doctrine\ORM\QueryBuilder The Query Builder instance
-     * @throws \MongoException
+     * @return QueryBuilder The Query Builder instance
+     * @throws MongoException
      */
     protected function createSearchQueryBuilder($class, $searchQuery, array $searchableFields, $sortField = null,
                                                 $sortDirection = null, $dqlFilter = null)
@@ -478,7 +493,7 @@ class AdminController extends AbstractController
      * @param array  $properties
      *
      * @return Form|FormInterface
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createEditForm($model, array $properties)
     {
@@ -492,7 +507,7 @@ class AdminController extends AbstractController
      * @param array  $properties
      *
      * @return Form|FormInterface
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createNewForm($model, array $properties)
     {
@@ -542,23 +557,23 @@ class AdminController extends AbstractController
      * @param string $view
      *
      * @return FormInterface
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createModelForm($model, array $properties, $view)
     {
         if (method_exists($this, $customMethodName = 'create' . $this->model['name'] . 'ModelForm')) {
             $form = $this->{$customMethodName}($model, $properties, $view);
             if (!$form instanceof FormInterface) {
-                throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormInterface, "%s" given.',
-                    $customMethodName, \is_object($form) ? \get_class($form) : \gettype($form)));
+                throw new UnexpectedValueException(sprintf('The "%s" method must return a FormInterface, "%s" given.',
+                    $customMethodName, is_object($form) ? get_class($form) : gettype($form)));
             }
 
             return $form;
         }
         $formBuilder = $this->executeDynamicMethod('create<ModelName>ModelFormBuilder', [$model, $view]);
         if (!$formBuilder instanceof FormBuilderInterface) {
-            throw new \UnexpectedValueException(sprintf('The "%s" method must return a FormBuilderInterface, "%s" given.',
-                'createModelForm', \is_object($formBuilder) ? \get_class($formBuilder) : \gettype($formBuilder)));
+            throw new UnexpectedValueException(sprintf('The "%s" method must return a FormBuilderInterface, "%s" given.',
+                'createModelForm', is_object($formBuilder) ? get_class($formBuilder) : gettype($formBuilder)));
         }
 
         return $formBuilder->getForm();
@@ -604,7 +619,7 @@ class AdminController extends AbstractController
      */
     protected function isActionAllowed($actionName)
     {
-        return false === \in_array($actionName, $this->model['disabled_actions'], true);
+        return false === in_array($actionName, $this->model['disabled_actions'], true);
     }
 
     /**
@@ -624,11 +639,11 @@ class AdminController extends AbstractController
     protected function executeDynamicMethod($methodNamePattern, array $arguments = [])
     {
         $methodName = str_replace('<ModelName>', $this->model['name'], $methodNamePattern);
-        if (!\is_callable([$this, $methodName])) {
+        if (!is_callable([$this, $methodName])) {
             $methodName = str_replace('<ModelName>', '', $methodNamePattern);
         }
 
-        return \call_user_func_array([$this, $methodName], $arguments);
+        return call_user_func_array([$this, $methodName], $arguments);
     }
 
     /**
@@ -652,7 +667,7 @@ class AdminController extends AbstractController
             ]);
         }
         // 2. from new|edit action, redirect to edit if possible
-        if (\in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
+        if (in_array($refererAction, ['new', 'edit']) && $this->isActionAllowed('edit')) {
             return $this->redirectToRoute('admin', [
                 'action'       => 'edit',
                 'model'        => $this->model['name'],

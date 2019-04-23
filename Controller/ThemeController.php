@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ThemeController
@@ -24,16 +25,22 @@ class ThemeController extends AbstractController
     /** @var AbstractKernel|KernelInterface $kernel */
     protected $kernel;
 
+    /** @var TranslatorInterface $translator */
+    protected $translator;
+
     /**
      * ThemeController constructor.
      *
      * @param SettingsManager                $settingsManager
      * @param KernelInterface|AbstractKernel $kernel
+     * @param TranslatorInterface            $translator
      */
-    public function __construct(SettingsManager $settingsManager, KernelInterface $kernel)
+    public function __construct(SettingsManager $settingsManager, KernelInterface $kernel,
+                                TranslatorInterface $translator)
     {
         $this->settingsManager = $settingsManager;
         $this->kernel          = $kernel;
+        $this->translator      = $translator;
     }
 
     /**
@@ -59,9 +66,10 @@ class ThemeController extends AbstractController
         $themeSetting = $this->settingsManager->getSetting('theme');
         $themeSetting->setData($name);
         if (true === $this->settingsManager->save($themeSetting)) {
-            $this->addFlash('success', 'Theme ' . $name . ' successfully activated');
+            $this->addFlash('success',
+                $this->translator->trans('theme.activated_success', ['%name%' => $name], 'HarmonyAdminBundle'));
         } else {
-            $this->addFlash('danger', 'Oups!!! Something went wrong');
+            $this->addFlash('danger', $this->translator->trans('theme.error_message', [], 'HarmonyAdminBundle'));
         }
 
         return $this->redirectToRoute('admin_theme_index');
@@ -78,9 +86,10 @@ class ThemeController extends AbstractController
         $themeSetting = $this->settingsManager->getSetting('theme');
         $themeSetting->setData($name);
         if (true === $this->settingsManager->delete($themeSetting)) {
-            $this->addFlash('success', 'Theme ' . $name . ' successfully deactivated');
+            $this->addFlash('success',
+                $this->translator->trans('theme.deactivated_success', ['%name%' => $name], 'HarmonyAdminBundle'));
         } else {
-            $this->addFlash('danger', 'Oups!!! Something went wrong');
+            $this->addFlash('danger', $this->translator->trans('theme.error_message', [], 'HarmonyAdminBundle'));
         }
 
         return $this->redirectToRoute('admin_theme_index');

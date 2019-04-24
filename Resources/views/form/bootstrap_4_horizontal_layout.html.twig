@@ -40,7 +40,7 @@
       {{ form_errors(form) }}
 
       {% if form.vars.help ?? false %}
-        <span class="help-block"><i class="fas fa-info-circle"></i> {{ form.vars.help|raw }}</span>
+        <span class="help-block"><i class="fas fa-info-circle"></i> {{ form.vars.help|trans|raw }}</span>
       {% endif %}
     </div>
   </div>

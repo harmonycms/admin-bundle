@@ -56,6 +56,14 @@
                 <ul class="nav navbar-toolbar">
                   <li><a href="{{ path('index') }}" title="Visit site"><i class="fas fa-home"></i></a></li>
                   <li class="dropdown dropdown-user">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" title="Cache actions">
+                      <i class="fas fa-bolt"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a class="dropdown-item" href="{{ path('cache_clear') }}"><i class="fas fa-trash"></i>Clear cache</a></li>
+                      <li><a class="dropdown-item" href="{{ path('cache_warmup') }}"><i class="fas fa-fire"></i>Cache warmup</a></li>
+                    </ul>
+                  </li>
+                  <li class="dropdown dropdown-user">
                     {% block user_menu %}
                       <span class="sr-only">{{ 'user.logged_in_as'|trans }}</span>
                       {% if app.user|default(false) == false %}

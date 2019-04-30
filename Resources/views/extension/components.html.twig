@@ -1,0 +1,69 @@
+{% extends '@HarmonyAdmin/default/layout.html.twig' %}
+
+{% trans_default_domain 'HarmonyAdminBundle' %}
+
+{% block content_title -%}
+  {{ 'components.title'|trans|raw }}
+{%- endblock %}
+
+{% block main %}
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <table class="table">
+            <thead class="thead-default">
+            <tr>
+              <th>Information</th>
+              <th>Type</th>
+              <th>Authors</th>
+              <th>Link</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for component in components %}
+              <tr>
+                <td>
+                  <div class="row">
+                    <div class="col-auto">
+                      <img src="/extensions/{{ component.shortName }}/icon.png" width="48">
+                    </div>
+                    <div class="col">
+                      <strong>{{ component.name }}</strong> <span class="text-muted">{{ component.version }}</span><br>
+                      {{ component.description }}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  {{ component.type }}
+                </td>
+                <td>
+                  <ul class="p-0 mb-0 list-unstyled">
+                    {% for author in component.authors %}
+                      <li>
+                        {% if author.homepage is defined %}
+                          <a href="{{ author.homepage }}" target="_blank">
+                            <i class="fas fa-link"></i> {{ author.name }}</a>
+                        {% elseif author.email is defined %}
+                          <a href="mailto:{{ author.email }}"><i class="fas fa-at"></i> {{ author.name }}</a>
+                        {% else %}
+                          <i class="fas fa-user"></i> {{ author.name }}
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </td>
+                <td>
+                  {% if '' != component.homepage %}
+                    <a href="{{ component.homepage }}" target="_blank">Homepage</a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

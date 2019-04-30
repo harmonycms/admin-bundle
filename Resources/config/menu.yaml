@@ -26,6 +26,7 @@ admin_menu:
             label: 'menu.extensions'
             extras: { icon: 'fas fa-puzzle-piece', translation_domain: 'HarmonyAdminBundle' }
             children:
+                - { label: 'menu.extensions.components', route: 'admin_extension_components', extras: { translation_domain: 'HarmonyAdminBundle' } }
                 - { label: 'menu.extensions.modules', route: 'admin_extension_modules', extras: { translation_domain: 'HarmonyAdminBundle' } }
                 - { label: 'menu.extensions.plugins', route: 'admin_extension_plugins', extras: { translation_domain: 'HarmonyAdminBundle' } }
         _extensions:

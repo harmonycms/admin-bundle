@@ -324,6 +324,10 @@
                 <source>plugins.title</source>
                 <target>Plugins</target>
             </segment>
+            <segment>
+                <source>components.title</source>
+                <target>Components</target>
+            </segment>
         </unit>
         <unit id="menu">
             <segment>

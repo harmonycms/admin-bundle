@@ -367,6 +367,10 @@
                 <target>Extensions</target>
             </segment>
             <segment>
+                <source>menu.extensions.components</source>
+                <target>Components</target>
+            </segment>
+            <segment>
                 <source>menu.extensions.modules</source>
                 <target>Modules</target>
             </segment>

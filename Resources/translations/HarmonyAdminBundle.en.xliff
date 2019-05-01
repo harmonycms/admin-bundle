@@ -355,6 +355,10 @@
                 <target>General</target>
             </segment>
             <segment>
+                <source>menu.settings.extensions</source>
+                <target>Extensions</target>
+            </segment>
+            <segment>
                 <source>menu.themes</source>
                 <target>Themes</target>
             </segment>

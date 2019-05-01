@@ -3,7 +3,6 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
-use Harmony\Bundle\ExtensionBundle\Manager\ComponentManager;
 use Harmony\Sdk\Extension\AbstractExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,19 +21,14 @@ class ExtensionController extends AbstractController
     /** @var KernelInterface|AbstractKernel $kernel */
     protected $kernel;
 
-    /** @var ComponentManager $componentManager */
-    protected $componentManager;
-
     /**
      * ExtensionController constructor.
      *
      * @param KernelInterface|AbstractKernel $kernel
-     * @param ComponentManager               $componentManager
      */
-    public function __construct(KernelInterface $kernel, ComponentManager $componentManager)
+    public function __construct(KernelInterface $kernel)
     {
-        $this->kernel           = $kernel;
-        $this->componentManager = $componentManager;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -76,7 +70,7 @@ class ExtensionController extends AbstractController
     public function components(): Response
     {
         $components = [];
-        foreach ($this->componentManager->all() as $name => $extension) {
+        foreach ($this->kernel->getExtensions() as $name => $extension) {
             if (AbstractExtension::COMPONENT === $extension->getExtensionType()) {
                 $components[$name] = $extension;
             }

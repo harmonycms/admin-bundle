@@ -297,8 +297,8 @@
                 <target>Settings has been updated successfully.</target>
             </segment>
             <segment>
-                <source>extensions_settings.title</source>
-                <target>Extensions settings</target>
+                <source>components_settings.title</source>
+                <target>Components settings</target>
             </segment>
         </unit>
         <unit id="theme">

@@ -17,12 +17,17 @@ const routes = require('./fos_js_routes.json');
 Routing.setRoutingData(routes);
 
 $(function () {
+
+  // jQuery Accordion Menu Plugin For Bootstrap
   $(".metismenu").metisMenu();
 
+  // Table plug-in for jQuery
   $('[data-toggle="dataTable"]').dataTable();
 
+  // jQuery based replacement for select boxes
   $('body').find('select[multiple="multiple"]').select2({width: '100%'});
 
+  // Highly flexible Bootstrap plugin that converts checkboxes into toggles
   $('input[data-toggle="toggle"]').on('change', function () {
     let toggle = $(this);
     let newValue = toggle.prop('checked');
@@ -54,6 +59,7 @@ $(function () {
     });
   });
 
+  // Display delete modal
   $('.action-delete').on('click', function (e) {
     e.preventDefault();
     let id = $(this).parents('tr').first().data('id');
@@ -66,5 +72,11 @@ $(function () {
         deleteForm.trigger('submit');
       });
   });
+
+  // Sidebar toggle action
+  $('.js-sidebar-toggler').click(function () {
+    $('body').toggleClass('sidebar-mini');
+  });
+
 
 });

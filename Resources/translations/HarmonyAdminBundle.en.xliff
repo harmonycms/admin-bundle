@@ -296,6 +296,10 @@
                 <source>setting.updated_success</source>
                 <target>Settings has been updated successfully.</target>
             </segment>
+            <segment>
+                <source>extensions_settings.title</source>
+                <target>Extensions settings</target>
+            </segment>
         </unit>
         <unit id="theme">
             <segment>

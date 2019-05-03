@@ -12,6 +12,7 @@ admin_menu:
             extras: { icon: 'fas fa-user-cog', translation_domain: 'HarmonyAdminBundle' }
             children:
                 - { label: 'menu.user_management.users', route: 'admin_model', routeParameters: { model: 'user' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
+                - { label: 'menu.user_management.groups', route: 'admin_model', routeParameters: { model: 'group' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
         settings:
             label: 'menu.settings'
             extras: { icon: 'fas fa-cogs', translation_domain: 'HarmonyAdminBundle' }

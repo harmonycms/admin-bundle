@@ -359,8 +359,8 @@
                 <target>General</target>
             </segment>
             <segment>
-                <source>menu.settings.extensions</source>
-                <target>Extensions</target>
+                <source>menu.settings.components</source>
+                <target>Components</target>
             </segment>
             <segment>
                 <source>menu.themes</source>

@@ -17,7 +17,7 @@ admin_menu:
             extras: { icon: 'fas fa-cogs', translation_domain: 'HarmonyAdminBundle' }
             children:
                 - { label: 'menu.settings.general', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'general' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
-                - { label: 'menu.settings.extensions', route: 'admin_settings_index', routeParameters: { domainName: 'extension', tagName: 'components' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
+                - { label: 'menu.settings.components', route: 'admin_settings_index', routeParameters: { domainName: 'extension', tagName: 'components' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
         themes:
             label: 'menu.themes'
             extras: { icon: 'fas fa-palette', translation_domain: 'HarmonyAdminBundle' }

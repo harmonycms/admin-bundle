@@ -110,7 +110,7 @@ class ActionConfigPass implements ConfigPassInterface
             $actionsConfig = $backendConfig[$view]['actions'];
             $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig,
                 sprintf('the global "%s" view defined under "harmony_admin" option', $view));
-            $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
+            $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $backendConfig, $view);
 
             $backendConfig[$view]['actions'] = $actionsConfig;
         }
@@ -121,7 +121,7 @@ class ActionConfigPass implements ConfigPassInterface
                 $actionsConfig = $modelConfig[$view]['actions'];
                 $actionsConfig = $this->doNormalizeActionsConfig($actionsConfig,
                     sprintf('the "%s" view of the "%s" model', $view, $modelName));
-                $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $view);
+                $actionsConfig = $this->doNormalizeDefaultActionsConfig($actionsConfig, $backendConfig, $view);
 
                 $backendConfig['models'][$modelName][$view]['actions'] = $actionsConfig;
             }
@@ -178,13 +178,14 @@ class ActionConfigPass implements ConfigPassInterface
      * or the CSS class).
      *
      * @param array  $actionsConfig
+     * @param array  $backendConfig
      * @param string $view
      *
      * @return array
      */
-    private function doNormalizeDefaultActionsConfig(array $actionsConfig, $view): array
+    private function doNormalizeDefaultActionsConfig(array $actionsConfig, array $backendConfig, $view): array
     {
-        $defaultActionsConfig = $this->getDefaultActionsConfig($view);
+        $defaultActionsConfig = $this->getDefaultActionsConfig($backendConfig, $view);
 
         foreach ($actionsConfig as $actionName => $actionConfig) {
             if (array_key_exists($actionName, $defaultActionsConfig)) {
@@ -214,7 +215,7 @@ class ActionConfigPass implements ConfigPassInterface
     {
         foreach ($backendConfig['models'] as $modelName => $modelConfig) {
             foreach ($this->views as $view) {
-                $defaultActions = $this->getDefaultActions($view);
+                $defaultActions = $this->getDefaultActions($backendConfig, $view);
                 $backendActions = $backendConfig[$view]['actions'];
                 $modelActions   = $modelConfig[$view]['actions'];
 
@@ -297,27 +298,39 @@ class ActionConfigPass implements ConfigPassInterface
      * given view, including the actions which are not enabled by default for
      * that view (e.g. the 'show' action for the 'list' view).
      *
+     * @param array  $backendConfig
      * @param string $view
      *
      * @return array
      */
-    private function getDefaultActionsConfig($view): array
+    private function getDefaultActionsConfig(array $backendConfig, $view): array
     {
         $actions = $this->doNormalizeActionsConfig([
             'delete' => [
-                'name'      => 'delete',
-                'label'     => 'action.delete',
-                'icon'      => 'far fa-trash-alt',
-                'css_class' => 'btn btn-default'
+                'name'               => 'delete',
+                'label'              => 'action.delete',
+                'icon'               => 'far fa-trash-alt',
+                'css_class'          => 'btn btn-default',
+                'translation_domain' => $backendConfig['translation_domain']
             ],
             'edit'   => [
-                'name'      => 'edit',
-                'label'     => 'action.edit',
-                'icon'      => 'fas fa-edit',
-                'css_class' => 'btn btn-primary'
+                'name'               => 'edit',
+                'label'              => 'action.edit',
+                'icon'               => 'fas fa-edit',
+                'css_class'          => 'btn btn-primary',
+                'translation_domain' => $backendConfig['translation_domain']
             ],
-            'new'    => ['name' => 'new', 'label' => 'action.new', 'css_class' => 'btn btn-primary'],
-            'search' => ['name' => 'search', 'label' => 'action.search'],
+            'new'    => [
+                'name'               => 'new',
+                'label'              => 'action.new',
+                'css_class'          => 'btn btn-primary',
+                'translation_domain' => $backendConfig['translation_domain']
+            ],
+            'search' => [
+                'name'               => 'search',
+                'label'              => 'action.search',
+                'translation_domain' => $backendConfig['translation_domain']
+            ],
             'show'   => ['name' => 'show', 'label' => 'action.show'],
             'list'   => ['name' => 'list', 'label' => 'action.list', 'css_class' => 'btn btn-secondary'],
         ]);
@@ -339,14 +352,15 @@ class ActionConfigPass implements ConfigPassInterface
      * This allows to provide some nice defaults for backends that don't
      * define their own actions.
      *
+     * @param array  $backendConfig
      * @param string $view
      *
      * @return array
      */
-    private function getDefaultActions($view): array
+    private function getDefaultActions(array $backendConfig, $view): array
     {
         $defaultActions       = [];
-        $defaultActionsConfig = $this->getDefaultActionsConfig($view);
+        $defaultActionsConfig = $this->getDefaultActionsConfig($backendConfig, $view);
 
         // actions are displayed in the same order as defined in this array
         $actionsEnabledByView = [

@@ -47,6 +47,7 @@
       {% block global_actions %}
         {% if harmony_admin_action_is_enabled_for_list_view('search', _model_config.name) %}
           {% set _action = harmony_admin_get_action_for_list_view('search', _model_config.name) %}
+          {% set translation_domain = _action.translation_domain ?? _model_config.translation_domain %}
 
           {% block search_action %}
             <div class="col {{ _action.css_class|default('') }}">
@@ -66,7 +67,7 @@
                         <button class="btn" type="submit" formtarget="{{ _action.target }}">
                             <i class="fa fa-search"></i>
                             <span class="hidden-xs hidden-sm">
-                              {{ _action.label|default('action.search')|trans(_trans_parameters) }}
+                              {{ _action.label|default('action.search')|trans(_trans_parameters, domain = translation_domain) }}
                             </span>
                         </button>
                       </span>
@@ -79,13 +80,14 @@
 
         {% if harmony_admin_action_is_enabled_for_list_view('new', _model_config.name) %}
           {% set _action = harmony_admin_get_action_for_list_view('new', _model_config.name) %}
+          {% set translation_domain = _action.translation_domain ?? _model_config.translation_domain %}
           {% block new_action %}
             <div>
               <a class="{{ _action.css_class|default('') }}"
                  href="{{ path('admin_model', _request_parameters|merge({ action: _action.name })) }}"
                  target="{{ _action.target }}">
                 {% if _action.icon %}<i class="fa fa-{{ _action.icon }}"></i>{% endif %}
-                {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters) }}
+                {{ _action.label is defined and not _action.label is empty ? _action.label|trans(_trans_parameters, domain = translation_domain) }}
               </a>
             </div>
           {% endblock new_action %}

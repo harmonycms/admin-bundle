@@ -351,6 +351,10 @@
                 <target>Users</target>
             </segment>
             <segment>
+                <source>menu.user_management.groups</source>
+                <target>Groups</target>
+            </segment>
+            <segment>
                 <source>menu.settings</source>
                 <target>Settings</target>
             </segment>

@@ -13,7 +13,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" data-dismiss="modal" class="btn">
-          {{ 'action.cancel'|trans(_trans_parameters, _translation_domain) }}
+          {{ 'action.cancel'|trans(_trans_parameters, 'HarmonyAdminBundle') }}
         </button>
 
         {% if harmony_admin_action_is_enabled(view, 'delete', _model_config.name) %}

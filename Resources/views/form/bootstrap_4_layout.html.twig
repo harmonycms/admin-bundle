@@ -472,7 +472,7 @@
 
     {# the 'save' action is hardcoded for the 'edit' and 'new' views #}
     <button type="submit" class="btn btn-primary action-save">
-      <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, _translation_domain) }}
+      <i class="fa fa-save"></i> {{ 'action.save'|trans(_trans_parameters, 'HarmonyAdminBundle') }}
     </button>
 
     {% set _model_actions = (harmony_admin.view == 'new')

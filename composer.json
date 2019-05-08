@@ -22,7 +22,7 @@
         "ext-mbstring": "*",
         "friendsofsymfony/jsrouting-bundle": "^2.3",
         "harmony/core-bundle": "dev-master",
-        "harmony/user-bundle": "dev-master",
+        "harmony/user-bundle": "dev-feature/user-groups",
         "pagerfanta/pagerfanta": "^2.0",
         "symfony/webpack-encore-bundle": "^1.1",
         "twig/extensions": "^1.5"

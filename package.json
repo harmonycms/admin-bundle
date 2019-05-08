@@ -5,7 +5,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap4-toggle": "^3.4.0",
     "datatables": "^1.10.18",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "metismenu": "^3.0.3",
     "node-sass": "^4.11.0",
     "popper.js": "^1.14.7",

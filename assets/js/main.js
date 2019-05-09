@@ -22,7 +22,10 @@ $(function () {
   $(".metismenu").metisMenu();
 
   // Table plug-in for jQuery
-  $('[data-toggle="dataTable"]').dataTable();
+  let $dataTableSelector = $('[data-toggle="dataTable"]');
+  if ($dataTableSelector.length > 0) {
+    $dataTableSelector.dataTable();
+  }
 
   // jQuery based replacement for select boxes
   $('body').find('select[multiple="multiple"]').select2({width: '100%'});

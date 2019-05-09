@@ -322,6 +322,16 @@
                 <source>theme.deactivated_success</source>
                 <target>Theme %name% successfully deactivated</target>
             </segment>
+            <segment>
+                <source>theme.no_theme_available</source>
+                <target>No theme available!</target>
+            </segment>
+            <segment>
+                <source>theme.no_theme_available.message</source>
+                <target>
+                    <![CDATA[There is no theme currently installed. Please visit the <a href="https://marketplace.harmonycms.net/themes" target="_blank">Harmony's Marketplace</a> to install a theme.]]>
+                </target>
+            </segment>
         </unit>
         <unit id="extension">
             <segment>

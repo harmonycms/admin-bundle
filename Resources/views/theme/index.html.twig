@@ -2,35 +2,40 @@
 
 {% trans_default_domain 'HarmonyAdminBundle' %}
 
-{% block content_title -%}
-  {{ 'theme.title'|trans|raw }}
-{%- endblock %}
+{% block content_title %}{{ 'theme.title'|trans|raw }}{% endblock %}
 
 {% block main %}
   <div class="row">
     <div class="col-md-9">
-      <div class="card-columns">
-        {% for theme in themes %}
-          <div class="card">
-            <img class="card-img-top" src="{{ theme.preview }}" alt="{{ theme.name }}">
-            <div class="card-body">
-              <h4 class="card-title">{{ theme.name }}</h4>
-              <div class="text-muted card-subtitle">By
-                <a href="{{ theme.authors.0.homepage }}" target="_blank">{{ theme.authors.0.name }}</a></div>
-              <div>{{ theme.description }}</div>
+      {% if themes|length > 0 %}
+        <div class="card-columns">
+          {% for theme in themes %}
+            <div class="card">
+              <img class="card-img-top" src="{{ theme.preview }}" alt="{{ theme.name }}">
+              <div class="card-body">
+                <h4 class="card-title">{{ theme.name }}</h4>
+                <div class="text-muted card-subtitle">By
+                  <a href="{{ theme.authors.0.homepage }}" target="_blank">{{ theme.authors.0.name }}</a></div>
+                <div>{{ theme.description }}</div>
+              </div>
+              <div class="align-items-center card-footer d-flex justify-content-between">
+                {% if null == setting_get('theme') or setting_get('theme') != theme.identifier %}
+                  <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.identifier }) }}">Activate</a>
+                {% else %}
+                  <a class="btn btn-default {%- if 'config' ==setting.providerName %} disabled{%- endif %}"
+                     href="{{ path('admin_theme_deactivate', { 'name': theme.identifier }) }}">Disable</a>
+                {% endif %}
+                <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
+              </div>
             </div>
-            <div class="align-items-center card-footer d-flex justify-content-between">
-              {% if null == setting_get('theme') or setting_get('theme') != theme.identifier %}
-                <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.identifier }) }}">Activate</a>
-              {% else %}
-                <a class="btn btn-default {%- if 'config' ==setting.providerName %} disabled{%- endif %}"
-                   href="{{ path('admin_theme_deactivate', { 'name': theme.identifier }) }}">Disable</a>
-              {% endif %}
-              <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-warning">
+          <h4>{{ 'theme.no_theme_available'|trans }}</h4>
+          <p>{{ 'theme.no_theme_available.message'|trans|raw }}</p>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

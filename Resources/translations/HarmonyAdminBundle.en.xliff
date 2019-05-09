@@ -347,13 +347,9 @@
                 <target>Components</target>
             </segment>
             <segment>
-                <source>components.no_available</source>
-                <target>No component available!</target>
-            </segment>
-            <segment>
                 <source>components.no_available_message</source>
                 <target>
-                    <![CDATA[Oups, no components currently installed. Please visit the <a href="https://marketplace.harmonycms.net/themes" target="_blank">Harmony's Marketplace</a> to install a component.]]>
+                    <![CDATA[Oups, no components currently installed. Please visit the <a href="https://marketplace.harmonycms.net/extensions" target="_blank">Harmony's Marketplace</a> to install a component.]]>
                 </target>
             </segment>
         </unit>

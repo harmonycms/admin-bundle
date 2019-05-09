@@ -60,10 +60,11 @@
                 </td>
               </tr>
             {% else %}
-              <div class="alert alert-warning">
-                <h4>{{ 'components.no_available'|trans }}</h4>
-                <p>{{ 'components.no_available_message'|trans }}</p>
-              </div>
+              <tr>
+                <td colspan="4">
+                  <div class="alert alert-warning">{{ 'components.no_available_message'|trans|raw }}</div>
+                </td>
+              </tr>
             {% endfor %}
             </tbody>
           </table>

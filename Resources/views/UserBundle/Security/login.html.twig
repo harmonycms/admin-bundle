@@ -1,5 +1,7 @@
 {% extends '@HarmonyAdmin/default/layout.html.twig' %}
 
+{% block content_title %}{{ 'login.title'|trans({}, 'UserBundle') }}{% endblock content_title %}
+
 {% block body %}
   <body class="bg-silver-300">
     <div class="container">
@@ -11,7 +13,7 @@
           <div class="card my-5">
             <div class="card-body">
               {{ form_start(form, { method: 'POST', action: path('harmony_user_login') }) }}
-              <h2 class="card-title text-center">Log in</h2>
+              <h2 class="card-title text-center">{{ 'login.title'|trans({}, 'UserBundle') }}</h2>
               {% for type, messages in app.flashes() %}
                 {% for message in messages %}
                   <div class="alert alert-{{ 'error' == type ? 'danger' : type }} alert-bordered">{{ message }}</div>

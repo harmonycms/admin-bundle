@@ -130,6 +130,10 @@
                 <source>user.profile</source>
                 <target>Profile</target>
             </segment>
+            <segment>
+                <source>user.forgot_password</source>
+                <target>Forgot password</target>
+            </segment>
         </unit>
         <unit id="misc">
             <segment>

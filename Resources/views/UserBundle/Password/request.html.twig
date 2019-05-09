@@ -1,5 +1,7 @@
 {% extends '@HarmonyAdmin/default/layout.html.twig' %}
 
+{% block content_title %}{{ 'password.reset.title'|trans({}, 'UserBundle') }}{% endblock content_title %}
+
 {% block body %}
   <body class="bg-silver-300">
     <div class="container">
@@ -11,7 +13,7 @@
           <div class="card my-5">
             <div class="card-body">
               {{ form_start(form, { method: 'POST', action: path('harmony_user_password_request_send') }) }}
-              <h2 class="card-title">Forgot password</h2>
+              <h2 class="card-title">{{ 'user.forgot_password'|trans }}</h2>
               <p class="m-b-20">
                 Enter your username or email address below and we'll send you password reset instructions.
               </p>

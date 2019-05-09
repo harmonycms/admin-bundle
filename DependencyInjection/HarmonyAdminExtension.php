@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Harmony\Bundle\AdminBundle\DependencyInjection;
 
 use Harmony\Bundle\AdminBundle\Configuration\DesignConfigPass;
+use Harmony\Bundle\AdminBundle\EventListener\ExceptionListener;
 use Rollerworks\Bundle\RouteAutowiringBundle\RouteImporter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -54,7 +55,7 @@ class HarmonyAdminExtension extends Extension implements PrependExtensionInterfa
 
         if ($container->getParameter('kernel.debug')) {
             // in 'dev', use the built-in Symfony exception listener
-            $container->removeDefinition('harmony_admin.listener.exception');
+            $container->removeDefinition(ExceptionListener::class);
             // avoid parsing the entire config in 'dev' (even for requests unrelated to the backend)
             $container->removeDefinition('harmony_admin.cache.config_warmer');
         }

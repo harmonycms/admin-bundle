@@ -50,7 +50,7 @@ services:
     arguments:
       $twig: '@twig'
       $harmonyAdminConfig: '%harmony_admin.config%'
-      $controller: 'harmony_admin.listener.exception:showExceptionPageAction'
+      $controller: 'Harmony\Bundle\AdminBundle\EventListener\ExceptionListener::showExceptionPageAction'
       $logger: '@?logger'
 
   Harmony\Bundle\AdminBundle\EventListener\RequestPostInitializeListener:

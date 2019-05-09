@@ -323,11 +323,11 @@
                 <target>Theme %name% successfully deactivated</target>
             </segment>
             <segment>
-                <source>theme.no_theme_available</source>
+                <source>theme.no_available</source>
                 <target>No theme available!</target>
             </segment>
             <segment>
-                <source>theme.no_theme_available.message</source>
+                <source>theme.no_available_message</source>
                 <target>
                     <![CDATA[There is no theme currently installed. Please visit the <a href="https://marketplace.harmonycms.net/themes" target="_blank">Harmony's Marketplace</a> to install a theme.]]>
                 </target>
@@ -345,6 +345,16 @@
             <segment>
                 <source>components.title</source>
                 <target>Components</target>
+            </segment>
+            <segment>
+                <source>components.no_available</source>
+                <target>No component available!</target>
+            </segment>
+            <segment>
+                <source>components.no_available_message</source>
+                <target>
+                    <![CDATA[Oups, no components currently installed. Please visit the <a href="https://marketplace.harmonycms.net/themes" target="_blank">Harmony's Marketplace</a> to install a component.]]>
+                </target>
             </segment>
         </unit>
         <unit id="menu">

@@ -1,5 +1,7 @@
 {% extends '@HarmonyAdmin/default/layout.html.twig' %}
 
+{% block content_title %}{{ 'password.reset.title'|trans({}, 'UserBundle') }}{% endblock content_title %}
+
 {% block body %}
   <body class="bg-silver-300">
     <div class="container">
@@ -10,7 +12,7 @@
           </div>
           <div class="card my-5">
             <div class="card-body">
-              <h2 class="card-title">Password reset</h2>
+              <h2 class="card-title">{{ 'password.reset.title'|trans({}, 'UserBundle') }}</h2>
               <p class="m-b-20">
                 {{ 'password.request.sent'|trans({'{email}': email, '{ttl}': ttl}, 'UserBundle')|raw }}
               </p>

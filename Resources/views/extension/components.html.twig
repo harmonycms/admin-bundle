@@ -59,6 +59,12 @@
                   {% endif %}
                 </td>
               </tr>
+            {% else %}
+              <tr>
+                <td colspan="4">
+                  <div class="alert alert-warning">{{ 'components.no_available_message'|trans|raw }}</div>
+                </td>
+              </tr>
             {% endfor %}
             </tbody>
           </table>

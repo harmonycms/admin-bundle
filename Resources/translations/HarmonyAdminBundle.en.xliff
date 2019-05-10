@@ -329,7 +329,7 @@
             <segment>
                 <source>theme.no_available_message</source>
                 <target>
-                    <![CDATA[There is no theme currently installed. Please visit the <a href="https://marketplace.harmonycms.net/themes" target="_blank">Harmony's Marketplace</a> to install a theme.]]>
+                    <![CDATA[There is no theme currently installed. Please visit the <a href="https://marketplace.harmonycms.net/themes" target="_blank">Harmony's Marketplace</a> to find themes.]]>
                 </target>
             </segment>
         </unit>
@@ -339,8 +339,20 @@
                 <target>Modules</target>
             </segment>
             <segment>
+                <source>modules.no_available_message</source>
+                <target>
+                    <![CDATA[Oups, no modules currently installed. Please visit the <a href="https://marketplace.harmonycms.net/extensions" target="_blank">Harmony's Marketplace</a> to find modules.]]>
+                </target>
+            </segment>
+            <segment>
                 <source>plugins.title</source>
                 <target>Plugins</target>
+            </segment>
+            <segment>
+                <source>plugins.no_available_message</source>
+                <target>
+                    <![CDATA[Oups, no plugins currently installed. Please visit the <a href="https://marketplace.harmonycms.net/extensions" target="_blank">Harmony's Marketplace</a> to find plugins.]]>
+                </target>
             </segment>
             <segment>
                 <source>components.title</source>
@@ -349,7 +361,7 @@
             <segment>
                 <source>components.no_available_message</source>
                 <target>
-                    <![CDATA[Oups, no components currently installed. Please visit the <a href="https://marketplace.harmonycms.net/extensions" target="_blank">Harmony's Marketplace</a> to install a component.]]>
+                    <![CDATA[Oups, no components currently installed. Please visit the <a href="https://marketplace.harmonycms.net/extensions" target="_blank">Harmony's Marketplace</a> to find components.]]>
                 </target>
             </segment>
         </unit>

@@ -5,7 +5,7 @@ import 'bootstrap';
 // MetisMenu
 import 'metismenu';
 // DataTable
-import 'datatables';
+import 'datatables.net-bs4';
 // Select2
 import 'select2';
 // Bootstrap4-toggle
@@ -22,10 +22,7 @@ $(function () {
   $(".metismenu").metisMenu();
 
   // Table plug-in for jQuery
-  let $dataTableSelector = $('[data-toggle="dataTable"]');
-  if ($dataTableSelector.length > 0) {
-    $dataTableSelector.dataTable();
-  }
+  $('[data-toggle="dataTable"]').DataTable();
 
   // jQuery based replacement for select boxes
   $('body').find('select[multiple="multiple"]').select2({width: '100%'});

@@ -22,7 +22,16 @@ $(function () {
   $(".metismenu").metisMenu();
 
   // Table plug-in for jQuery
-  $('[data-toggle="dataTable"]').DataTable();
+  let dt = $('[data-toggle="dataTable"]').DataTable({
+    dom:
+      "<'row'<'col-sm-12 col-md-6'l><'col-md-6 col-sm-12 d-none'f>>" +
+      "<'row'<'col-sm-12'tr>>" +
+      "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 d-flex justify-content-end'p>>",
+    lengthChange: false,
+  });
+  $('#dataTableSearchInput').keyup(function(){
+    dt.search($(this).val()).draw() ;
+  });
 
   // jQuery based replacement for select boxes
   $('body').find('select[multiple="multiple"]').select2({width: '100%'});

@@ -45,38 +45,14 @@
   <div class="ml-auto">
     <div class="row mt-4 ml-0 mr-0">
       {% block global_actions %}
-        {% if harmony_admin_action_is_enabled_for_list_view('search', _model_config.name) %}
-          {% set _action = harmony_admin_get_action_for_list_view('search', _model_config.name) %}
-          {% set translation_domain = _action.translation_domain ?? _model_config.translation_domain %}
 
-          {% block search_action %}
-            <div class="col {{ _action.css_class|default('') }}">
-              <form method="get"
-                    action="{{ path('admin_model', { model: _request_parameters.model, action: 'search' }) }}">
-                {% block search_form %}
-                  <input type="hidden" name="sortField"
-                         value="{{ _model_config.search.sort.field|default(_request_parameters.sortField) }}">
-                  <input type="hidden" name="sortDirection"
-                         value="{{ _model_config.search.sort.direction|default(_request_parameters.sortDirection) }}">
-                  <input type="hidden" name="menuIndex" value="{{ _request_parameters.menuIndex }}">
-                  <input type="hidden" name="submenuIndex" value="{{ _request_parameters.submenuIndex }}">
-                  <div class="input-group">
-                    <input class="form-control" type="search" name="query"
-                           value="{{ app.request.get('query')|default('') }}">
-                    <span class="input-group-btn">
-                        <button class="btn" type="submit" formtarget="{{ _action.target }}">
-                            <i class="fa fa-search"></i>
-                            <span class="hidden-xs hidden-sm">
-                              {{ _action.label|default('action.search')|trans(_trans_parameters, domain = translation_domain) }}
-                            </span>
-                        </button>
-                      </span>
-                  </div>
-                {% endblock %}
-              </form>
+        {% block search_action %}
+          <div class="col">
+            <div class="input-group">
+              <input class="form-control" type="search" id="dataTableSearchInput">
             </div>
-          {% endblock search_action %}
-        {% endif %}
+          </div>
+        {% endblock search_action %}
 
         {% if harmony_admin_action_is_enabled_for_list_view('new', _model_config.name) %}
           {% set _action = harmony_admin_get_action_for_list_view('new', _model_config.name) %}
@@ -102,82 +78,73 @@
 
   <div class="card">
     <div class="card-body">
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-          {% block table_head %}
-            <tr>
-              {% for field, metadata in fields %}
-                {% set isSortingField = (metadata.property == app.request.get('sortField')) or ('association' == metadata.type and app.request.get('sortField') starts with metadata.property ~ '.') %}
-                {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
-                {% set _column_label = (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
-                {% set _column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-caret-up' : 'fa-caret-down') : 'fa-sort' %}
+      <table class="table" data-toggle="dataTable">
+        <thead>
+        {% block table_head %}
+          <tr>
+            {% for field, metadata in fields %}
+              {% set isSortingField = (metadata.property == app.request.get('sortField')) or ('association' == metadata.type and app.request.get('sortField') starts with metadata.property ~ '.') %}
+              {% set nextSortDirection = isSortingField ? (app.request.get('sortDirection') == 'DESC' ? 'ASC' : 'DESC') : 'DESC' %}
+              {% set _column_label = (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
+              {% set _column_icon = isSortingField ? (nextSortDirection == 'DESC' ? 'fa-caret-up' : 'fa-caret-down') : 'fa-sort' %}
 
-                <th data-property-name="{{ metadata.property }}"
-                    class="{{ isSortingField ? 'sorted' }} {{ metadata.virtual ? 'virtual' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
-                  {% if metadata.sortable %}
-                    <a href="{{ path('admin_model', _request_parameters|merge({ page: 1, sortField: metadata.property, sortDirection: nextSortDirection })) }}">
-                      <i class="fa {{ _column_icon }}"></i>
-                      {{ _column_label|raw }}
-                    </a>
-                  {% else %}
-                    <span>{{ _column_label|raw }}</span>
-                  {% endif %}
-                </th>
+              <th data-property-name="{{ metadata.property }}"
+                  class="{{ isSortingField ? 'sorted' }} {{ metadata.virtual ? 'virtual' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
+                <span>{{ _column_label|raw }}</span>
+              </th>
+            {% endfor %}
+
+            {% if _list_item_actions|length > 0 %}
+              <th {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
+                <span>{{ 'list.row_actions'|trans(_trans_parameters, 'HarmonyAdminBundle') }}</span>
+              </th>
+            {% endif %}
+          </tr>
+        {% endblock table_head %}
+        </thead>
+
+        <tbody>
+        {% block table_body %}
+          {% for item in paginator.currentPageResults %}
+            {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
+            {% set _item_id = '' ~ attribute(item, _model_config.primary_key_field_name) %}
+            <tr data-id="{{ _item_id }}">
+              {% for field, metadata in fields %}
+                {% set isSortingField = metadata.property == app.request.get('sortField') %}
+                {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
+
+                <td data-label="{{ _column_label }}"
+                    class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
+                  {{ harmony_admin_render_field_for_list_view(_model_config.name, item, metadata) }}
+                </td>
               {% endfor %}
 
               {% if _list_item_actions|length > 0 %}
-                <th {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
-                  <span>{{ 'list.row_actions'|trans(_trans_parameters, 'HarmonyAdminBundle') }}</span>
-                </th>
+                {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
+                <td data-label="{{ _column_label }}" class="actions">
+                  {% block item_actions %}
+                    {{ include('@HarmonyAdmin/default/includes/_actions.html.twig', {
+                      actions: _list_item_actions,
+                      request_parameters: _request_parameters,
+                      translation_domain: _model_config.translation_domain,
+                      trans_parameters: _trans_parameters,
+                      item_id: _item_id
+                    }, with_context = false) }}
+                  {% endblock item_actions %}
+                </td>
               {% endif %}
             </tr>
-          {% endblock table_head %}
-          </thead>
-
-          <tbody>
-          {% block table_body %}
-            {% for item in paginator.currentPageResults %}
-              {# the empty string concatenation is needed when the primary key is an object (e.g. an Uuid object) #}
-              {% set _item_id = '' ~ attribute(item, _model_config.primary_key_field_name) %}
-              <tr data-id="{{ _item_id }}">
-                {% for field, metadata in fields %}
-                  {% set isSortingField = metadata.property == app.request.get('sortField') %}
-                  {% set _column_label =  (metadata.label ?: field|humanize)|trans(_trans_parameters) %}
-
-                  <td data-label="{{ _column_label }}"
-                      class="{{ isSortingField ? 'sorted' }} {{ metadata.dataType|lower }} {{ metadata.css_class }}" {{ harmony_admin_config('design.rtl') ? 'dir="rtl"' }}>
-                    {{ harmony_admin_render_field_for_list_view(_model_config.name, item, metadata) }}
-                  </td>
-                {% endfor %}
-
-                {% if _list_item_actions|length > 0 %}
-                  {% set _column_label =  'list.row_actions'|trans(_trans_parameters, 'HarmonyAdminBundle') %}
-                  <td data-label="{{ _column_label }}" class="actions">
-                    {% block item_actions %}
-                      {{ include('@HarmonyAdmin/default/includes/_actions.html.twig', {
-                        actions: _list_item_actions,
-                        request_parameters: _request_parameters,
-                        translation_domain: _model_config.translation_domain,
-                        trans_parameters: _trans_parameters,
-                        item_id: _item_id
-                      }, with_context = false) }}
-                    {% endblock item_actions %}
-                  </td>
-                {% endif %}
-              </tr>
-            {% else %}
-              <tr>
-                <td class="no-results"
-                    colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
-                  {{ 'search.no_results'|trans(_trans_parameters, 'HarmonyAdminBundle') }}
-                </td>
-              </tr>
-            {% endfor %}
-          {% endblock table_body %}
-          </tbody>
-        </table>
-      </div>
+          {% else %}
+            <tr>
+              <td class="no-results"
+                  colspan="{{ _list_item_actions|length > 0 ? fields|length + 1 : fields|length }}">
+                {{ 'search.no_results'|trans(_trans_parameters, 'HarmonyAdminBundle') }}
+              </td>
+            </tr>
+          {% endfor %}
+        {% endblock table_body %}
+        </tbody>
+      </table>
     </div>
   </div>
 

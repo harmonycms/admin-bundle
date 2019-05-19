@@ -56,12 +56,12 @@ class MenuListener
             $theme = $themes[$this->defaultTheme];
             if (true === $theme->hasSettings()) {
                 if ('admin_menu' === $menu->getName()) {
-                    $menu->getChild('themes')
-                        ->addChild('Configure', [
-                            'route'           => 'admin_settings_index',
-                            'routeParameters' => ['domainName' => 'theme', 'tagName' => $this->defaultTheme]
-                        ])
-                    ;
+//                    $menu->getChild('themes')
+//                        ->addChild('Configure', [
+//                            'route'           => 'admin_settings_index',
+//                            'routeParameters' => ['domainName' => 'theme', 'tagName' => $this->defaultTheme]
+//                        ])
+//                    ;
                 }
             }
         }

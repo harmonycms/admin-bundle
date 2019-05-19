@@ -5,7 +5,6 @@ namespace Harmony\Bundle\AdminBundle\EventListener;
 use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
 use Harmony\Bundle\MenuBundle\Event\ConfigureMenuEvent;
 use Harmony\Bundle\MenuBundle\Menu\MenuDomain;
-use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsRouter;
 use Harmony\Sdk\Theme\ThemeInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -18,27 +17,27 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class MenuListener
 {
 
-    /** @var SettingsRouter $settingsRouter */
-    protected $settingsRouter;
-
     /** @var Filesystem $filesystem */
     protected $filesystem;
 
     /** @var KernelInterface $kernel */
     protected $kernel;
 
+    /** @var string|null $defaultTheme */
+    protected $defaultTheme;
+
     /**
      * MenuListener constructor.
      *
-     * @param SettingsRouter                 $settingsRouter
      * @param KernelInterface|AbstractKernel $kernel
      * @param Filesystem                     $filesystem
+     * @param string|null                    $defaultTheme
      */
-    public function __construct(SettingsRouter $settingsRouter, KernelInterface $kernel, Filesystem $filesystem)
+    public function __construct(KernelInterface $kernel, Filesystem $filesystem, string $defaultTheme = null)
     {
-        $this->settingsRouter = $settingsRouter;
-        $this->filesystem     = $filesystem;
-        $this->kernel         = $kernel;
+        $this->filesystem   = $filesystem;
+        $this->kernel       = $kernel;
+        $this->defaultTheme = $defaultTheme;
     }
 
     /**
@@ -51,17 +50,18 @@ class MenuListener
             $menu->setDomain(new MenuDomain('admin'));
         }
 
-        $themes       = $this->kernel->getThemes();
-        $currentTheme = $this->settingsRouter->get('theme');
-        if (isset($themes[$currentTheme])) {
+        $themes = $this->kernel->getThemes();
+        if (isset($themes[$this->defaultTheme])) {
             /** @var ThemeInterface $theme */
-            $theme = $themes[$currentTheme];
+            $theme = $themes[$this->defaultTheme];
             if (true === $theme->hasSettings()) {
                 if ('admin_menu' === $menu->getName()) {
-                    $menu->getChild('themes')->addChild('Configure', [
-                        'route'           => 'admin_settings_index',
-                        'routeParameters' => ['domainName' => 'theme', 'tagName' => $currentTheme]
-                    ]);
+                    $menu->getChild('themes')
+                        ->addChild('Configure', [
+                            'route'           => 'admin_settings_index',
+                            'routeParameters' => ['domainName' => 'theme', 'tagName' => $this->defaultTheme]
+                        ])
+                    ;
                 }
             }
         }

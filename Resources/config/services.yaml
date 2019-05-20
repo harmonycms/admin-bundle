@@ -7,6 +7,7 @@ services:
             $debug: '%kernel.debug%'
             $configManager: '@Harmony\Bundle\AdminBundle\Configuration\ConfigManager'
             $configAdmin: '%harmony_admin.config%'
+            $defaultTheme: '%harmony.theme_default%'
 
     Harmony\Bundle\AdminBundle\Controller\:
         resource: '../../Controller'

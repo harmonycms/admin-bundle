@@ -19,11 +19,8 @@
                 <div>{{ theme.description }}</div>
               </div>
               <div class="align-items-center card-footer d-flex justify-content-between">
-                {% if null == setting_get('theme') or setting_get('theme') != theme.identifier %}
-                  <a class="btn btn-primary" href="{{ path('admin_theme_activate', { 'name': theme.identifier }) }}">Activate</a>
-                {% else %}
-                  <a class="btn btn-default {%- if 'config' ==setting.providerName %} disabled{%- endif %}"
-                     href="{{ path('admin_theme_deactivate', { 'name': theme.identifier }) }}">Disable</a>
+                {% if default_theme == theme.identifier %}
+                  <span class="badge badge-default m-r-5 m-b-5">DEFAULT</span>
                 {% endif %}
                 <span class="float-right text-muted font-13">Version: {{ theme.version }}</span>
               </div>

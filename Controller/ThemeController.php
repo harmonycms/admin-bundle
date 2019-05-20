@@ -3,7 +3,6 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Harmony\Bundle\CoreBundle\Component\HttpKernel\AbstractKernel;
-use Harmony\Bundle\SettingsManagerBundle\Settings\SettingsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -19,28 +18,27 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ThemeController extends AbstractController
 {
 
-    /** @var SettingsManager $settingsManager */
-    protected $settingsManager;
-
     /** @var AbstractKernel|KernelInterface $kernel */
     protected $kernel;
 
     /** @var TranslatorInterface $translator */
     protected $translator;
 
+    /** @var string|null $defaultTheme */
+    protected $defaultTheme;
+
     /**
      * ThemeController constructor.
      *
-     * @param SettingsManager                $settingsManager
      * @param KernelInterface|AbstractKernel $kernel
      * @param TranslatorInterface            $translator
+     * @param string|null                    $defaultTheme
      */
-    public function __construct(SettingsManager $settingsManager, KernelInterface $kernel,
-                                TranslatorInterface $translator)
+    public function __construct(KernelInterface $kernel, TranslatorInterface $translator, string $defaultTheme = null)
     {
-        $this->settingsManager = $settingsManager;
-        $this->kernel          = $kernel;
-        $this->translator      = $translator;
+        $this->kernel       = $kernel;
+        $this->translator   = $translator;
+        $this->defaultTheme = $defaultTheme;
     }
 
     /**
@@ -50,8 +48,8 @@ class ThemeController extends AbstractController
     public function index(): Response
     {
         return $this->render('@HarmonyAdmin\theme\index.html.twig', [
-            'themes'  => $this->kernel->getThemes(),
-            'setting' => $this->settingsManager->getSetting('theme')
+            'themes'        => $this->kernel->getThemes(),
+            'default_theme' => $this->defaultTheme
         ]);
     }
 

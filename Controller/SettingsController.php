@@ -3,7 +3,7 @@
 namespace Harmony\Bundle\AdminBundle\Controller;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Harmony\Bundle\CoreBundle\Model\Parameter;
+use Harmony\Bundle\CoreBundle\Model\ParameterInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,7 +37,7 @@ class SettingsController extends AbstractController
     public function parameters(): Response
     {
         return $this->render('@HarmonyAdmin\settings\parameters.html.twig', [
-            'parameters' => $this->registry->getRepository(Parameter::class)->findAll()
+            'parameters' => $this->registry->getRepository(ParameterInterface::class)->findAll()
         ]);
     }
 }

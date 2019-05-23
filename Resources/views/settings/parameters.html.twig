@@ -2,6 +2,13 @@
 
 {% trans_default_domain 'HarmonyAdminBundle' %}
 
+{% block content_header %}
+  <h1 class="page-title">{% block content_title %}{{ 'settings.parameters'|trans|raw }}{% endblock %}</h1>
+  <a href="" class="btn btn-secondary mt-3 ml-3 align-self-center">
+    <i class="fas fa-plus"></i> {{ 'action.add'|trans }}
+  </a>
+{% endblock content_header %}
+
 {% block main %}
   <div class="card">
     <div class="card-body">

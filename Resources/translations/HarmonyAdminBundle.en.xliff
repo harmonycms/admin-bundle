@@ -184,6 +184,10 @@
         </unit>
         <unit id="action">
             <segment>
+                <source>action.add</source>
+                <target>Add</target>
+            </segment>
+            <segment>
                 <source>action.new</source>
                 <target>Add %model_name%</target>
             </segment>
@@ -289,20 +293,12 @@
                 <target>Settings</target>
             </segment>
             <segment>
-                <source>general_settings.title</source>
-                <target>General settings</target>
-            </segment>
-            <segment>
-                <source>seo_settings.title</source>
-                <target>SEO settings</target>
+                <source>settings.parameters</source>
+                <target>Parameters settings</target>
             </segment>
             <segment>
                 <source>setting.updated_success</source>
                 <target>Settings has been updated successfully.</target>
-            </segment>
-            <segment>
-                <source>components_settings.title</source>
-                <target>Components settings</target>
             </segment>
         </unit>
         <unit id="theme">
@@ -391,12 +387,8 @@
                 <target>Settings</target>
             </segment>
             <segment>
-                <source>menu.settings.general</source>
-                <target>General</target>
-            </segment>
-            <segment>
-                <source>menu.settings.components</source>
-                <target>Components</target>
+                <source>menu.settings.parameters</source>
+                <target>Parameters</target>
             </segment>
             <segment>
                 <source>menu.themes</source>

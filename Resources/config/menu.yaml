@@ -13,12 +13,11 @@ admin_menu:
             children:
                 - { label: 'menu.user_management.users', route: 'admin_model', routeParameters: { model: 'user' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
                 - { label: 'menu.user_management.groups', route: 'admin_model', routeParameters: { model: 'group' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
-#        settings:
-#            label: 'menu.settings'
-#            extras: { icon: 'fas fa-cogs', translation_domain: 'HarmonyAdminBundle' }
-#            children:
-#                - { label: 'menu.settings.general', route: 'admin_settings_index', routeParameters: { domainName: 'default', tagName: 'general' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
-#                - { label: 'menu.settings.components', route: 'admin_settings_index', routeParameters: { domainName: 'extension', tagName: 'components' }, extras: { translation_domain: 'HarmonyAdminBundle' } }
+        settings:
+            label: 'menu.settings'
+            extras: { icon: 'fas fa-cogs', translation_domain: 'HarmonyAdminBundle' }
+            children:
+                - { label: 'menu.settings.parameters', route: 'admin_settings_parameters', extras: { translation_domain: 'HarmonyAdminBundle' } }
         themes:
             label: 'menu.themes'
             extras: { icon: 'fas fa-palette', translation_domain: 'HarmonyAdminBundle' }

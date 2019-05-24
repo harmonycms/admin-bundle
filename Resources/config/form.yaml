@@ -61,3 +61,5 @@ services:
             - { name: form.type, alias: harmony_admin.profile }
 
     Harmony\Bundle\AdminBundle\Form\Type\ParameterType: ~
+
+    Harmony\Bundle\AdminBundle\Form\Type\ContainerExtensionType: ~

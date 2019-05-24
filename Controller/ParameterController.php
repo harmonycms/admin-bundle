@@ -14,12 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class SettingsController
+ * Class ParameterController
  * @Route("/settings/parameters", name="admin_settings_parameters_")
  *
  * @package Harmony\Bundle\AdminBundle\Controller
  */
-class ParametersController extends AbstractController
+class ParameterController extends AbstractController
 {
 
     /** @var ManagerRegistry $registry */

@@ -1,61 +1,63 @@
 services:
-  _defaults:
-    public: false
-    autowire: true
-    autoconfigure: true
+    _defaults:
+        public: false
+        autowire: true
+        autoconfigure: true
 
-  Harmony\Bundle\AdminBundle\Form\Type\FormType:
-    tags:
-      - { name: form.type, alias: harmony_admin }
+    Harmony\Bundle\AdminBundle\Form\Type\FormType:
+        tags:
+            - { name: form.type, alias: harmony_admin }
 
-  Harmony\Bundle\AdminBundle\Form\Type\AutocompleteType:
-    tags:
-      - { name: form.type, alias: harmony_admin_autocomplete }
+    Harmony\Bundle\AdminBundle\Form\Type\AutocompleteType:
+        tags:
+            - { name: form.type, alias: harmony_admin_autocomplete }
 
-  Harmony\Bundle\AdminBundle\Form\Type\DividerType:
-    tags:
-      - { name: form.type, alias: harmony_admin_divider }
+    Harmony\Bundle\AdminBundle\Form\Type\DividerType:
+        tags:
+            - { name: form.type, alias: harmony_admin_divider }
 
-  Harmony\Bundle\AdminBundle\Form\Type\SectionType:
-    tags:
-      - { name: form.type, alias: harmony_admin_section }
+    Harmony\Bundle\AdminBundle\Form\Type\SectionType:
+        tags:
+            - { name: form.type, alias: harmony_admin_section }
 
-  Harmony\Bundle\AdminBundle\Form\Type\GroupType:
-    tags:
-      - { name: form.type, alias: harmony_admin_group }
+    Harmony\Bundle\AdminBundle\Form\Type\GroupType:
+        tags:
+            - { name: form.type, alias: harmony_admin_group }
 
-  Harmony\Bundle\AdminBundle\Form\Extension\HarmonyAdminExtension:
-    tags:
-      - { name: form.type_extension, alias: form, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType, extended-type: Symfony\Component\Form\Extension\Core\Type\FormType }
-    arguments:
-      $requestStack: '@?request_stack'
+    Harmony\Bundle\AdminBundle\Form\Extension\HarmonyAdminExtension:
+        tags:
+            - { name: form.type_extension, alias: form, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType, extended-type: Symfony\Component\Form\Extension\Core\Type\FormType }
+        arguments:
+            $requestStack: '@?request_stack'
 
-  Harmony\Bundle\AdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator:
-    tags:
-      - { name: harmony_admin.form.type.configurator, priority: 30 }
+    Harmony\Bundle\AdminBundle\Form\Type\Configurator\AutocompleteTypeConfigurator:
+        tags:
+            - { name: harmony_admin.form.type.configurator, priority: 30 }
 
-  Harmony\Bundle\AdminBundle\Form\Type\Configurator\CollectionTypeConfigurator:
-    tags:
-      - { name: harmony_admin.form.type.configurator, priority: 20 }
+    Harmony\Bundle\AdminBundle\Form\Type\Configurator\CollectionTypeConfigurator:
+        tags:
+            - { name: harmony_admin.form.type.configurator, priority: 20 }
 
-  Harmony\Bundle\AdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator:
-    tags:
-      - { name: harmony_admin.form.type.configurator, priority: 10 }
+    Harmony\Bundle\AdminBundle\Form\Type\Configurator\CheckboxTypeConfigurator:
+        tags:
+            - { name: harmony_admin.form.type.configurator, priority: 10 }
 
-  Harmony\Bundle\AdminBundle\Form\Type\Configurator\TypeConfigurator:
-    tags:
-      - { name: harmony_admin.form.type.configurator, priority: 0 }
+    Harmony\Bundle\AdminBundle\Form\Type\Configurator\TypeConfigurator:
+        tags:
+            - { name: harmony_admin.form.type.configurator, priority: 0 }
 
-  Harmony\Bundle\AdminBundle\Form\Type\Configurator\EntityTypeConfigurator:
-    tags:
-      - { name: harmony_admin.form.type.configurator, priority: -20 }
+    Harmony\Bundle\AdminBundle\Form\Type\Configurator\EntityTypeConfigurator:
+        tags:
+            - { name: harmony_admin.form.type.configurator, priority: -20 }
 
-  Harmony\Bundle\AdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator:
-    tags:
-      - { name: harmony_admin.form.type.configurator, priority: -130 }
+    Harmony\Bundle\AdminBundle\Form\Type\Configurator\IvoryCKEditorTypeConfigurator:
+        tags:
+            - { name: harmony_admin.form.type.configurator, priority: -130 }
 
-  Harmony\Bundle\AdminBundle\Form\Type\ProfileType:
-    arguments:
-      $class: '%harmony_user.user_class%'
-    tags:
-      - { name: form.type, alias: harmony_admin.profile }
+    Harmony\Bundle\AdminBundle\Form\Type\ProfileType:
+        arguments:
+            $class: '%harmony_user.user_class%'
+        tags:
+            - { name: form.type, alias: harmony_admin.profile }
+
+    Harmony\Bundle\AdminBundle\Form\Type\ParameterType: ~

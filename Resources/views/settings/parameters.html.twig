@@ -4,7 +4,7 @@
 
 {% block content_header %}
   <h1 class="page-title">{% block content_title %}{{ 'settings.parameters'|trans|raw }}{% endblock %}</h1>
-  <a href="" class="btn btn-secondary mt-3 ml-3 align-self-center">
+  <a href="{{ path('admin_settings_parameters_add') }}" class="btn btn-secondary mt-3 ml-3 align-self-center">
     <i class="fas fa-plus"></i> {{ 'action.add'|trans }}
   </a>
 {% endblock content_header %}
@@ -19,14 +19,20 @@
             <th>#</th>
             <th>Name</th>
             <th>Value</th>
+            <th class="w-25">Actions</th>
           </tr>
           </thead>
           <tbody>
           {% for parameter in parameters %}
-            <tr>
+            <tr{% if false == parameter_bag.has(parameter.name) %} class="danger"{% endif %}>
               <td>{{ parameter.id }}</td>
               <td>{{ parameter.name }}</td>
               <td>{{ parameter.value }}</td>
+              <td>
+                <a href="{{ path('admin_settings_parameters_edit', { id: parameter.id }) }}"
+                   class="btn btn-primary btn-sm clickable"><i class="fas fa-edit"></i></a>
+                {{ render(url('admin_settings_parameters_delete', { id: parameter.id })) }}
+              </td>
             </tr>
           {% endfor %}
           </tbody>

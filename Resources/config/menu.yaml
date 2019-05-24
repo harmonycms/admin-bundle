@@ -17,7 +17,7 @@ admin_menu:
             label: 'menu.settings'
             extras: { icon: 'fas fa-cogs', translation_domain: 'HarmonyAdminBundle' }
             children:
-                - { label: 'menu.settings.parameters', route: 'admin_settings_parameters', extras: { translation_domain: 'HarmonyAdminBundle' } }
+                - { label: 'menu.settings.parameters', route: 'admin_settings_parameters_index', extras: { translation_domain: 'HarmonyAdminBundle' } }
         themes:
             label: 'menu.themes'
             extras: { icon: 'fas fa-palette', translation_domain: 'HarmonyAdminBundle' }

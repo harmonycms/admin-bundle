@@ -216,6 +216,10 @@
                 <target>Cancel</target>
             </segment>
             <segment>
+                <source>action.close</source>
+                <target>Close</target>
+            </segment>
+            <segment>
                 <source>action.list</source>
                 <target>Back to listing</target>
             </segment>
@@ -295,6 +299,34 @@
             <segment>
                 <source>settings.parameters</source>
                 <target>Parameters settings</target>
+            </segment>
+            <segment>
+                <source>settings.parameter.add</source>
+                <target>Add parameter</target>
+            </segment>
+            <segment>
+                <source>settings.parameter.add.success</source>
+                <target>Parameter added successfully from database. You should clear your cache to rebuild the Symfony container.</target>
+            </segment>
+            <segment>
+                <source>settings.parameter.edit</source>
+                <target>Edit parameter: <![CDATA[<strong>%name%</strong>]]></target>
+            </segment>
+            <segment>
+                <source>settings.parameter.edit.success</source>
+                <target>Parameter edited successfully from database. You should clear your cache to rebuild the Symfony container.</target>
+            </segment>
+            <segment>
+                <source>settings.parameter.delete</source>
+                <target>Delete parameter</target>
+            </segment>
+            <segment>
+                <source>settings.parameter.delete.text</source>
+                <target><![CDATA[Are you sure you want to delete the parameter <strong>%name%</strong>?]]></target>
+            </segment>
+            <segment>
+                <source>settings.parameter.delete.success</source>
+                <target>Parameter removed successfully from database. You should clear your cache to rebuild the Symfony container.</target>
             </segment>
             <segment>
                 <source>setting.updated_success</source>

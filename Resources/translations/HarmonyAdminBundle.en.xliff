@@ -306,7 +306,7 @@
             </segment>
             <segment>
                 <source>settings.parameter.add.success</source>
-                <target>Parameter added successfully from database. You should clear your cache to rebuild the Symfony container.</target>
+                <target>Parameter added successfully from database. You need to clear your cache to rebuild the Symfony container and be able to use this new parameter.</target>
             </segment>
             <segment>
                 <source>settings.parameter.edit</source>
@@ -314,7 +314,7 @@
             </segment>
             <segment>
                 <source>settings.parameter.edit.success</source>
-                <target>Parameter edited successfully from database. You should clear your cache to rebuild the Symfony container.</target>
+                <target>Parameter edited successfully from database. You need to clear your cache to rebuild the Symfony container and be able to use this new parameter.</target>
             </segment>
             <segment>
                 <source>settings.parameter.delete</source>
@@ -326,7 +326,7 @@
             </segment>
             <segment>
                 <source>settings.parameter.delete.success</source>
-                <target>Parameter removed successfully from database. You should clear your cache to rebuild the Symfony container.</target>
+                <target>Parameter removed successfully from database. You need to clear your cache to rebuild the Symfony container and be able to use this new parameter.</target>
             </segment>
             <segment>
                 <source>setting.updated_success</source>

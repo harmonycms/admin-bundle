@@ -2,11 +2,12 @@
 
 namespace Harmony\Bundle\AdminBundle\Form\Type;
 
-use function ksort;
+use ReflectionException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use function ksort;
 use function sprintf;
 
 /**
@@ -38,6 +39,7 @@ class ContainerExtensionType extends AbstractType
      * @param FormBuilderInterface $builder The form builder
      * @param array                $options The options
      *
+     * @throws ReflectionException
      * @see FormTypeExtensionInterface::buildForm()
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -49,9 +51,12 @@ class ContainerExtensionType extends AbstractType
      * List bundles with extension alias.
      *
      * @return array
+     * @throws ReflectionException
      */
     protected function listBundles(): array
     {
+        //        $container = $this->compileContainer();
+
         $extensions = [];
         foreach ($this->kernel->getBundles() as $bundle) {
             if ($extension = $bundle->getContainerExtension()) {

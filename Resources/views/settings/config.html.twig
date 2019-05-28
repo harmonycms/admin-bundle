@@ -1,6 +1,12 @@
 {% extends '@HarmonyAdmin/default/layout.html.twig' %}
 
 {% block main %}
-  {{ form_start(form) }}
-  {{ form_end(form) }}
+  {% for conf in config %}
+    {% if conf.value is not null %}
+
+      <h2>{{ conf.extension.name }}</h2>
+      <span>{% if conf.parent %}{{ conf.parent.name }}.{% endif %}{{ conf.name }}</span>
+      <span>{{ conf.value }}</span>
+    {% endif %}
+  {% endfor %}
 {% endblock %}

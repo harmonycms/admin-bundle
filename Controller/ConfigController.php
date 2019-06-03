@@ -69,8 +69,7 @@ class ConfigController extends AbstractController
     public function index(): Response
     {
         return $this->render('@HarmonyAdmin\settings\config.html.twig', [
-            'extensions' => $this->bundleExtensionMapping,
-            'config'     => $this->registry->getRepository(ConfigInterface::class)->findAll()
+            'extensions' => $this->bundleExtensionMapping
         ]);
     }
 
